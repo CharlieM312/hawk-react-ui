@@ -1,0 +1,10 @@
+.query {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  align-items: center;
+}
+
+.submit {
+  width: 35%;
+}
