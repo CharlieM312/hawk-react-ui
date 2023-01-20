@@ -1,0 +1,30 @@
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.closeButton {
+  margin-left: auto;
+}
+
+.title {
+  margin-left: auto;
+}
+
+.body {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.submit {
+  margin-left: auto;
+}
+
+.resultContainer {
+  line-height: 14px;
+}
+
+.result {
+  font-size: 10px;
+}

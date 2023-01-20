@@ -1,0 +1,25 @@
+.table {
+  padding-top: 3%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th:not(:last-of-type), td:not(:last-of-type) {
+  border-right: 1px solid black;
+}
+
+th, td {
+  text-align: center;
+  padding: 1%;
+}
+
+th {
+  border-bottom: 1px solid black !important;
+}
+
+tbody > tr:hover {
+  background-color: lightgrey;
+}

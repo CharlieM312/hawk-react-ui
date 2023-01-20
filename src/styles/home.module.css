@@ -1,0 +1,19 @@
+.home {
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 3%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  text-align: left;
+  font-weight: normal;
+}
+
+.new {
+  margin-left: auto;
+}
