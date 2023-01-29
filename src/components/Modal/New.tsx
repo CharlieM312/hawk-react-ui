@@ -1,14 +1,14 @@
 import Modal from 'react-modal';
 import { CloseButton } from 'react-bootstrap';
-import styles from '../styles/newModal.module.css';
+import styles from './New.module.css';
 
-type NewModalProps = {
+type NewProps = {
   isOpen: boolean;
   toggle: () => void;
   title: string;
 }
 
-export default function NewModal({ isOpen, toggle, title }: NewModalProps) {
+export default function New({ isOpen, toggle, title }: NewProps) {
   return (
     <Modal
       isOpen={isOpen}

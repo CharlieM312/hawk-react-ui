@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import anime from 'animejs';
-import styles from '../styles/sideBanner.module.css';
+import styles from './SideBar.module.css';
 
-export default function SideBanner() {
+export default function SideBar() {
   const [theme, setTheme] = useState('light');
   const toggleTheme = () => {
     setTheme(

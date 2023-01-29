@@ -2,8 +2,9 @@ import Modal from 'react-modal';
 import AceEditor from 'react-ace';
 import { Button, CloseButton } from 'react-bootstrap';
 import { useState } from 'react';
-import Query from '../js/instances/Query';
-import styles from '../styles/instanceModal.module.css';
+import Query from '../../js/instances/Query';
+import styles from './Instance.module.css';
+
 import "ace-builds/src-noconflict/theme-dracula";
 
 type InstanceType = {
@@ -13,13 +14,13 @@ type InstanceType = {
   info: string;
 }
 
-type InstanceModalProps = {
+type InstanceProps = {
   isOpen: boolean;
   toggle: () => void;
   instance: InstanceType;
 }
 
-export default function InstanceModal({ isOpen, toggle, instance }: InstanceModalProps) {
+export default function Instance({ isOpen, toggle, instance }: InstanceProps) {
   let query: string;
   const onChange = (newValue: string) => {
     query = newValue;

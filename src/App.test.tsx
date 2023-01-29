@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import App from '../App';
-import Get from '../js/instances/Get';
+import App from './App';
+import Get from './js/instances/Get';
 
-jest.mock('../js/instances/Get');
+jest.mock('./js/instances/Get');
 
 test('renders home page', () => {
   const mockGet = Get as jest.MockedFunction<

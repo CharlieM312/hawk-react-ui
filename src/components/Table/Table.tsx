@@ -1,10 +1,10 @@
-import UseModal from './UseModal';
-import InstanceModal from './InstanceModal';
-import Get from '../js/instances/Get';
-import styles from '../styles/table.module.css';
+import Use from '../Modal/Use';
+import Instance from '../Modal/Instance';
+import Get from '../../js/instances/Get';
+import styles from './Table.module.css';
 
 export default function Table() {
-  const { isOpen, toggle } = UseModal();
+  const { isOpen, toggle } = Use();
 
   type InstanceType = {
     name: string;
@@ -59,7 +59,7 @@ export default function Table() {
           })}
         </tbody>
       </table>
-      {<InstanceModal
+      {<Instance
         isOpen={isOpen}
         toggle={toggle}
         instance={existingInstances[0]}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function UseModal() {
+export default function Use() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => {
