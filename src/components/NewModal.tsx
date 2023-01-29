@@ -13,10 +13,17 @@ export default function NewModal({ isOpen, toggle, title }: NewModalProps) {
     <Modal
       isOpen={isOpen}
       contentLabel={title}
+      className={styles.content}
+      overlayClassName={styles.overlay}
     >
       <div className={styles.header}>
-        <h1 className={styles.title}>Create New Instance</h1>
-        <CloseButton variant='black' onClick={toggle} className={styles.closeButton} />
+        <div className={styles.title}>
+          <h1>Create new instance</h1>
+          <hr className={styles.separator} />
+        </div>
+        <div className={styles.close}>
+          <CloseButton onClick={toggle} className={styles.closeButton} />
+        </div>
       </div>
     </Modal>
   );

@@ -1,6 +1,10 @@
 .header {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+}
+
+.close {
+  margin-left: auto;
 }
 
 .closeButton {
@@ -8,5 +12,40 @@
 }
 
 .title {
-  margin-left: auto;
+  color: #7e56c2;
+}
+
+.separator {
+  margin-top: 0%;
+  background-color: #7e56c2;
+  height: 6px;
+  width: 44%;
+  opacity: unset;
+}
+
+.content {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border: 1px solid rgb(126, 86, 194);
+  background: rgb(255, 255, 255);
+  overflow: auto;
+  border-radius: 10px;
+  outline: none;
+  padding: 20px;
+  height: 80%;
+  width: 70%;
+  margin-right: 70%;
+  transform: translate(-50%, -50%);
+}
+
+[data-theme='dark'] .content {
+  background: #2f2f2f;
+  color: white;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0px;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
 }

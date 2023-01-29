@@ -1,0 +1,44 @@
+.banner {
+  float: left;
+  background-color: #7e56c2;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  align-content: space-between;
+  width: 5%;
+}
+
+.logo {
+  max-width: 100%;
+  width: 7vh;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 35%;
+}
+
+[data-theme='dark'] {
+  background-color: #2f2f2f !important;
+  color: white;
+  transition: all 0.20s linear;
+}
+[data-theme='light'] {
+  background-color: white !important;
+  color: black;
+  transition: all 0.20s linear;
+}
+
+[data-theme='dark'] td {
+  border-color: white !important;
+}
+
+[data-theme='dark'] th {
+  border-color: white !important;
+}
+
+.toggle {
+  padding: 10%;
+  width: 70%;
+  cursor: pointer;
+}

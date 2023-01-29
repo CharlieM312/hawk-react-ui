@@ -49,7 +49,7 @@ export default function Table() {
         <tbody>
           {existingInstances.map(instance => {
             return (
-              <tr onClick={toggle}>
+              <tr onClick={toggle} key={ instance.name }>
                 <td>{ instance.name }</td>
                 <td>{ instance.location }</td>
                 <td>{ instance.status }</td>

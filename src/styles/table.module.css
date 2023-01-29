@@ -21,5 +21,5 @@ th {
 }
 
 tbody > tr:hover {
-  background-color: lightgrey;
+  background-color: rgba(126, 86, 194, 0.13);
 }
