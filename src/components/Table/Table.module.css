@@ -1,5 +1,5 @@
 .table {
-  padding-top: 3%;
+  margin-top: 2%;
 }
 
 table {
@@ -43,4 +43,8 @@ tbody > tr:hover {
 .cog {
   margin-right: 10px;
   margin-left: 0;
+}
+
+.cog:hover {
+  cursor: pointer;
 }

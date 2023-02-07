@@ -48,7 +48,7 @@ export default function Home() {
       <>
         <hr className={styles.divider} />
         <div className={styles.table}>
-          <h2 className={styles.tableTitle}>Results for <em>{ url }</em></h2>
+          <h2 className={styles.tableTitle}>Showing results for <em>{ url }</em></h2>
           <Table url={url} />
         </div>
       </>

@@ -99,7 +99,6 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
 
   const aceStylesDark = {
     borderRadius: '4px',
-    color: 'white'
   };
 
   return (
@@ -116,7 +115,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
           <hr className={styles.separator} />
         </div>
         <div className={styles.close}>
-          <CloseButton onClick={closeModal} className={styles.closeButton} />
+          <CloseButton onClick={closeModal} variant={appTheme === 'dark' ? 'white' : ''} className={styles.closeButton} />
         </div>
       </div>
       <div className={styles.body}>
@@ -178,10 +177,9 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
           <AceEditor
             height='90px'
             width='100%'
-            fontSize='15px'
             showPrintMargin={false}
             showGutter={false}
-            placeholder={result}
+            value={result}
             theme={
               appTheme === 'dark' ? 'dracula' : ''
             }

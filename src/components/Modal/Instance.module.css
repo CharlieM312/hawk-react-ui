@@ -40,13 +40,14 @@
 }
 
 .resultContainer {
-  box-shadow: 4px 4px 1px #d3d3d33b;
+  box-shadow: 4px 4px 8px #d3d3d33b;
   border-radius: 4px;
 }
 
 [data-theme='dark'] .resultContainer {
-  box-shadow: 4px 4px 1px #282a3696;
+  box-shadow: 4px 4px 8px #282a3696;
   border-radius: 4px;
+  color: white !important;
 }
 
 .queryLabel {
@@ -55,12 +56,12 @@
 }
 
 .queryContainer {
-  box-shadow: 4px 4px 1px #d3d3d33b;
+  box-shadow: 4px 4px 8px #d3d3d33b;
   border-radius: 4px;
 }
 
 [data-theme='dark'] .queryContainer {
-  box-shadow: 4px 4px 1px #282a3696;
+  box-shadow: 4px 4px 8px #282a3696;
   border-radius: 4px;
 }
 
