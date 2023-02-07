@@ -93,6 +93,7 @@
 }
 
 .submission {
+  margin-top: 8px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -104,6 +105,10 @@
 }
 
 .run {
+  height: 25px;
+  display: inline-flex !important;
+  align-items: center;
+  font-size: 0.9rem;
   background-color: #7e56c2 !important;
   border-color: #7e56c2 !important;
 }
@@ -117,4 +122,26 @@
   display: flex;
   z-index: 9999;
   font-size: 14px;
+}
+
+.resultHeader {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.rawButton {
+  color: #0d6efd;
+  border: none;
+  background: none;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.rawButton:hover {
+  color: #0b4aa8;
 }

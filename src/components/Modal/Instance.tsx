@@ -32,9 +32,12 @@ type InstanceProps = {
 
 export default function Instance({ isOpen, toggle, instance, url }: InstanceProps) {
   const [result, setResult]         = useState('');
+  const [rawResult, setRawResult]   = useState('');
   const [query, setQuery]           = useState('');
+  const [rawText, setRawText]       = useState('View raw');
   const [isLoading, setIsLoading]   = useState(false);
   const [hideRun, setHideRun]       = useState(false);
+  const [hideRaw, setHideRaw]       = useState(true);
 
   const hawkClient = Create(url);
   let selectedLanguage: string;
@@ -75,8 +78,14 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
     FetchResults(hawkClient, queryId)
     .then((response) => {
         setResult(response['formattedResult'].toString());
+        setRawResult(response['raw']);
         setIsLoading(false);
     });
+  }
+
+  const onClickRaw = () => {
+    setHideRaw(hideRaw === false ? true : false);
+    setRawText(rawText === 'View raw' ? 'View simplified' : 'View raw');
   }
 
   const changeLanguage = (language: LanguageOption) => {
@@ -149,7 +158,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
           })}
         />
         <br />
-        <h5 className={styles.queryLabel}>Query:</h5>
+        <h5 className={styles.queryLabel}>Query</h5>
         <div className={styles.queryContainer}>
           <AceEditor
             height='90px'
@@ -166,33 +175,27 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
             style={aceStyles}
           />
         </div>
-        <br />
         <div className={styles.submission}>
           <BounceLoader className={styles.spinner} size='20px' color='#7e56c2' loading={isLoading} />
           <Button variant='primary' className={styles.run} onClick={onClick} hidden={hideRun}>Run</Button>
         </div>
-        <br />
-        <h5 className={styles.resultLabel}>Result:</h5>
+        <div className={styles.resultHeader}>
+          <h5 className={styles.resultLabel}>Result</h5>
+          <button className={styles.rawButton} onClick={onClickRaw}>{rawText}</button>
+        </div>
         <div className={styles.resultContainer}>
           <AceEditor
-            height='90px'
+            height={hideRaw === false ? '280px' : '90px'}
             width='100%'
             showPrintMargin={false}
             showGutter={false}
-            value={result}
+            value={hideRaw === false ? rawResult : result}
             theme={
               appTheme === 'dark' ? 'dracula' : ''
             }
             style={aceStylesDark}
           />
         </div>
-        {/* <div className={styles.resultContainer}>
-          <pre>
-            <span className={styles.result}>
-              { result }
-            </span>
-          </pre>
-        </div> */}
       </div>
     </Modal>
   );
