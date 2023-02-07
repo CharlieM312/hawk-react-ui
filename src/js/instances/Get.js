@@ -1,15 +1,10 @@
-export default function Get() {
-  let transport = new Thrift.Transport(
-    'http://localhost:8080/thrift/hawk/json',
-  );
-  let protocol = new Thrift.Protocol(transport);
-  let client = new HawkClient(protocol);
-
+export default function Get(hawkClient) {
   let result = [];
   try {
-    result = client.listInstances();
+    result = hawkClient.listInstances();
   } catch (err) {
     console.log(err);
+    throw(err);
   }
   
   return {

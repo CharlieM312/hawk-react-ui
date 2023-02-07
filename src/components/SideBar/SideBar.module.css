@@ -29,14 +29,6 @@
   transition: all 0.20s linear;
 }
 
-[data-theme='dark'] td {
-  border-color: white !important;
-}
-
-[data-theme='dark'] th {
-  border-color: white !important;
-}
-
 .toggle {
   padding: 10%;
   width: 70%;

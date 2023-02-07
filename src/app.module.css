@@ -1,6 +1,9 @@
 .app {
+  display: flex;
   text-align: center;
+  justify-content: flex-start;
   margin: 0;
+  height: 100vh;
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Helvetica', 'Arial',
   'sans-serif';
   -webkit-font-smoothing: antialiased;
@@ -9,4 +12,10 @@
 
 body {
   overflow: hidden;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }

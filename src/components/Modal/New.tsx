@@ -1,5 +1,6 @@
 import Modal from 'react-modal';
 import { CloseButton } from 'react-bootstrap';
+
 import styles from './New.module.css';
 
 type NewProps = {

@@ -1,14 +1,21 @@
 .home {
   padding-left: 3%;
-  padding-right: 3%;
   padding-top: 3%;
+  padding-bottom: 3%;
+  padding-right: 2%;
+  height: 100%;
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10%;
+  margin-top: 10px;
 }
 
 .title {
@@ -17,7 +24,83 @@
 }
 
 .new {
-  margin-left: auto;
+  margin-left: 3%;
+  background: none !important;
+  border: none !important;
+  color: #7e56c2 !important;
+  padding-right: 0 !important;
+  font-size: 2rem;
+  display: flex;
+  text-align: center;
+  line-height: normal;
+}
+
+.submit {
   background-color: #7e56c2 !important;
   border-color: #7e56c2 !important;
+  height: 25px;
+  width: 65px;
+  display: inline-flex !important;
+  justify-content: center;
+  align-items: center;
+  font-size: small !important;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input {
+  width: 100%;
+  margin-bottom: 2%;
+  border: 1px solid black;
+  border-radius: 2px;
+  font-size: smaller;
+  transition: all 0.20s linear;
+}
+
+[data-theme='dark'] .input {
+  background-color: #2f2f2f;
+  color: white;
+  border: 1px solid white;
+  transition: all 0.20s linear;
+}
+
+[data-theme='dark'] ::placeholder {
+  color: white;
+  transition: all 0.20s linear;
+}
+
+.tableTitle {
+  font-weight: normal;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.table {
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+
+.divider {
+  height: 98%;
+  width: 1px;
+  background-color: black;
+  margin-left: 2%;
+  margin-right: 2%;
+  opacity: unset;
+  transition: all 0.20s linear;
+}
+
+[data-theme='dark'] .divider {
+  background-color: white;
+  transition: all 0.20s linear;
+}
+
+.manage {
+  width: 35%;
 }

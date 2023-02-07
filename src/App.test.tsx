@@ -17,6 +17,8 @@ test('renders home page', () => {
     <App />
   );
   
-  const linkElement = screen.getByText(/Hawk Docker/i);
-  expect(linkElement).toBeInTheDocument();
+  const title = screen.getByText(/Hawk Docker/i);
+  expect(title).toBeInTheDocument();
+  const instancesTitle = screen.getByText(/Manage Instances/i);
+  expect(instancesTitle).toBeInTheDocument();
 });

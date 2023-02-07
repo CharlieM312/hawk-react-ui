@@ -20,6 +20,27 @@ th {
   border-bottom: 1px solid black !important;
 }
 
+[data-theme='dark'] td {
+  color: white;
+  border-color: white !important;
+  transition: all 0.20s linear;
+}
+
+[data-theme='dark'] th {
+  color: white;
+  border-color: white !important;
+  transition: all 0.20s linear;
+}
+
 tbody > tr:hover {
   background-color: rgba(126, 86, 194, 0.13);
+}
+
+.noInstances {
+  font-weight: normal;
+}
+
+.cog {
+  margin-right: 10px;
+  margin-left: 0;
 }
