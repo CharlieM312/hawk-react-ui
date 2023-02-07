@@ -8,7 +8,6 @@ import Select from 'react-select';
 import Create from '../../js/client/Create';
 import Send from '../../js/instances/query/Send';
 import FetchResults from '../../js/instances/query/FetchResults';
-import Cancel from '../../js/instances/query/Cancel';
 import Languages from '../../js/instances/query/Languages';
 
 import styles from './Instance.module.css';
@@ -36,7 +35,6 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
   const [query, setQuery]           = useState('');
   const [isLoading, setIsLoading]   = useState(false);
   const [hideRun, setHideRun]       = useState(false);
-  const [hideCancel, setHideCancel] = useState(true);
 
   const hawkClient = Create(url);
   let selectedLanguage: string;
@@ -66,8 +64,6 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
 
   const onClick = () => {
     setIsLoading(true);
-    // setHideRun(true);
-    // setHideCancel(false);
 
     let queryId = Send(
       hawkClient,
@@ -76,20 +72,10 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
       selectedLanguage
     );
 
-    // const cancelButton = (document.getElementById('cancel') as HTMLInputElement);
-    // cancelButton.addEventListener('click', () => {
-    //   Cancel(hawkClient, queryId);
-    //   return;
-    // });
-
     FetchResults(hawkClient, queryId)
     .then((response) => {
-      // setTimeout(() => {
         setResult(response['formattedResult'].toString());
         setIsLoading(false);
-        // setHideRun(false);
-        // setHideCancel(true);
-      // }, 3000);
     });
   }
 
@@ -102,7 +88,6 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
     setResult('');
     setQuery('');
     setIsLoading(false);
-    setHideCancel(true);
     setHideRun(false);
   }
 
@@ -185,7 +170,6 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
         <br />
         <div className={styles.submission}>
           <BounceLoader className={styles.spinner} size='20px' color='#7e56c2' loading={isLoading} />
-          <Button variant='primary' className={styles.cancel} id='cancel' hidden={hideCancel}>Cancel</Button>
           <Button variant='primary' className={styles.run} onClick={onClick} hidden={hideRun}>Run</Button>
         </div>
         <br />
