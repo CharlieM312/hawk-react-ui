@@ -38,7 +38,7 @@ export default function Home() {
           <input
             type='text'
             className={styles.input}
-            placeholder='Please enter URL of Hawk Server...'
+            placeholder='Enter Hawk server URL'
             onChange={e => {url = e.target.value}}
           />
           <Button className={styles.submit} onClick={onSubmit}>Submit</Button>
