@@ -38,6 +38,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
   const [isLoading, setIsLoading]   = useState(false);
   const [hideRun, setHideRun]       = useState(false);
   const [hideRaw, setHideRaw]       = useState(true);
+  const [hideCancel, setHideCancel] = useState(true);
 
   const hawkClient = Create(url);
   let selectedLanguage: string;
@@ -67,6 +68,8 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
 
   const onClick = () => {
     setIsLoading(true);
+    setHideRun(true);
+    setHideCancel(false);
 
     let queryId = Send(
       hawkClient,
@@ -77,9 +80,13 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
 
     FetchResults(hawkClient, queryId)
     .then((response) => {
+      setTimeout(() => {
         setResult(response['formattedResult'].toString());
         setRawResult(response['raw']);
         setIsLoading(false);
+        setHideCancel(true);
+        setHideRun(false);
+      }, 10000);
     });
   }
 
@@ -177,6 +184,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
         </div>
         <div className={styles.submission}>
           <BounceLoader className={styles.spinner} size='20px' color='#7e56c2' loading={isLoading} />
+          <Button variant='primary' className={styles.cancel} hidden={hideCancel}>Cancel</Button>
           <Button variant='primary' className={styles.run} onClick={onClick} hidden={hideRun}>Run</Button>
         </div>
         <div className={styles.resultHeader}>
