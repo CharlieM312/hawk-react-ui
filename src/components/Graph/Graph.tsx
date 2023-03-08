@@ -1,5 +1,4 @@
 import CytoscapeComponent from 'react-cytoscapejs';
-import { Popover } from 'antd';
 
 type GraphProps = {
   data: QueryReport | null;
