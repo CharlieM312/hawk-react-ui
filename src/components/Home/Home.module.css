@@ -35,6 +35,10 @@
   line-height: normal;
 }
 
+.new:hover {
+  color: #614394 !important;
+}
+
 .submit {
   background-color: #7e56c2 !important;
   border-color: #7e56c2 !important;
@@ -44,6 +48,11 @@
   justify-content: center;
   align-items: center;
   font-size: small !important;
+}
+
+.submit:hover {
+  background-color: #614394 !important;
+  border-color: #614394 !important;
 }
 
 .body {

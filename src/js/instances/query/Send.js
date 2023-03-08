@@ -1,12 +1,10 @@
 export default function Send(hawkClient, query, instance, queryLanguage) {
-  let qOptions = new HawkQueryOptions();
+  let qOptions = new HawkQueryOptions({includeContained: false});
 
-  let queryId;
   try {
-    queryId = hawkClient.asyncQuery(instance, query, queryLanguage, qOptions);
+    const queryId = hawkClient.asyncQuery(instance, query, queryLanguage, qOptions);
+    return queryId;
   } catch (err) {
     throw(err);
   }
-
-  return queryId;
 }

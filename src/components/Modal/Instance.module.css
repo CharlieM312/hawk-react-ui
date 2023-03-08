@@ -113,9 +113,23 @@
   border-color: #7e56c2 !important;
 }
 
+.run:hover {
+  background-color: #614394 !important;
+  border-color: #614394 !important;
+}
+
 .cancel {
+  height: 25px;
+  display: inline-flex !important;
+  align-items: center;
+  font-size: 0.9rem !important;
   background-color: #7e56c2 !important;
   border-color: #7e56c2 !important;
+}
+
+.cancel:hover {
+  background-color: #614394 !important;
+  border-color: #614394 !important;
 }
 
 .languageDropdown {

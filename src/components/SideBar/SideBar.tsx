@@ -4,23 +4,25 @@ import anime from 'animejs';
 import styles from './SideBar.module.css';
 
 export default function SideBar() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') ?? 'light');
 
   const toggleTheme = () => {
     setTheme(
       theme === 'light' ? 'dark' : 'light'
     );
+  }
+
+  useEffect(() => {
+    document.getElementById('root')?.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+
     const timeline = anime.timeline({
       duration: 750,
       easing: "easeOutExpo"
     });
 
     morphTo(timeline, theme);
-  }
-
-  useEffect(() => {
-    document.getElementById('root')?.setAttribute('data-theme', theme);
-    document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
   const moonPath =
@@ -32,12 +34,12 @@ export default function SideBar() {
     timeline
     .add({
       targets: ".circle",
-      d: [{ value: theme === 'dark' ? circlePath : moonPath }]
+      d: [{ value: theme === 'dark' ? moonPath : circlePath }]
     })
     .add(
       {
         targets: "#darkMode",
-        rotate: theme === 'dark' ? 40 : 320
+        rotate: theme === 'dark' ? 320 : 40
       },
       "-=700"
     )

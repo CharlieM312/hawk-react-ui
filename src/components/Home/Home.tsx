@@ -8,17 +8,18 @@ import New from '../Modal/New';
 import styles from './Home.module.css';
 
 export default function Home() {
-  const [showTable, setShowTable] = useState(false);
   const { isOpen, toggle }        = Use();
-
-  let url = localStorage.getItem('url') ?? '';
+  const [showTable, setShowTable] = useState(false);
+  const [input, setInput]         = useState('');
+  const [url, setUrl]             = useState(localStorage.getItem('url') ?? '');
 
   useEffect(() => {
     setShowTable(url.length !== 0 ? true : false);
   }, [url.length]);
 
   const onSubmit = () => {
-    localStorage.setItem('url', url);
+    setUrl(input);
+    localStorage.setItem('url', input);
     setShowTable(true);
   }
 
@@ -39,7 +40,7 @@ export default function Home() {
             type='text'
             className={styles.input}
             placeholder='Enter Hawk server URL'
-            onChange={e => {url = e.target.value}}
+            onChange={e => {setInput(e.target.value)}}
           />
           <Button className={styles.submit} onClick={onSubmit}>Submit</Button>
         </div>

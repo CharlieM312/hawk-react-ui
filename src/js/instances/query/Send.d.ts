@@ -1,4 +1,4 @@
-export default async function Send(
+export default function Send(
   hawkClient: HawkClient,
   query: string,
   instance: string,
