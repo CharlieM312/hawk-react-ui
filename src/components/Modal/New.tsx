@@ -16,6 +16,7 @@ export default function New({ isOpen, toggle, title }: NewProps) {
       contentLabel={title}
       className={styles.content}
       overlayClassName={styles.overlay}
+      ariaHideApp={false}
     >
       <div className={styles.header}>
         <div className={styles.title}>

@@ -12,15 +12,15 @@ type TableProps = {
   url: string;
 }
 
+type InstanceType = {
+  name: string;
+  status: string;
+  info: string;
+}
+
 export default function Table({ url }: TableProps) {
   const { isOpen, toggle } = Use();
   let errorMessage = '';
-
-  type InstanceType = {
-    name: string;
-    status: string;
-    info: string;
-  }
 
   const states = [
     'RUNNING',

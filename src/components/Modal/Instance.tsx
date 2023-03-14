@@ -52,7 +52,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
   const [hideRaw, setHideRaw]                   = useState(true);
   const [isGraph, setIsGraph]                   = useState(false);
   const [isRunDisabled, setIsRunDisabled]       = useState(false);
-  const [graphData, setGraphData]               = useState(new QueryReport());
+  const [graphData, setGraphData]               = useState(null);
   const isRunning                               = useRef(false);
 
   const hawkClient = Create(url);
@@ -104,6 +104,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
           .then((response) => {
             setResult(response['formattedResult'].toString());
             setRawResult(response['raw']);
+            // @ts-ignore
             setGraphData(response['result'] ?? null);
             setIsGraph(response['isGraph']);
             setQueryTime(response['queryTime']);
@@ -148,7 +149,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
       contentLabel={ instance ? instance.name : ''}
       className={styles.content}
       overlayClassName={styles.overlay}
-      appElement={document.getElementById('root') || undefined}
+      ariaHideApp={false}
     >
       <div className={styles.header}>
         <div className={styles.title}>
