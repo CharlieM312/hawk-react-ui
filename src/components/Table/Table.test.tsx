@@ -28,7 +28,7 @@ describe('Table component', () => {
       typeof Get
     >;
     // @ts-ignore
-    mockGet.mockImplementation(() => ({name: 'instance name', state: 'state', message: 'message'}));
+    mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));
 
     Instance as jest.MockedFunction<
       typeof Instance

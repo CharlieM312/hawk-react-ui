@@ -6,10 +6,18 @@ export default function Get(hawkClient) {
     console.log(err);
     throw(err);
   }
-  
-  return {
-    name: result[0].name,
-    state: result[0].state,
-    message: result[0].message
-  };
+
+  let formattedInstances = [];
+
+  result.forEach(function(instance) {
+    formattedInstances.push(
+      {
+        name: instance.name,
+        state: instance.state,
+        message: instance.message
+      }
+    );
+  });
+
+  return formattedInstances;
 }

@@ -16,7 +16,7 @@ describe('Instance component', () => {
       typeof Get
     >;
     // @ts-ignore
-    mockGet.mockImplementation(() => ({name: 'instance name', state: 'state', message: 'message'}));
+    mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));
 
     const mockUse = Use as jest.MockedFunction<
       typeof Use

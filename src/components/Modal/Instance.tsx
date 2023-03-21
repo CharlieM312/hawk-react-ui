@@ -55,20 +55,27 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
   const [graphData, setGraphData]               = useState(null);
   const isRunning                               = useRef(false);
 
-  const hawkClient = Create(url);
-
+  let hawkClient: HawkClient;
+  let languageIdRegEx: RegExp;
   let selectedLanguage: string;
-  const languages = Languages(hawkClient, instance?.name);
-  const languageOptions: LanguageOption[] = [];
-  const languageIdRegEx = new RegExp(/[A-Z]{3}/);
+  let languageOptions: LanguageOption[] = [];
 
-  languages.forEach(function (language) {
-    languageOptions.push({
-      value: language,
-      label: language
+  try {
+    hawkClient = Create(url);
+
+    const languages = Languages(hawkClient, instance?.name);
+    languageIdRegEx = new RegExp(/[A-Z]{3}/);
+
+    languages.forEach(function (language) {
+      languageOptions.push({
+        value: language,
+        label: language
+      });
     });
-  });
-  selectedLanguage = languageOptions[4].value;
+    selectedLanguage = languageOptions[4].value;
+  } catch (err) {
+    throw err;
+  }
 
   let appTheme = document.getElementById('root')?.getAttribute('data-theme');
 

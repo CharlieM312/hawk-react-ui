@@ -1,1 +1,1 @@
-export default function Get(hawkClient: HawkClient): HawkInstance;
+export default function Get(hawkClient: HawkClient): HawkInstance[];

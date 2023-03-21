@@ -12,7 +12,7 @@ describe('App component', () => {
     >;
   
     // @ts-ignore
-    mockGet.mockImplementation(() => ({name: 'name', state: 'state', message: 'message'}));
+    mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));
     
     render(<App />);
     
