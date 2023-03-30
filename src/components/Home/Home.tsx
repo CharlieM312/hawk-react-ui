@@ -11,11 +11,16 @@ export default function Home() {
   const { isOpen, toggle }        = Use();
   const [showTable, setShowTable] = useState(false);
   const [input, setInput]         = useState('');
-  const [url, setUrl]             = useState(localStorage.getItem('url') ?? '');
+
+  const envUrl = process.env.REACT_APP_HAWK_URL ?? '';
+
+  const [url, setUrl] = useState(localStorage.getItem('url') ?? envUrl);
+
 
   useEffect(() => {
+    url.length !== 0 && localStorage.setItem('url', url);
     setShowTable(url.length !== 0 ? true : false);
-  }, [url.length]);
+  }, [url]);
 
   const onSubmit = () => {
     setUrl(input);
