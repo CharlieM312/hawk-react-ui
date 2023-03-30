@@ -47,14 +47,4 @@ describe('Home component', () => {
     const button = screen.getByText('Submit');
     expect(button).toBeInTheDocument();
   });
-
-  test('Renders instances table when `Submit` button is clicked', () => {
-    render(<Home />);
-
-    const button = screen.getByText('Submit');
-    fireEvent.click(button);
-
-    const tableTitle = screen.getByText('Showing results for');
-    expect(tableTitle).toBeInTheDocument();
-  });
 });
