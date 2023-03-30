@@ -47,11 +47,13 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
   const [query, setQuery]                       = useState('');
   const [queryTime, setQueryTime]               = useState('');
   const [queryId, setQueryId]                   = useState('');
+  const [errorMessage, setErrorMessage]         = useState('');
   const [rawText, setRawText]                   = useState('View raw');
   const [runButtonText, setRunButtonText]       = useState('Run');
   const [hideRaw, setHideRaw]                   = useState(true);
   const [isGraph, setIsGraph]                   = useState(false);
   const [isRunDisabled, setIsRunDisabled]       = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [graphData, setGraphData]               = useState(null);
   const isRunning                               = useRef(false);
 
@@ -97,6 +99,9 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
 
     if (isRunning.current) {
       setRunButtonText('Cancel');
+      setResult('');
+      setQueryTime('');
+      setShowErrorMessage(false);
       let localQueryId = Send(
         hawkClient,
         query,
@@ -119,8 +124,12 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
             setIsRunDisabled(false);
             setRunButtonText('Run');
           })
-          .catch(() => {
+          .catch((err) => {
+            setErrorMessage(err['reason'].includes('InvalidQuery') ? 'Invalid query' : 'Query failed');
+            setShowErrorMessage(true);
             isRunning.current = false;
+            setIsRunDisabled(false);
+            setRunButtonText('Run');
           });
       }, 1000);
     } else {
@@ -148,6 +157,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
     setQueryTime('');
     setIsGraph(false);
     setIsRunDisabled(false);
+    setShowErrorMessage(false);
   }
 
   return (
@@ -219,6 +229,9 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
           <BounceLoader className={styles.spinner} size='20px' color='#7e56c2' loading={isRunning.current} />
           <Button variant='primary' className={styles.run} onClick={onClickRun} disabled={isRunDisabled}>{runButtonText}</Button>
         </div>
+        {showErrorMessage && <div className={styles.errorContainer}>
+            <h5 className={styles.errorMessage}>{errorMessage}</h5>
+        </div>}
         <div className={styles.resultHeader}>
           <h5 className={styles.resultLabel}>Result {queryTime !== '' ? 'obtained in ' + queryTime + 'ms' : ''}</h5>
           {!isGraph &&

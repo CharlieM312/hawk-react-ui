@@ -159,3 +159,31 @@
 .rawButton:hover {
   color: #0b4aa8;
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  border: 1px solid #9f3c3c;
+  border-radius: 4px;
+  background-color: #9f3c3c;
+  box-shadow: 4px 4px 8px #282a3696;
+  animation: fadeIn 0.1s;
+}
+
+.errorMessage {
+  margin: 5px 5px;
+  font-weight: normal;
+  font-size: 1rem;
+  color: white;
+}
