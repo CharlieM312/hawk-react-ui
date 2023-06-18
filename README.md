@@ -10,3 +10,7 @@ A single page web application for an [Eclipse Hawk](https://www.eclipse.org/hawk
   3. Clone this repo and run `npm install` from the root directory to install the necessary packages
   4. Run `npm start` and the website will launch in your browser
   5. Enter the url of the Hawk Server (if using the example project, this will likely be 'http://localhost:8080/thrift/hawk/json')
+
+## License
+
+[![License](https://img.shields.io/badge/License-EPL_2.0-red.svg)](https://opensource.org/licenses/EPL-2.0)
