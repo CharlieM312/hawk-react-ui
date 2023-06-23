@@ -1,5 +1,10 @@
 image: node:16-bullseye
 
+stages:
+  - build
+  - test
+  - release
+
 cache:
   key: $CI_COMMIT_REF_SLUG
   paths:
@@ -21,3 +26,15 @@ test:
   stage: test
   script:
     - npm test -- --watchAll=false
+
+docker:
+  stage: release
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
