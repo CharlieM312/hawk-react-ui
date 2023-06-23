@@ -1,0 +1,20 @@
+image: node:16-bullseye
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+    script:
+        - npm ci
+        - npm run build
+    artifacts:
+        paths:
+          - "build/"
+        untracked: false
+        when: on_success
+        expire_in: 30 days
+
+test:
+    script:
+        - npm test -- --watchAll=false
