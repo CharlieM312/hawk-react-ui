@@ -47,6 +47,6 @@ docker-latest:
 docker-tag:
   <<: *docker-job
   variables:
-    DOCKER_TAG: $CI_COMMIT_TAG
+    DOCKER_TAG: v$CI_COMMIT_TAG
   rules:
     - if: $CI_COMMIT_TAG
