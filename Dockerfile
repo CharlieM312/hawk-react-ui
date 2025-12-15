@@ -1,4 +1,4 @@
-FROM node:16-bullseye AS build
+FROM node:20-bullseye AS build
 
 COPY . /build
 RUN cd /build && npm ci && npm run build
