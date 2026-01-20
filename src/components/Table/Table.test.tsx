@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import Table from './Table';
 import Create from '../../js/client/Create';
 import Get from '../../js/instances/Get';
@@ -17,7 +18,11 @@ describe('Table component', () => {
       throw new Error();
     });
 
-    const { container } = render(<Table url='' />);
+    const { container } = render(
+      <MemoryRouter>
+        <Table url='' />
+      </MemoryRouter>
+    );
 
     const errorMessage = container.querySelector('h2');
     expect(errorMessage).toHaveTextContent('Failed to load instances');
@@ -34,7 +39,7 @@ describe('Table component', () => {
       typeof Instance
     >;
 
-    const { container } = render(<Table url='http://avalidurl:3000' />);
+    const { container } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
 
     const table = container.querySelector('table');
     expect(table).toBeInTheDocument();

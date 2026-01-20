@@ -8,7 +8,7 @@ type NewProps = {
   toggle: () => void;
   title: string;
 }
-
+// TODO: Implement form to create new instance
 export default function New({ isOpen, toggle, title }: NewProps) {
   return (
     <Modal

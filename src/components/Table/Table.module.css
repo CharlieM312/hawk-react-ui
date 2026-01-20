@@ -45,6 +45,16 @@ tbody > tr:hover {
   margin-left: 0;
 }
 
+.play {
+  margin-right: 10px;
+  margin-left: 0;
+}
+
+.stop {
+  margin-right: 20px;
+  margin-left: 0;
+}
+
 .cog:hover {
   cursor: pointer;
 }
