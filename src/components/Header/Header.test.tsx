@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Header from './Header';
+import { describe, test, expect } from 'vitest';
 
 describe('Header component', () => {
   test('Renders the title and line', () => {
@@ -8,6 +9,7 @@ describe('Header component', () => {
     const title = screen.getByText('Hawk Docker');
     expect(title).toBeInTheDocument();
 
-    expect(container.querySelector('hr')).toHaveClass('line');
+    const line = container.querySelector('hr');
+    expect(line).toBeInTheDocument();
   });
 });

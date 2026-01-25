@@ -1,8 +1,11 @@
 FROM node:24-bullseye AS build
 
-COPY . /build
-RUN cd /build && npm ci && npm run build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
 
 FROM nginx:alpine AS server
 
-COPY --from=build /build/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html

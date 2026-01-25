@@ -1,5 +1,6 @@
 // @ts-nocheck
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 import { TextEncoder, TextDecoder } from 'util';
 
 if (!global.TextEncoder) {

@@ -4,33 +4,26 @@ import Instance from './Instance';
 import Use from './Use';
 import Create from '../../js/client/Create';
 import Languages from '../../js/instances/query/Languages';
+import { describe, test, expect, vi } from 'vitest';
 
-jest.mock('../../js/client/Create');
-jest.mock('../../js/instances/query/Languages');
-jest.mock('../../js/instances/Get');
-jest.mock('./Use');
+vi.mock('../../js/client/Create');
+vi.mock('../../js/instances/query/Languages');
+vi.mock('../../js/instances/Get');
+vi.mock('./Use');
 
 describe('Instance component', () => {
   test('Renders instance name as title', () => {
-    const mockGet = Get as jest.MockedFunction<
-      typeof Get
-    >;
+    const mockGet = vi.mocked(Get);
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));
 
-    const mockUse = Use as jest.MockedFunction<
-      typeof Use
-    >;
+    const mockUse = vi.mocked(Use);
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
-    Create as jest.MockedFunction<
-      typeof Create
-    >;
+    const mockCreate = vi.mocked(Create);
 
-    const mockLanguages = Languages as jest.MockedFunction<
-      typeof Languages
-    >;
+    const mockLanguages = vi.mocked(Languages);
     mockLanguages.mockReturnValue(['EOL', 'EPL', 'EOL', 'EPL', 'EPL']);
 
     const mockInstance = {

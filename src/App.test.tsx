@@ -2,14 +2,13 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import App from './App';
 import Get from './js/instances/Get';
+import { describe, test, expect, vi } from 'vitest';
 
-jest.mock('./js/instances/Get');
+vi.mock('./js/instances/Get');
 
 describe('App component', () => {
   test('Renders home page', () => {
-    const mockGet = Get as jest.MockedFunction<
-      typeof Get
-    >;
+    const mockGet = vi.mocked(Get);
   
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));

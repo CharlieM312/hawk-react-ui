@@ -1,14 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import New from './New';
 import Use from './Use';
+import { describe, test, expect, vi } from 'vitest';
 
-jest.mock('./Use');
+vi.mock('./Use');
 
 describe('New component', () => {
   test('Renders modal title', () => {
-    const mockUse = Use as jest.MockedFunction<
-      typeof Use
-    >;
+    const mockUse = vi.mocked(Use);
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
