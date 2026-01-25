@@ -22,6 +22,7 @@
   },
   "include": [
     "src",
-    "public/js",
-  ]
+    "public/js"
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
