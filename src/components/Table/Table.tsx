@@ -59,13 +59,8 @@ export default function Table({ url }: TableProps) {
     existingInstances = [];
     errorMessage = 'Failed to load instances. Reason: ' + err;
   }
-
+  // eslint-disable-next-line
   const [selectedInstance, setSelectedInstance] = useState(existingInstances[0]);
-
-  const openModal = (instance: InstanceType) => {
-    setSelectedInstance(instance);
-    toggle();
-  }
 
   return (
     <div className={styles.table}>
@@ -84,7 +79,7 @@ export default function Table({ url }: TableProps) {
           <tbody>
             {existingInstances.map(instance => {
               return (
-                <tr onClick={() => {openModal(instance)}} key={instance.name}>
+                <tr onClick={() => { navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } }); }} key={instance.name}>
                   <td>
                     <FontAwesomeIcon className={styles.cog} icon={faGear}
                     onClick={async (e) => {

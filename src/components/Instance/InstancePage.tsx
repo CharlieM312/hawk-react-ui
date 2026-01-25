@@ -1,6 +1,7 @@
 import { useNavigate, useParams, useLocation } from 'react-router';
-import Instance from './Instance';
 import { useEffect } from 'react';
+import InstanceContent from './InstanceContent';
+import styles from './InstancePage.module.css';
 
 export default function InstancePage() {
   const { name } = useParams<{ name: string }>();
@@ -20,7 +21,11 @@ export default function InstancePage() {
 
   if (!passed) return null;
 
-  const close = () => navigate(-1);
 
-  return <Instance isOpen={true} toggle={close} instance={instance} url={url} />;
+  return (
+    <div className={styles.instancePage}>
+      <InstanceContent instance={instance} url={url} />
+    </div>
+
+  );
 }

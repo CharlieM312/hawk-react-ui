@@ -1,7 +1,7 @@
 import Header from './components/Header/Header';
 import Home from './components/Home/Home';
 import SideBar from './components/SideBar/SideBar';
-import InstancePage from './components/Modal/InstancePage';
+import InstancePage from './components/Instance/InstancePage';
 import styles from './App.module.css';
 import { Routes, Route } from 'react-router';
 

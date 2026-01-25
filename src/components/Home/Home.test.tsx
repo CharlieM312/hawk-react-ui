@@ -18,13 +18,6 @@ describe('Home component', () => {
     expect(button).toBeInTheDocument();
   });
 
-  test('Renders `+` button', () => {
-    render(<MemoryRouter><Home /></MemoryRouter>);
-
-    const button = screen.getByText('+');
-    expect(button).toBeInTheDocument();
-  });
-
   test('Renders `Create new instance` modal when `+` button is clicked', () => {
     render(<MemoryRouter><Home /></MemoryRouter>);
 
@@ -40,6 +33,16 @@ describe('Home component', () => {
 
     const input = screen.getByPlaceholderText('Enter Hawk server URL');
     expect(input).toBeInTheDocument();
+  });
+
+  test('Renders instance display table when a URL is submitted', () => {
+    render(<MemoryRouter><Home /></MemoryRouter>);
+    const input = screen.getByPlaceholderText('Enter Hawk server URL');
+    const submitButton = screen.getByText('Submit');
+    fireEvent.change(input, { target: { value: 'http://validurl:8080' } });
+    fireEvent.click(submitButton);
+    const tableTitle = screen.getByText('Showing results for');
+    expect(tableTitle).toBeInTheDocument();
   });
 
   test('Renders `Submit` button', () => {
