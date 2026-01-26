@@ -1,5 +1,4 @@
 import Modal from 'react-modal';
-import * as ace from 'ace-builds';
 import AceEditor from 'react-ace';
 import { Button, CloseButton } from 'react-bootstrap';
 import { useRef, useState } from 'react';
@@ -17,7 +16,7 @@ import Languages from '../../js/instances/query/Languages';
 import styles from './Instance.module.css';
 
 import 'ace-builds/src-noconflict/theme-dracula';
-
+import 'ace-builds/src-noconflict/ext-language_tools';
 import '../../js/syntax-highlighting/mode-eol';
 import '../../js/syntax-highlighting/mode-epl';
 
@@ -38,8 +37,6 @@ type InstanceProps = {
   instance: InstanceType;
   url: string;
 }
-
-ace.config.set('basePath', 'path');
 
 export default function Instance({ isOpen, toggle, instance, url }: InstanceProps) {
   const [result, setResult]                     = useState('');
@@ -74,10 +71,13 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
         label: language
       });
     });
-    selectedLanguage = languageOptions[4].value;
+    selectedLanguage = languageOptions[4]?.value ?? languageOptions[0]?.value ?? '';
   } catch (err) {
     throw err;
   }
+  const aceMode = selectedLanguage && languageIdRegEx.test(selectedLanguage)
+    ? (selectedLanguage.match(languageIdRegEx)![0] === 'EOL' ? 'eol' : 'epl')
+    : undefined;
 
   let appTheme = document.getElementById('root')?.getAttribute('data-theme');
 
@@ -92,6 +92,45 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
   const onChange = (newValue: string) => {
     setQuery(newValue);
   }
+
+  const onClickStartInstance = async () => {
+
+    if(!instance?.name) return;
+    setShowErrorMessage(false);
+    setIsRunDisabled(true);
+    try {
+      await Promise.resolve(hawkClient.startInstance(instance.name));
+      setErrorMessage(`Instance ${instance.name} started successfully.`);
+      setShowErrorMessage(true);
+
+    } catch (err: any) {
+      setErrorMessage(`Failed to start instance ${instance.name}. Reason: ${err.message}`);
+      setShowErrorMessage(true);
+    } finally {
+      setIsRunDisabled(false);
+    }
+
+  };
+
+  const onClickStopInstance = async () => {
+
+    if(!instance?.name) return;
+    setShowErrorMessage(false);
+    setIsRunDisabled(true);
+    try {
+      await Promise.resolve(hawkClient.stopInstance(instance.name));
+      setErrorMessage(`Instance ${instance.name} stopped successfully.`);
+      setShowErrorMessage(true);
+
+    } catch (err: any) {
+      setErrorMessage(`Failed to stop instance ${instance.name}. Reason: ${err.message}`);
+      setShowErrorMessage(true);
+    } finally {
+      setIsRunDisabled(false);
+    }
+
+  };
+
 
   const onClickRun = () => {
     let newIsRunning = !isRunning.current;
@@ -164,6 +203,9 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
     <Modal
       isOpen={isOpen}
       contentLabel={ instance ? instance.name : ''}
+      onRequestClose={closeModal}
+      shouldCloseOnOverlayClick={true}
+      shouldCloseOnEsc={true}
       className={styles.content}
       overlayClassName={styles.overlay}
       ariaHideApp={false}
@@ -174,6 +216,8 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
           <hr className={styles.separator} />
         </div>
         <div className={styles.close}>
+          <Button variant='success' size='sm' onClick={onClickStartInstance} disabled={isRunDisabled} style={{ marginRight: 8 }}>▶</Button>
+          <Button variant='danger' size='sm' onClick={onClickStopInstance} disabled={isRunDisabled} style={{ marginRight: 16 }}>■</Button>
           <CloseButton onClick={closeModal} variant={appTheme === 'dark' ? 'white' : undefined} className={styles.closeButton} />
         </div>
       </div>
@@ -181,7 +225,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
         <Select
           options={languageOptions}
           className={styles.languageDropdown}
-          defaultValue={languageOptions[4]}
+          defaultValue={languageOptions[4] ?? languageOptions[0]}
           // @ts-ignore
           onChange={language => {changeLanguage(language)}}
           placeholder='Query Language'
@@ -220,7 +264,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
               appTheme === 'dark' ? 'dracula' : ''
             }
             mode={
-              selectedLanguage.match(languageIdRegEx)?.[0] === 'EOL' ? 'eol' : selectedLanguage.match(languageIdRegEx)?.[0] === 'EPL' ? 'epl' : ''
+              aceMode
             }
             style={aceStyles}
           />
@@ -249,6 +293,7 @@ export default function Instance({ isOpen, toggle, instance, url }: InstanceProp
               theme={
                 appTheme === 'dark' ? 'dracula' : ''
               }
+              mode={aceMode}
               style={aceStylesDark}
             />
           }

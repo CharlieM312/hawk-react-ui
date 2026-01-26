@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faPlayCircle, faStopCircle, faRefresh } from '@fortawesome/free-solid-svg-icons'
 
 import Use from '../Modal/Use';
 import Instance from '../Modal/Instance';
@@ -8,6 +8,7 @@ import Create from '../../js/client/Create';
 
 import styles from './Table.module.css';
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 import InstanceError from '../Modal/InstanceError';
 
@@ -23,6 +24,8 @@ type InstanceType = {
 
 export default function Table({ url }: TableProps) {
   const { isOpen, toggle } = Use();
+  const navigate = useNavigate();
+  const location = useLocation();
   let errorMessage = '';
 
   const states = [
@@ -56,13 +59,8 @@ export default function Table({ url }: TableProps) {
     existingInstances = [];
     errorMessage = 'Failed to load instances. Reason: ' + err;
   }
-
+  // eslint-disable-next-line
   const [selectedInstance, setSelectedInstance] = useState(existingInstances[0]);
-
-  const openModal = (instance: InstanceType) => {
-    setSelectedInstance(instance);
-    toggle();
-  }
 
   return (
     <div className={styles.table}>
@@ -81,9 +79,84 @@ export default function Table({ url }: TableProps) {
           <tbody>
             {existingInstances.map(instance => {
               return (
-                <tr onClick={() => {openModal(instance)}} key={instance.name}>
+                <tr onClick={() => { navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } }); }} key={instance.name}>
                   <td>
-                    <FontAwesomeIcon className={styles.cog} icon={faGear} />
+                    <FontAwesomeIcon className={styles.cog} icon={faGear}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+
+                      if (instance.status === 'RUNNING') {
+                        if (isOpen) toggle();
+
+                        setTimeout(() => {
+                          navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } });
+                        }, 100);
+                      }
+                    }}
+                    role="button"
+                    aria-label={`Settings for ${instance.name}`}
+                     />
+                    <FontAwesomeIcon className={styles.play} icon={faPlayCircle}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (isOpen) toggle();
+
+                      if (instance.status === 'STOPPED') {
+                        const startInstanceNow = window.confirm(`Instance "${instance.name}" is currently STOPPED. Do you want to start it before opening settings?`);
+                        if (!startInstanceNow) return;
+                        try {
+                          const hawkClient = Create(url);
+                          await Promise.resolve(hawkClient.startInstance(instance.name));
+                          alert(`${instance.name} started`);
+                        } catch (err) {
+                          alert(`Failed to start instance ${instance.name}. Reason: ${err}`);
+                        }
+
+                      } else if (instance.status === 'RUNNING') {
+                        alert(`Instance "${instance.name}" is already running.`);
+                      }
+                    }}
+                     />
+                     <FontAwesomeIcon className={styles.play} icon={faRefresh}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (isOpen) toggle();
+
+                      if (instance.status === 'RUNNING') {
+                        const syncInstanceNow = window.confirm(`Instance "${instance.name}" is currently RUNNING. Do you want to force synchronization?`);
+                        if (!syncInstanceNow) return;
+                        try {
+                          const hawkClient = Create(url);
+                          await Promise.resolve(hawkClient.syncInstance(instance.name, { blockUntilDone: true }));
+                          alert(`${instance.name} synchronized`);
+                        } catch (err) {
+                          alert(`Failed to synchronize instance ${instance.name}. Reason: ${err}`);
+                        }
+
+                      }
+                    }}
+                     />
+                     <FontAwesomeIcon className={styles.play} icon={faStopCircle}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (isOpen) toggle();
+
+                      if (instance.status === 'RUNNING') {
+                        const stopInstanceNow = window.confirm(`Instance "${instance.name}" is currently RUNNING. Do you want to stop it?`);
+                        if (!stopInstanceNow) return;
+                        try {
+                          const hawkClient = Create(url);
+                          await Promise.resolve(hawkClient.stopInstance(instance.name));
+                          alert(`${instance.name} stopped`);
+                        } catch (err) {
+                          alert(`Failed to stop instance ${instance.name}. Reason: ${err}`);
+                        }
+
+                      } else if (instance.status === 'STOPPED') {
+                        alert(`Instance "${instance.name}" is already stopped.`);
+                      }
+                    }}
+                     />
                     {instance.name}
                   </td>
                   <td>{instance.status}</td>
@@ -96,12 +169,14 @@ export default function Table({ url }: TableProps) {
         <ErrorBoundary
           FallbackComponent={InstanceError}
         >
-          <Instance
-            isOpen={isOpen}
-            toggle={toggle}
-            instance={selectedInstance}
-            url={url}
-          />
+          {!location.pathname.match(/^\/instances?\/[^/]+/) && (
+            <Instance
+              isOpen={isOpen}
+              toggle={toggle}
+              instance={selectedInstance}
+              url={url}
+            />
+          )}
         </ErrorBoundary>
       </>
       }

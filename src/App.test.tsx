@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-
+import { MemoryRouter } from 'react-router';
 import App from './App';
 import Get from './js/instances/Get';
 
@@ -14,7 +14,7 @@ describe('App component', () => {
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));
     
-    render(<App />);
+    render(<MemoryRouter><App /></MemoryRouter>);
     
     const title = screen.getByText('Hawk Docker');
     expect(title).toBeInTheDocument();

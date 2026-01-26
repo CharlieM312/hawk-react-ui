@@ -1,0 +1,129 @@
+
+
+.instanceContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 180px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.title h1 {
+  margin: 0;
+}
+
+.separator {
+  margin: 0.5rem 0 0 0;
+}
+
+.instanceControl {
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+.queryOptions {
+    flex: 0 0 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    border-right: 1px solid #e0e0e0;
+    padding-right: 2rem;
+}
+
+.instanceOptions {
+    flex: 0 0 55%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    padding-left: 2rem;
+    padding-right: 1rem;
+}
+
+.collapsiblePanel {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.collapsibleHeader {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #f5f5f5;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.collapsibleHeader:hover {
+  background-color: #e8e8e8;
+}
+
+.collapsibleContent {
+  padding: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.collapsibleContent.collapsed {
+  display: none;
+}
+
+.chevron {
+  transition: transform 0.2s;
+  font-size: 0.8rem;
+}
+
+.chevron.rotated {
+  transform: rotate(180deg);
+}
+
+.configList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.configItem {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.configItem:last-child {
+  border-bottom: none;
+}
+
+.emptyMessage {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 0;
+}
