@@ -1,4 +1,3 @@
-import React from 'react';
 import Use from './Use';
 import { vi, describe, test, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';

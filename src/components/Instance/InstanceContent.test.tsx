@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
@@ -8,7 +7,8 @@ import { describe, test, expect, afterEach } from 'vitest';
 vi.mock('../../js/client/Create', () => ({
   __esModule: true,
   default: vi.fn(() => ({
-    listQueryLanguages: vi.fn(() => [])
+    listQueryLanguages: vi.fn(() => []),
+    listInstances: vi.fn(() => [])
   }))
 }));
 
