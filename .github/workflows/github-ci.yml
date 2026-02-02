@@ -47,3 +47,14 @@ jobs:
             - name: Test
               run: |
                 npm run test
+            - name: Upload test results
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: test-results
+                  path: ./test-results
+            - name: Test Summary    
+              uses: test-summary/action@v2
+              if: always()
+              with:
+                paths: ./test-results/results.xml

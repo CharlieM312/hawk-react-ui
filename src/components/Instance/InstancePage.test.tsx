@@ -1,12 +1,14 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
+import { describe, test, expect, afterEach, vi } from 'vitest';
 
-jest.mock('./InstanceContent', () => () => <div data-testid="mock-instance" />);
+vi.mock('./InstanceContent', () => ({
+  default: () => <div data-testid="mock-instance" />
+}));
 
 describe('InstancePage', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('renders Instance when navigation state contains instance', async () => {
@@ -26,14 +28,13 @@ describe('InstancePage', () => {
 
   test('redirects to / when accessed directly (no state)', async () => {
 
-    jest.resetModules
+    vi.resetModules();
     const reactrouter = await import('react-router');
-    const mockNavigate = jest.fn();
+    const mockNavigate = vi.fn();
 
-    jest.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
-    jest.spyOn(reactrouter, 'useParams').mockReturnValue({ name: 'hawk-set0' } as any);
-    jest.spyOn(reactrouter, 'useLocation').mockReturnValue({ pathname: '/instance/hawk-set0', state: undefined, search: '', hash: '', key: '' } as any);
-
+    vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
+    vi.spyOn(reactrouter, 'useParams').mockReturnValue({ name: 'hawk-set0' } as any);
+    vi.spyOn(reactrouter, 'useLocation').mockReturnValue({ pathname: '/instance/hawk-set0', state: undefined, search: '', hash: '', key: '' } as any);
     const { default: InstancePage } = await import('./InstancePage');
 
     render(

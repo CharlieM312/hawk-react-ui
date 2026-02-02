@@ -4,16 +4,15 @@ import Table from './Table';
 import Create from '../../js/client/Create';
 import Get from '../../js/instances/Get';
 import Instance from '../Modal/Instance';
+import { describe, test, expect, vi  } from 'vitest';
 
-jest.mock('../../js/client/Create');
-jest.mock('../../js/instances/Get');
-jest.mock('../Modal/Instance');
+vi.mock('../../js/client/Create');
+vi.mock('../../js/instances/Get');
+vi.mock('../Modal/Instance');
 
 describe('Table component', () => {
   test('Renders error message with invalid url', () => {
-    const mockCreate = Create as jest.MockedFunction<
-      typeof Create
-    >;
+    const mockCreate = vi.mocked(Create);
     mockCreate.mockImplementation(() => {
       throw new Error();
     });
@@ -29,15 +28,12 @@ describe('Table component', () => {
   });
 
   test('Renders table with valid url', () => {
-    const mockGet = Get as jest.MockedFunction<
-      typeof Get
-    >;
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+
+    mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));
-
-    Instance as jest.MockedFunction<
-      typeof Instance
-    >;
 
     const { container } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
 

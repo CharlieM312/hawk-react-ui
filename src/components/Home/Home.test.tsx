@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-
+import { describe, test, expect } from 'vitest';
 import Home from './Home';
 import { MemoryRouter } from 'react-router';
 

@@ -12,7 +12,7 @@ export default function Home() {
   const [showTable, setShowTable] = useState(false);
   const [input, setInput]         = useState('');
 
-  const envUrl = process.env.REACT_APP_HAWK_URL ?? '';
+  const envUrl = import.meta.env.VITE_APP_HAWK_URL ?? '';
 
   const [url, setUrl] = useState(localStorage.getItem('url') ?? envUrl);
 

@@ -1,6 +1,6 @@
 import AceEditor from 'react-ace';
 import { Button } from 'react-bootstrap';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BounceLoader } from 'react-spinners';
 import Select from 'react-select';
 
@@ -28,7 +28,31 @@ type LanguageOption = {
 type Repository = {
     uri: string;
     type: string;
-    isFrozen: boolean;
+    isFrozen?: boolean;
+}
+
+type DerivedAttribute = {
+    attributeName: string;
+    attributeType?: string;
+    derivationLanguage?: string;
+    derivationLogic?: string;
+    isMany?: boolean;
+    isOrdered?: boolean;
+    isUnique?: boolean;
+    metamodelUri: string;
+    typeName: string;
+}
+
+type IndexedAttribute = {
+    attributeName: string;
+    metamodelUri: string;
+    typeName: string;
+}
+
+type HawkInstance = {
+    name: string;
+    message: string;
+    state: 'RUNNING' | 'STOPPED' | 'UPDATING';
 }
 
 export default function InstanceContent({ instance, url }: { instance: any; url: string }) {
@@ -47,7 +71,9 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const [graphData, setGraphData]               = useState(null);
     const [metaModels, setMetaModels]         = useState<string[]>([]);
     const [derivedAttributes, setDerivedAttributes] = useState<string[]>([]);
+    const [indexedAttributes, setIndexedAttributes] = useState<string[]>([]);
     const [indexedLocations, setIndexedLocations] = useState<string[]>([]);
+    const [instanceState, setInstanceState] = useState<0 | 1 | 2 | 'RUNNING' | 'STOPPED' | 'UPDATING'>(instance?.state);
     const isRunning                               = useRef(false);
     const navigate                                = useNavigate();
 
@@ -91,6 +117,17 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
         setQuery(newValue);
     }
 
+    useEffect(() => {
+    getInstanceInformation();
+    
+    // Poll for instance state updates every 5 seconds
+    const interval = setInterval(() => {
+        getInstanceInformation();
+    }, 5000);
+    
+    return () => clearInterval(interval);
+}, [instance.name]);
+
     const onClickStartInstance = async () => {
 
         if(!instance?.name) return;
@@ -100,7 +137,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
           await Promise.resolve(hawkClient.startInstance(instance.name));
           setErrorMessage(`Instance ${instance.name} started successfully.`);
           setShowErrorMessage(true);
-
+          await getInstanceInformation();
         } catch (err: any) {
           setErrorMessage(`Failed to start instance ${instance.name}. Reason: ${err.message}`);
           setShowErrorMessage(true);
@@ -138,7 +175,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
           await Promise.resolve(hawkClient.syncInstance(instance.name));
           setErrorMessage(`Instance ${instance.name} synced successfully.`);
           setShowErrorMessage(true);
-
+          await getInstanceInformation();
         } catch (err: any) {
           setErrorMessage(`Failed to sync instance ${instance.name}. Reason: ${err.message}`);
           setShowErrorMessage(true);
@@ -203,7 +240,8 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const [expandedSections, setExpandedSections] = useState({
         metaModels: false,
         derivedAttributes: false,
-        indexedLocations: false
+        indexedLocations: false,
+        indexedAttributes: false
     });
 
     const toggleSection = (section: keyof typeof expandedSections) => {
@@ -225,8 +263,8 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
 
     const getDerivedAttributes = async () => {
         try {
-            const attributes = await hawkClient.listDerivedAttributes(instance.name);
-            const sortedAttributes = Array.isArray(attributes) ? attributes.sort() : [];
+            const attributes: DerivedAttribute[] = await hawkClient.listDerivedAttributes(instance.name);
+            const sortedAttributes = attributes.map((attr: DerivedAttribute) => attr.attributeName).sort();
             setDerivedAttributes(sortedAttributes);
         }
         catch (err) {
@@ -234,15 +272,40 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
         }
     }
 
+    const getIndexedAttributes = async () => {
+        try {
+            const attributes: IndexedAttribute[] = await hawkClient.listIndexedAttributes(instance.name);
+            const sortedAttributes = attributes.map((attr: IndexedAttribute) => attr.attributeName).sort();
+            setIndexedAttributes(sortedAttributes);
+        }
+        catch (err) {
+            console.error('Failed to fetch indexed attributes:', err);
+        }
+    }
+
+    // IndexedLocation = Repository
     const getIndexedLocations = async () => {
         try {
-            const locations = await hawkClient.listRepositories(instance.name);
+            const locations: Repository[] = await hawkClient.listRepositories(instance.name);
             const locationUris = locations.map((repo: Repository) => repo.uri);
             const sortedLocations = Array.isArray(locationUris) ? locationUris.sort() : [];
             setIndexedLocations(sortedLocations);
         }
         catch (err) {
             console.error('Failed to fetch indexed locations:', err);
+        }
+    }
+
+    const getInstanceInformation = async () => {
+        try {
+            const instances: HawkInstance[] = await hawkClient.listInstances();
+            const currentInstance = instances.find((inst: HawkInstance) => inst.name === instance.name);
+            if (currentInstance) {
+                setInstanceState(currentInstance.state);
+            }
+        }
+        catch (err) {
+            console.error('Failed to fetch instance information:', err);
         }
     }
 
@@ -424,11 +487,38 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                             )}
                             </div>
                         </div>
+                        <div className={styles.collapsiblePanel}>
+                            <button
+                            className={styles.collapsibleHeader}
+                            onClick={() => {
+                                toggleSection('indexedAttributes');
+                                if (!expandedSections.indexedAttributes && indexedAttributes.length === 0) {
+                                getIndexedAttributes();
+                                }
+                            }}
+                            >
+                            <span>Indexed Attributes</span>
+                            <span className={`${styles.chevron} ${expandedSections.indexedAttributes ? styles.rotated : ''}`}>▼</span>
+                            </button>
+                            <div className={`${styles.collapsibleContent} ${!expandedSections.indexedAttributes ? styles.collapsed : ''}`}>
+                            {indexedAttributes.length > 0 ? (
+                                <ul className={styles.configList}>
+                                {indexedAttributes.map((attribute: string, idx: number) => (
+                                    <li key={idx} className={styles.configItem}>
+                                    {attribute}
+                                    </li>
+                                ))}
+                                </ul>
+                            ) : (
+                                <p className={styles.emptyMessage}>No indexed attributes found</p>
+                            )}
+                            </div>
+                        </div>
                         <h4> Instance Control</h4>
                         <div className={styles.instanceControl}>
-                            <Button variant='success' size='sm' onClick={onClickStartInstance} disabled={isRunDisabled} style={{ marginRight: 8 }}>Start Instance</Button>
-                            <Button variant='info' size='sm' onClick={onClickSyncInstance} disabled={isRunDisabled} style={{ marginRight: 8 }}>Sync Instance</Button>
-                            <Button variant='danger' size='sm' onClick={onClickStopInstance} disabled={isRunDisabled} style={{ marginRight: 16 }}>Stop Instance</Button>
+                            <Button variant='success' size='sm' onClick={onClickStartInstance} disabled={isRunDisabled || instanceState === 0 || instanceState === 1} style={{ marginRight: 8 }}>Start Instance</Button>
+                            <Button variant='info' size='sm' onClick={onClickSyncInstance} disabled={isRunDisabled || instanceState === 1} style={{ marginRight: 8 }}>Sync Instance</Button>
+                            <Button variant='danger' size='sm' onClick={onClickStopInstance} disabled={isRunDisabled || instanceState === 1 || instanceState === 2} style={{ marginRight: 16 }}>Stop Instance</Button>
                             <Button variant='info' size='sm' style={{ marginRight: 16 }} onClick={() => navigate(-1)}>← Back</Button>
                         </div>
                     </div>

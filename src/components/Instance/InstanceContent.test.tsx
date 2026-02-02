@@ -1,18 +1,20 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import { vi } from 'vitest';
+import { describe, test, expect, afterEach } from 'vitest';
 
 // Mock the Thrift client to prevent initialization errors
-jest.mock('../../js/client/Create', () => ({
+vi.mock('../../js/client/Create', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
-    listQueryLanguages: jest.fn(() => [])
+  default: vi.fn(() => ({
+    listQueryLanguages: vi.fn(() => []),
+    listInstances: vi.fn(() => [])
   }))
 }));
 
 describe('InstanceContent', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('renders instance name as the title of the content', async () => {

@@ -7,10 +7,11 @@
 
 # testing
 /coverage
-
+/test-results
 # production
+/dist
 /build
-
+src/node_modules
 # misc
 .DS_Store
 .env.local
