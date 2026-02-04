@@ -39,9 +39,9 @@ To build and run the latest docker image from the repository:
 docker pull ghcr.io/charliem312/hawk-react-ui:latest
 docker run --rm -it -p 8081:80 hawk-react-ui
 ```
-Also, if you are not logged in - you may need to run these commands on Powershell:
+Also, if you are not logged in to the Github container registry - you may need to run these commands on Powershell:
 ```shell
-docker login -u YOUR_USERNAME
+docker login ghcr.io -u YOUR_USERNAME
 ```
 You will then be prompted for a password which will be a token generated through this link:
 [GitHub Settings](https://github.com/settings/tokens/new?scopes=write:packages)
