@@ -19,6 +19,8 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import '../../js/syntax-highlighting/mode-eol';
 import '../../js/syntax-highlighting/mode-epl';
 import { useNavigate } from 'react-router';
+import { faTrash, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type LanguageOption = {
   value: string;
@@ -296,6 +298,64 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
         }
     }
 
+    const deleteIndexedLocation = async (locationUri: string) => {
+        try {
+            hawkClient.removeRepository(instance.name, locationUri);
+            setIndexedLocations(prev => prev.filter(uri => uri !== locationUri));
+            alert(`Indexed location "${locationUri}" deleted successfully.`);
+        } catch (err) {
+            console.error(`Failed to delete indexed location ${locationUri}:`, err);
+        }
+    }
+
+    const unregisterMetamodel = async (modelName: string) => {
+
+        try {
+            const modelList: string[] = []
+            modelList.push(modelName);
+            hawkClient.unregisterMetamodels(instance.name, modelList);
+            setMetaModels(prev => prev.filter(model => model !== modelName));
+            alert (`Metamodel "${modelName}" unregistered successfully.`);
+        } catch (err) {
+            console.error(`Failed to unregister metamodel ${modelName}:`, err);
+        }
+
+    }
+
+    const deleteIndexedAttribute = async (attributeName: string) => {
+        try {
+            const attributes: IndexedAttribute[] = await hawkClient.listIndexedAttributes(instance.name);
+            const indexedAttribute = attributes.find(attr => attr.attributeName === attributeName);
+            if (!indexedAttribute) {
+                alert(`Indexed attribute "${attributeName}" not found.`);
+                return;
+            }
+            hawkClient.removeIndexedAttribute(instance.name, indexedAttribute);
+            setIndexedAttributes(prev => prev.filter(attr => attr !== attributeName));
+            alert(`Indexed attribute "${attributeName}" deleted successfully.`);
+
+        } catch (err) {
+            console.error(`Failed to delete indexed attribute ${attributeName}:`, err);
+        }
+    }
+
+    const deleteDerivedAttribute = async (attributeName: string) => {
+        try {
+            const attributes: DerivedAttribute[] = await hawkClient.listDerivedAttributes(instance.name);
+            const derivedAttribute = attributes.find(attr => attr.attributeName === attributeName);
+            if (!derivedAttribute) {
+                alert(`Derived attribute "${attributeName}" not found.`);
+                return;
+            }
+            hawkClient.removeDerivedAttribute(instance.name, derivedAttribute);
+            setDerivedAttributes(prev => prev.filter(attr => attr !== attributeName));
+            alert(`Derived attribute "${attributeName}" deleted successfully.`);
+        } catch (err) {
+            console.error(`Failed to delete derived attribute ${attributeName}:`, err);
+        }
+    }
+
+
     const getInstanceInformation = async () => {
         try {
             const instances: HawkInstance[] = await hawkClient.listInstances();
@@ -422,14 +482,30 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                             <div className={`${styles.collapsibleContent} ${!expandedSections.metaModels ? styles.collapsed : ''}`}>
                             {metaModels.length > 0 ? (
                                 <ul className={styles.configList}>
-                                {metaModels.map((model: string, idx: number) => (
-                                    <li key={idx} className={styles.configItem}>
-                                    {model}
-                                    </li>
-                                ))}
+                                    {metaModels.map((model: string, idx: number) => (
+                                        <li key={idx} className={styles.configItem}>
+                                            <span>{model}</span>
+                                            <button aria-label={`Unregister metamodel ${model}`} className={styles.deleteButton} onClick={() => {
+                                                if (window.confirm(`Are you sure you want to unregister the metamodel "${model}"? This action cannot be undone.`)) {
+                                                    unregisterMetamodel(model);
+                                                }
+                                            } }>
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </button>
+                                        </li>
+                                    ))}
                                 </ul>
                             ) : (
-                                <p className={styles.emptyMessage}>No meta models found</p>
+                                <div className={styles.emptyStateContainer}>
+                                    <p className={styles.emptyMessage}>No meta models found</p>
+                                    <ul className={styles.configList}>
+                                        <li>
+                                            <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                                                <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             )}
                             </div>
                         </div>
@@ -451,7 +527,14 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                 <ul className={styles.configList}>
                                 {indexedLocations.map((location: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
-                                    {location}
+                                    <span>{location}</span>
+                                    <button aria-label={`Delete indexed location ${location}`} className={styles.deleteButton} onClick={() => {
+                                        if (window.confirm(`Are you sure you want to delete the indexed location "${location}"? This action cannot be undone.`)) {
+                                            deleteIndexedLocation(location);
+                                        }
+                                    }}>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
                                     </li>
                                 ))}
                                 </ul>
@@ -478,7 +561,14 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                 <ul className={styles.configList}>
                                 {derivedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
-                                    {attribute}
+                                    <span>{attribute}</span>
+                                    <button className={styles.deleteButton} onClick={() => {
+                                        if (window.confirm(`Are you sure you want to delete the derived attribute "${attribute}"? This action cannot be undone.`)) {
+                                            deleteDerivedAttribute(attribute);
+                                        }
+                                    }}>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
                                     </li>
                                 ))}
                                 </ul>
@@ -505,7 +595,14 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                 <ul className={styles.configList}>
                                 {indexedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
-                                    {attribute}
+                                    <span>{attribute}</span>
+                                    <button className={styles.deleteButton} onClick={() => {
+                                        if (window.confirm(`Are you sure you want to delete the attribute "${attribute}"? This action cannot be undone.`)) {
+                                            deleteIndexedAttribute(attribute);
+                                        }
+                                    }}>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
                                     </li>
                                 ))}
                                 </ul>

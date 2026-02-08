@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear, faPlayCircle, faStopCircle, faRefresh } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faPlayCircle, faStopCircle, faRefresh, faBan } from '@fortawesome/free-solid-svg-icons'
 
 import Use from '../Modal/Use';
 import Instance from '../Modal/Instance';
@@ -156,7 +156,29 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is already stopped.`);
                       }
                     }}
-                     />
+                    />
+                     <FontAwesomeIcon className={styles.play} icon={faBan}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (isOpen) toggle();
+
+                      if (instance.status === 'STOPPED') {
+                        const deleteInstanceNow = window.confirm(`Instance "${instance.name}" is currently STOPPED. Do you want to delete it?`);
+                        if (!deleteInstanceNow) return;
+                        try {
+                          const hawkClient = Create(url);
+                          await Promise.resolve(hawkClient.removeInstance(instance.name));
+                          alert(`${instance.name} deleted`);
+                          window.location.reload();
+                        } catch (err) {
+                          alert(`Failed to delete instance ${instance.name}. Reason: ${err}`);
+                        }
+
+                      } else if (instance.status === 'RUNNING') {
+                        alert(`Instance "${instance.name}" is running, and can't be deleted.`);
+                      }
+                    }}
+                    />
                     {instance.name}
                   </td>
                   <td>{instance.status}</td>
