@@ -3,14 +3,13 @@ import { CloseButton } from 'react-bootstrap';
 import Create  from '../../js/client/Create';
 import styles from './New.module.css';
 import { useEffect, useRef, useState } from 'react';
-import { create } from 'node:domain';
 
 type NewProps = {
   isOpen: boolean;
   toggle: () => void;
   title: string;
 }
-// TODO: Implement form to create new instance
+
 export default function New({ isOpen, toggle, title }: NewProps) {
 
   const clientRef = useRef<HawkClient | null>(null);
@@ -35,6 +34,36 @@ export default function New({ isOpen, toggle, title }: NewProps) {
 
   const handleSubmission = (e: React.SubmitEvent) => {
     e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const instanceName = formData.get('instanceName') as string;
+    const backend = formData.get('backend') as string;
+    const minDelay = formData.get('minDelay') as string;
+    const maxDelay = formData.get('maxDelay') as string;
+    const pluginsSelected = formData.getAll('plugins') as string[];
+    const indexFactory = formData.get('indexFactory') as string;
+
+    if (minDelay === '' || maxDelay === '') {
+      alert('Please provide both minimum and maximum delay periods.');
+      return;
+    }
+
+    if (parseInt(minDelay) > parseInt(maxDelay)) {
+      alert('Minimum delay period cannot be greater than maximum delay period.');
+      return;
+    }
+
+    const args: any[] = [instanceName, backend, minDelay, maxDelay];
+    if (pluginsSelected.length > 0) args.push(pluginsSelected);
+    if (indexFactory !== '') args.push(indexFactory);
+
+    try {
+      clientRef.current?.createInstance(...args);
+      alert(`Instance "${instanceName}" created successfully!`);
+      toggle();
+    } catch (error) {
+      console.error('Failed to create instance:', error);
+      alert('Failed to create instance. Please check the console for more details.');
+    }
 
   };
   
@@ -57,15 +86,15 @@ export default function New({ isOpen, toggle, title }: NewProps) {
       </div>
       <div className={styles.body}>
           <form onSubmit={handleSubmission}>
-            <input type="text" placeholder="Instance name" className={styles.input} />
+            <input type="text" name="instanceName" placeholder="Instance name" className={styles.input} />
             <label className={styles.label}>Backends</label>
-            <select name="backends" id="backends" className={styles.input}>
+            <select name="backend" id="backend" className={styles.input}>
               {backends.map((backend) => (
                 <option key={backend} value={backend}>{backend}</option>
               ))}
             </select>
-            <input type="number" placeholder="Minimum Delay Period (ms)" className={styles.input} />
-            <input type="number" placeholder="Maximum Delay Period (ms)" className={styles.input} />
+            <input type="number" name="minDelay" placeholder="Minimum Delay Period (ms)" className={styles.input} />
+            <input type="number" name="maxDelay" placeholder="Maximum Delay Period (ms)" className={styles.input} />
             <br></br>
             <label className={styles.label}>Plugins</label>
             <select name="plugins" id="plugins" multiple={true} className={styles.input}>
@@ -73,7 +102,7 @@ export default function New({ isOpen, toggle, title }: NewProps) {
                 <option key={plugin} value={plugin}>{plugin}</option>
               ))}
             </select>
-            <input type="text" placeholder="Index Factory" className={styles.input} />
+            <input type="text" name="indexFactory" placeholder="Index Factory" className={styles.input} />
             <button type="submit" className={styles.input}>Create</button>
           </form>
       </div>

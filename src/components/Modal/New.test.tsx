@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import New from './New';
 import Use from './Use';
-import { describe, test, expect, vi } from 'vitest';
-import { afterEach } from 'node:test';
+import { describe, test, expect, vi, afterEach } from 'vitest';
 import { act } from 'react';
 
 vi.mock('./Use');

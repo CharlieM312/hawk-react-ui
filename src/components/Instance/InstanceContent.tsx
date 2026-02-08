@@ -311,7 +311,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const unregisterMetamodel = async (modelName: string) => {
 
         try {
-            const modelList = []
+            const modelList: string[] = []
             modelList.push(modelName);
             hawkClient.unregisterMetamodels(instance.name, modelList);
             setMetaModels(prev => prev.filter(model => model !== modelName));
@@ -485,7 +485,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                     {metaModels.map((model: string, idx: number) => (
                                         <li key={idx} className={styles.configItem}>
                                             <span>{model}</span>
-                                            <button className={styles.deleteButton} onClick={() => {
+                                            <button aria-label={`Unregister metamodel ${model}`} className={styles.deleteButton} onClick={() => {
                                                 if (window.confirm(`Are you sure you want to unregister the metamodel "${model}"? This action cannot be undone.`)) {
                                                     unregisterMetamodel(model);
                                                 }
@@ -500,7 +500,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                     <p className={styles.emptyMessage}>No meta models found</p>
                                     <ul className={styles.configList}>
                                         <li>
-                                            <button className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                                            <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
                                                 <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
                                             </button>
                                         </li>
@@ -528,7 +528,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                 {indexedLocations.map((location: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{location}</span>
-                                    <button className={styles.deleteButton} onClick={() => {
+                                    <button aria-label={`Delete indexed location ${location}`} className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the indexed location "${location}"? This action cannot be undone.`)) {
                                             deleteIndexedLocation(location);
                                         }
