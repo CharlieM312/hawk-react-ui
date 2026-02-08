@@ -37,8 +37,6 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     e.preventDefault();
 
   };
-
-
   
   return (
     <Modal

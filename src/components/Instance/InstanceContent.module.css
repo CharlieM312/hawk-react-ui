@@ -22,6 +22,14 @@
   
 }
 
+.deleteButton {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
 .title h1 {
   margin: 0;
 }
