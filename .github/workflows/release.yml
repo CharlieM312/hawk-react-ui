@@ -5,6 +5,13 @@ on:
     push:
      branches:
         - main
+    
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: 'Tag to push (e.g., 1.0.0)'
+                required: true
+                default: 'latest'
 
 jobs:
     docker:
@@ -29,6 +36,6 @@ jobs:
                 with:
                     push: true
                     tags: |
-                        ghcr.io/charliem312/hawk-react-ui:latest
+                        ghcr.io/charliem312/hawk-react-ui:${{ github.event.inputs.tag }}
                     labels: |
                         org.opencontainers.image.source=${{ github.repositoryUrl }}
