@@ -1,5 +1,5 @@
 FROM node:24-bullseye AS build
-
+LABEL org.opencontainers.image.description="A React UI for managing Hawk instances"
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
