@@ -25,7 +25,7 @@ To build and run the latest docker image from the repository:
 
 ```shell
 docker pull ghcr.io/charliem312/hawk-react-ui:latest
-docker run --rm -it -p 8081:80 hawk-react-ui
+docker run --rm -it -p 8081:80 ghcr.io/charliem312/hawk-react-ui:latest
 ```
 
 The web UI will be available from http://localhost:8081.
