@@ -10,6 +10,14 @@ type NewProps = {
   title: string;
 }
 
+type HawkState = 0 | 1 | 2;
+
+type InstanceType = {
+  name: string;
+  message: string;
+  state: HawkState;
+}
+
 export default function New({ isOpen, toggle, title }: NewProps) {
 
   const clientRef = useRef<HawkClient | null>(null);
@@ -42,6 +50,24 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     const pluginsSelected = formData.getAll('plugins') as string[];
     const indexFactory = formData.get('indexFactory') as string;
 
+    //Check if instance name is empty
+    if (instanceName.trim() === '') {
+      alert('Instance name cannot be empty.');
+      return;
+    }
+    //Get instances to check if one with this name already exists
+    try {
+      const existingInstances = clientRef.current ? clientRef.current.listInstances() : [];
+      if (existingInstances.some((instance: InstanceType) => instance.name === instanceName)) {
+        alert('An instance with this name already exists. Please choose a different name.');
+        return;
+      }
+    } catch (err) {
+      console.error('Failed to fetch existing instances:', err);
+      alert('Failed to validate instance name uniqueness. See console for details.');
+      return;
+    }
+
     if (minDelay === '' || maxDelay === '') {
       alert('Please provide both minimum and maximum delay periods.');
       return;
@@ -51,18 +77,33 @@ export default function New({ isOpen, toggle, title }: NewProps) {
       alert('Minimum delay period cannot be greater than maximum delay period.');
       return;
     }
+    const minDelayNumber = parseInt(minDelay);
+    const maxDelayNumber = parseInt(maxDelay);
 
-    const args: any[] = [instanceName, backend, minDelay, maxDelay];
-    if (pluginsSelected.length > 0) args.push(pluginsSelected);
+    const args: any[] = [instanceName, backend, minDelayNumber, maxDelayNumber];
+    const validUpdaters = ['org.eclipse.hawk.graph.updater.GraphModelUpdater', 'org.eclipse.hawk.timeaware.graph.TimeAwareModelUpdater'];
+    if (pluginsSelected.length > 0 && (pluginsSelected.includes(validUpdaters[0]) || (pluginsSelected.includes(validUpdaters[1])))) {
+      args.push(pluginsSelected);
+    } else if (pluginsSelected.length > 0) {
+      alert('Please select at least one valid updater (GraphModelUpdater or TimeAwareGraphModelUpdater).');
+      return;
+    }
     if (indexFactory !== '') args.push(indexFactory);
+
+    console.log('Creating instance with arguments:', args);
 
     try {
       clientRef.current?.createInstance(...args);
       alert(`Instance "${instanceName}" created successfully!`);
       toggle();
-    } catch (error) {
-      console.error('Failed to create instance:', error);
-      alert('Failed to create instance. Please check the console for more details.');
+    } catch (err: any) {
+      console.error('createInstance failed. args:', {
+        instanceName, backend, minDelayNumber, maxDelayNumber, pluginsSelected, indexFactory
+      });
+      console.error('Thrift error/full object:', err);
+      if (err && err.message) console.error('Thrift message:', err.message);
+      if (err && err.stack) console.error(err.stack);
+      alert('Failed to create instance. See console and server logs.');
     }
 
   };
