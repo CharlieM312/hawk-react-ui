@@ -148,6 +148,7 @@ export default function Table({ url }: TableProps) {
                           const hawkClient = Create(url);
                           await Promise.resolve(hawkClient.stopInstance(instance.name));
                           alert(`${instance.name} stopped`);
+                          window.location.reload();
                         } catch (err) {
                           alert(`Failed to stop instance ${instance.name}. Reason: ${err}`);
                         }

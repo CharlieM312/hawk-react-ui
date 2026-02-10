@@ -49,4 +49,40 @@ describe('New component', () => {
     expect(pluginsLabel).toBeInTheDocument();
 
   });
+
+  test('Checks instance creation options render correctly', async () => {
+    const mockUse = vi.mocked(Use);
+    mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
+    const { isOpen, toggle } = mockUse();
+
+    act(() => {
+      render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
+    });
+
+    const instanceNameInput = await screen.findByPlaceholderText('Instance name');
+    const minDelayInput = await screen.findByPlaceholderText('Minimum Delay Period (ms)');
+    const maxDelayInput = await screen.findByPlaceholderText('Maximum Delay Period (ms)');
+    const submitButton = await screen.findByRole('button', { name: 'Create' });
+
+    expect(instanceNameInput).toBeInTheDocument();
+    expect(minDelayInput).toBeInTheDocument();
+    expect(maxDelayInput).toBeInTheDocument();
+    expect(submitButton).toBeInTheDocument();
+  });
+
+  test('Check what happens when a form is submitted with missing instance name', async () => {
+    const mockUse = vi.mocked(Use);
+    mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
+    const { isOpen, toggle } = mockUse();
+
+    act(() => {
+      render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
+    });
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const submitButton = await screen.findByRole('button', { name: 'Create' });
+    act(() => {      
+      submitButton.click();
+    });
+    expect(alertMock).toHaveBeenCalledWith('Instance name cannot be empty.');
+  });
 });
