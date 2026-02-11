@@ -79,13 +79,13 @@ export default function Table({ url }: TableProps) {
           <tbody>
             {existingInstances.map(instance => {
               return (
-                <tr onClick={() => { navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } }); }} key={instance.name}>
+                <tr onClick={() => { if(instance.status === 'RUNNING' || instance.status === 'UPDATING') {navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } }); }}} key={instance.name}>
                   <td>
                     <FontAwesomeIcon className={styles.cog} icon={faGear}
                     onClick={async (e) => {
                       e.stopPropagation();
 
-                      if (instance.status === 'RUNNING') {
+                      if (instance.status === 'RUNNING' || instance.status === 'UPDATING') {
                         if (isOpen) toggle();
 
                         setTimeout(() => {
@@ -112,7 +112,7 @@ export default function Table({ url }: TableProps) {
                           alert(`Failed to start instance ${instance.name}. Reason: ${err}`);
                         }
 
-                      } else if (instance.status === 'RUNNING') {
+                      } else if (instance.status === 'RUNNING' || instance.status === 'UPDATING') {
                         alert(`Instance "${instance.name}" is already running.`);
                       }
                     }}

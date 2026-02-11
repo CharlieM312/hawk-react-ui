@@ -40,4 +40,6 @@ jobs:
                     labels: |
                         org.opencontainers.image.source=${{ github.repositoryUrl }}
                         org.opencontainers.image.description="A React UI for managing Hawk instances"
+                    annotations: |
+                        org.opencontainers.image.description="A React UI for managing Hawk instances"
                     platforms: linux/amd64,linux/arm64
