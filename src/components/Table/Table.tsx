@@ -89,7 +89,7 @@ export default function Table({ url }: TableProps) {
                         if (isOpen) toggle();
 
                         setTimeout(() => {
-                          navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } });
+                          navigate(`/instance/${instance.name}/settings`, { state: { instance: instance, url: url } });
                         }, 100);
                       }
                     }}
@@ -116,6 +116,8 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is already running.`);
                       }
                     }}
+                    role="button"
+                    aria-label={`Start ${instance.name}`}
                      />
                      <FontAwesomeIcon className={styles.play} icon={faRefresh}
                     onClick={async (e) => {
@@ -135,6 +137,7 @@ export default function Table({ url }: TableProps) {
 
                       }
                     }}
+                    aria-label={`Sync ${instance.name}`}
                      />
                      <FontAwesomeIcon className={styles.play} icon={faStopCircle}
                     onClick={async (e) => {
@@ -157,6 +160,7 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is already stopped.`);
                       }
                     }}
+                    aria-label={`Stop ${instance.name}`}
                     />
                      <FontAwesomeIcon className={styles.play} icon={faBan}
                     onClick={async (e) => {
@@ -179,6 +183,7 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is running, and can't be deleted.`);
                       }
                     }}
+                    aria-label={`Delete ${instance.name}`}
                     />
                     {instance.name}
                   </td>

@@ -149,10 +149,152 @@ describe('Table component', () => {
     fireEvent.click(cogIcon);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename", { state: { instance: { name: 'instancename', status: 'RUNNING', info: 'message' }, url: 'http://avalidurl:3000' } });
+      expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename/settings", { state: { instance: { name: 'instancename', status: 'RUNNING', info: 'message' }, url: 'http://avalidurl:3000' } });
     });
   });
 
+  test('Syncs selected instance when the sync icon is clicked', async () => {
+    
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { syncInstance: vi.fn(() => Promise.resolve()) };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const syncIcon = getByLabelText('Sync instancename');
+    fireEvent.click(syncIcon);
+
+    await waitFor(() => {
+      expect(mockHawkClient.syncInstance).toHaveBeenCalledWith('instancename', { blockUntilDone: true });
+    });
+
+  });
+
+  test('Starts selected instance when the start icon is clicked', async () => {
+    
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '1', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const startIcon = getByLabelText('Start instancename');
+    fireEvent.click(startIcon);
+
+    await waitFor(() => {
+      expect(mockHawkClient.startInstance).toHaveBeenCalledWith('instancename');
+    });
+
+  });
+
+  test('Starting an instance that is already running shows an alert', async () => {
+    
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
+
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const startIcon = getByLabelText('Start instancename');
+    fireEvent.click(startIcon);
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is already running.');
+    });
+
+  });
+
+  test('Stops selected instance when the stop icon is clicked', async () => {
+    
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { stopInstance: vi.fn(() => Promise.resolve()) };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const stopIcon = getByLabelText('Stop instancename');
+    fireEvent.click(stopIcon);
+
+    await waitFor(() => {
+      expect(mockHawkClient.stopInstance).toHaveBeenCalledWith('instancename');
+    });
+
+  });
+
+  test('Stopping an instance that is already stopped shows an alert', async () => {
+    
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
+
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '1', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const stopIcon = getByLabelText('Stop instancename');
+    fireEvent.click(stopIcon);
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is already stopped.');
+    });
+
+  });
+
+  test('Deletes selected instance when the delete icon is clicked', async () => {
+    
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { removeInstance: vi.fn(() => Promise.resolve()) };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '1', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const deleteIcon = getByLabelText('Delete instancename');
+    fireEvent.click(deleteIcon);
+
+    await waitFor(() => {
+      expect(mockHawkClient.removeInstance).toHaveBeenCalledWith('instancename');
+    });
+
+  });
+
+  test('Deleting an instance that is running shows an alert', async () => {
+
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
+
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const deleteIcon = getByLabelText('Delete instancename');
+    fireEvent.click(deleteIcon);
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is running, and can\'t be deleted.');
+    });
+
+  });
 
 });
 
