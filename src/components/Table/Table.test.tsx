@@ -4,7 +4,6 @@ import * as RR from 'react-router';
 import Table from './Table';
 import Create from '../../js/client/Create';
 import Get from '../../js/instances/Get';
-import Instance from '../Modal/Instance';
 import { describe, test, expect, vi  } from 'vitest';
 
 vi.mock('../../js/client/Create');

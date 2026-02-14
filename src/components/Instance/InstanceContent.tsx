@@ -71,7 +71,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [graphData, setGraphData]               = useState(null);
-    const [instanceState, setInstanceState] = useState<0 | 1 | 2 | 'RUNNING' | 'STOPPED' | 'UPDATING'>(instance?.state);
     const isRunning                               = useRef(false);
     const navigate                                = useNavigate();
 
@@ -114,17 +113,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const onChange = (newValue: string) => {
         setQuery(newValue);
     }
-
-    useEffect(() => {
-        getInstanceInformation();
-        
-        // Poll for instance state updates every 5 seconds
-        const interval = setInterval(() => {
-            getInstanceInformation();
-        }, 5000);
-        
-        return () => clearInterval(interval);
-    }, [instance.name]);
 
     const onClickRun = () => {
         let newIsRunning = !isRunning.current;
@@ -176,19 +164,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const onClickRaw = () => {
         setHideRaw(hideRaw === false ? true : false);
         setRawText(rawText === 'View raw' ? 'View simplified' : 'View raw');
-    }
-
-    const getInstanceInformation = async () => {
-        try {
-            const instances: HawkInstance[] = await hawkClient.listInstances();
-            const currentInstance = instances.find((inst: HawkInstance) => inst.name === instance.name);
-            if (currentInstance) {
-                setInstanceState(currentInstance.state);
-            }
-        }
-        catch (err) {
-            console.error('Failed to fetch instance information:', err);
-        }
     }
 
     const changeLanguage = (language: LanguageOption) => {
@@ -297,8 +272,13 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                             }
                         </div>
                     </div>
-                    <div className={styles.instanceOptions}>
-                        <h4>Instance Options</h4>
+                    <div className={styles.graphOptions}>
+                        <h4>Graph</h4>
+                        {isGraph ? (
+                                <Graph data={graphData} />
+                            ) : (
+                                <div className={styles.emptyMessage}>No graph to display</div>
+                            )}
                     </div>
                 </div>
         </div>

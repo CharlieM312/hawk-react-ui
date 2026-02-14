@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faPlayCircle, faStopCircle, faRefresh, faBan } from '@fortawesome/free-solid-svg-icons'
 
 import Use from '../Modal/Use';
-import Instance from '../Modal/Instance';
 import Get from '../../js/instances/Get';
 import Create from '../../js/client/Create';
 
@@ -197,14 +196,6 @@ export default function Table({ url }: TableProps) {
         <ErrorBoundary
           FallbackComponent={InstanceError}
         >
-          {!location.pathname.match(/^\/instances?\/[^/]+/) && (
-            <Instance
-              isOpen={isOpen}
-              toggle={toggle}
-              instance={selectedInstance}
-              url={url}
-            />
-          )}
         </ErrorBoundary>
       </>
       }

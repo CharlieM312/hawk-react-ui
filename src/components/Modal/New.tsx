@@ -4,7 +4,6 @@ import Create  from '../../js/client/Create';
 import styles from './New.module.css';
 import { useEffect, useRef, useState } from 'react';
 import { ClipLoader } from 'react-spinners';
-import { set } from 'animejs';
 
 type NewProps = {
   isOpen: boolean;
@@ -40,7 +39,7 @@ export default function New({ isOpen, toggle, title }: NewProps) {
         if (validUpdaters.length > 0) {
           setUpdaters(validUpdaters);
         } else {
-          console.warn('No valid updaters found in backends list:', backendsList);
+          console.warn('No valid updaters found in plugins list:', pluginsList);
         }
         const validPlugins = pluginsList.filter((item) => !updaters.includes(item));
         setBackends(backendsList);
@@ -95,12 +94,8 @@ export default function New({ isOpen, toggle, title }: NewProps) {
 
     const args: any[] = [instanceName, backend, minDelayNumber, maxDelayNumber];
     pluginsSelected.push(updater);
-    if (pluginsSelected.length > 0) {
-      args.push(pluginsSelected);
-    } else if (pluginsSelected.length > 0) {
-      alert('Please select at least one valid updater (GraphModelUpdater or TimeAwareGraphModelUpdater).');
-      return;
-    }
+    // PluginsSelected will always have at least one element (the updater), so we can directly push it to the args array without checking its length
+    args.push(pluginsSelected);
     if (indexFactory !== '') args.push(indexFactory);
 
     console.log('Creating instance with arguments:', args);
@@ -144,7 +139,7 @@ export default function New({ isOpen, toggle, title }: NewProps) {
           <form onSubmit={handleSubmission}>
             <input type="text" name="instanceName" disabled={loading} placeholder="Instance name" className={styles.input} />
             <label className={styles.label}>Updater</label>
-            <select name="updater" id="updater" disabled={loading} className={styles.input}>
+            <select aria-label="Updater" name="updater" id="updater" disabled={loading} className={styles.input}>
               {updaters.map((updater) => (
                 <option key={updater} value={updater}>{updater}</option>
               ))}

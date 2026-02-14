@@ -317,18 +317,18 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
         </nav>
       </div>
       <div className={styles.instanceOptions}>
-                        <h2>Settings for {instance?.name}</h2>
-                        <h4>Instance Options</h4>
-                        <div className={styles.collapsiblePanel}>
-                            <button
-                            className={styles.collapsibleHeader}
-                            onClick={() => {
-                                toggleSection('metaModels');
-                                if (!expandedSections.metaModels && metaModels.length === 0) {
-                                getMetaModels();
-                                }
-                            }}
-                            >
+        <h2>Settings for {instance?.name}</h2>
+        <h4>Instance Options</h4>
+        <div className={styles.collapsiblePanel}>
+            <button
+                className={styles.collapsibleHeader}
+                    onClick={() => {
+                        toggleSection('metaModels');
+                        if (!expandedSections.metaModels && metaModels.length === 0) {
+                            getMetaModels();
+                        }
+                    }}
+                >
                             <span>Meta Models</span>
                             <span className={`${styles.chevron} ${expandedSections.metaModels ? styles.rotated : ''}`}>▼</span>
                             </button>
@@ -464,13 +464,13 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                             )}
                             </div>
                         </div>
-                        <h4> Instance Control</h4>
-                        <div className={styles.instanceControl}>
-                            <Button variant='success' size='sm' onClick={onClickStartInstance} disabled={isRunDisabled || instanceState === 0 || instanceState === 1} style={{ marginRight: 8 }}>Start Instance</Button>
-                            <Button variant='info' size='sm' onClick={onClickSyncInstance} disabled={isRunDisabled || instanceState === 1} style={{ marginRight: 8 }}>Sync Instance</Button>
-                            <Button variant='danger' size='sm' onClick={onClickStopInstance} disabled={isRunDisabled || instanceState === 1 || instanceState === 2} style={{ marginRight: 16 }}>Stop Instance</Button>
-                        </div>
-                    </div>
+            <h4> Instance Control</h4>
+                <div className={styles.instanceControl}>
+                    <Button variant='success' size='sm' onClick={onClickStartInstance} disabled={isRunDisabled || instanceState === 0 || instanceState === 1} style={{ marginRight: 8 }}>Start Instance</Button>
+                    <Button variant='info' size='sm' onClick={onClickSyncInstance} disabled={isRunDisabled || instanceState === 1} style={{ marginRight: 8 }}>Sync Instance</Button>
+                    <Button variant='danger' size='sm' onClick={onClickStopInstance} disabled={isRunDisabled || instanceState === 1 || instanceState === 2} style={{ marginRight: 16 }}>Stop Instance</Button>
+                </div>
+        </div>
     </div>
   );
 }

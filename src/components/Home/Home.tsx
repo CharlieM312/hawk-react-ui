@@ -1,5 +1,5 @@
 import { Button } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import Table from '../Table/Table';
 import Use from '../Modal/Use';
@@ -22,11 +22,15 @@ export default function Home() {
     setShowTable(url.length !== 0 ? true : false);
   }, [url]);
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     setUrl(input);
     localStorage.setItem('url', input);
     setShowTable(true);
-  }
+  }, [input]);
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  }, []);
 
   return (
     <div className={styles.home}>
@@ -45,7 +49,7 @@ export default function Home() {
             type='text'
             className={styles.input}
             placeholder='Enter Hawk server URL'
-            onChange={e => {setInput(e.target.value)}}
+            onChange={handleInputChange}
           />
           <Button className={styles.submit} onClick={onSubmit}>Submit</Button>
         </div>
