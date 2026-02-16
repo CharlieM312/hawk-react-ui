@@ -41,7 +41,8 @@ export default function New({ isOpen, toggle, title }: NewProps) {
         } else {
           console.warn('No valid updaters found in plugins list:', pluginsList);
         }
-        const validPlugins = pluginsList.filter((item) => !updaters.includes(item));
+        let validPlugins = pluginsList.filter((item) => !updaters.includes(item));
+        validPlugins = pluginsList.filter((item) => !backendsList.includes(item));
         setBackends(backendsList);
         setPlugins(validPlugins);
       } catch (err) {
@@ -97,10 +98,10 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     // PluginsSelected will always have at least one element (the updater), so we can directly push it to the args array without checking its length
     args.push(pluginsSelected);
     if (indexFactory !== '') args.push(indexFactory);
-
-    console.log('Creating instance with arguments:', args);
+    //TODO: Check for minimum 1 model parser, 1 metamodel parser, 1 query engine
 
     try {
+      setLoading(true);
       clientRef.current?.createInstance(...args);
       alert(`Instance "${instanceName}" created successfully!`);
       toggle();

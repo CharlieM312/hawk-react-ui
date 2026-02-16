@@ -19,42 +19,10 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import '../../js/syntax-highlighting/mode-eol';
 import '../../js/syntax-highlighting/mode-epl';
 import { Link, useNavigate } from 'react-router';
-import { faTrash, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type LanguageOption = {
   value: string;
   label: string;
-}
-
-type Repository = {
-    uri: string;
-    type: string;
-    isFrozen?: boolean;
-}
-
-type DerivedAttribute = {
-    attributeName: string;
-    attributeType?: string;
-    derivationLanguage?: string;
-    derivationLogic?: string;
-    isMany?: boolean;
-    isOrdered?: boolean;
-    isUnique?: boolean;
-    metamodelUri: string;
-    typeName: string;
-}
-
-type IndexedAttribute = {
-    attributeName: string;
-    metamodelUri: string;
-    typeName: string;
-}
-
-type HawkInstance = {
-    name: string;
-    message: string;
-    state: 'RUNNING' | 'STOPPED' | 'UPDATING';
 }
 
 export default function InstanceContent({ instance, url }: { instance: any; url: string }) {
@@ -241,7 +209,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                         </div>
                         <div className={styles.submission}>
                             <BounceLoader className={styles.spinner} size='20px' color='#7e56c2' loading={isRunning.current} />
-                            <Button variant='primary' className={styles.run} onClick={onClickRun} disabled={isRunDisabled}>{runButtonText}</Button>
+                            <Button name="Submit Query" variant='primary' className={styles.run} onClick={onClickRun} disabled={isRunDisabled}>{runButtonText}</Button>
                         </div>
                         {showErrorMessage && <div className={styles.errorContainer}>
                             <h5 className={styles.errorMessage}>{errorMessage}</h5>
@@ -249,7 +217,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                         <div className={styles.resultHeader}>
                             <h5 className={styles.resultLabel}>Result {queryTime !== '' ? 'obtained in ' + queryTime + 'ms' : ''}</h5>
                             {!isGraph &&
-                                <button className={styles.rawButton} onClick={onClickRaw}>{rawText}</button>
+                                <button name="RawText" className={styles.rawButton} onClick={onClickRaw}>{rawText}</button>
                             }
                         </div>
                         <div className={styles.resultContainer}>
@@ -266,9 +234,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                 mode={aceMode}
                                 style={aceStylesDark}
                                 />
-                            }
-                            {isGraph &&
-                                <Graph data={graphData} />
                             }
                         </div>
                     </div>

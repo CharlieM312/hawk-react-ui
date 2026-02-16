@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import New from './New';
 import Use from './Use';
 import { describe, test, expect, vi, afterEach } from 'vitest';
@@ -184,6 +184,10 @@ describe('New component', () => {
     const maxDelayInput = await screen.findByPlaceholderText('Maximum Delay Period (ms)');
     act(() => {
       fireEvent.change(maxDelayInput, { target: { value: '1000' } });
+    });
+    const indexFactoryInput = await screen.findByPlaceholderText('Index Factory');
+    act(() => {
+      fireEvent.change(indexFactoryInput, { target: { value: 'org.eclipse.hawk.graph.index.DefaultIndexFactory' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
     act(() => {      

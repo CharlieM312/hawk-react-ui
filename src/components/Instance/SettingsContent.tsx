@@ -44,25 +44,13 @@ type HawkInstance = {
 
 export default function SettingsContent({ instance, url }: { instance: any; url: string }) {
 
-  const [result, setResult]                     = useState('');
-    const [rawResult, setRawResult]               = useState('');
-    const [query, setQuery]                       = useState('');
-    const [queryTime, setQueryTime]               = useState('');
-    const [queryId, setQueryId]                   = useState('');
-    const [errorMessage, setErrorMessage]         = useState('');
-    const [rawText, setRawText]                   = useState('View raw');
-    const [runButtonText, setRunButtonText]       = useState('Run');
-    const [hideRaw, setHideRaw]                   = useState(true);
-    const [isGraph, setIsGraph]                   = useState(false);
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
-    const [graphData, setGraphData]               = useState(null);
     const [metaModels, setMetaModels]         = useState<string[]>([]);
     const [derivedAttributes, setDerivedAttributes] = useState<string[]>([]);
     const [indexedAttributes, setIndexedAttributes] = useState<string[]>([]);
     const [indexedLocations, setIndexedLocations] = useState<string[]>([]);
     const [instanceState, setInstanceState] = useState<0 | 1 | 2 | 'RUNNING' | 'STOPPED' | 'UPDATING'>(instance?.state);
-    const isRunning                               = useRef(false);
     const navigate                                = useNavigate();
 
     let hawkClient: HawkClient;
@@ -86,20 +74,6 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     } catch (err) {
         throw err;
     }
-
-    const aceMode = selectedLanguage && languageIdRegEx.test(selectedLanguage)
-            ? (selectedLanguage.match(languageIdRegEx)![0] === 'EOL' ? 'eol' : 'epl')
-            : undefined;
-    
-    let appTheme = document.getElementById('root')?.getAttribute('data-theme');
-    
-    const aceStyles = {
-        borderRadius: '4px'
-    };
-    
-    const aceStylesDark = {
-        borderRadius: '4px',
-    };
     
     useEffect(() => {
         getInstanceInformation();
@@ -119,12 +93,10 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
         setIsRunDisabled(true);
         try {
             await Promise.resolve(hawkClient.startInstance(instance.name));
-            setErrorMessage(`Instance ${instance.name} started successfully.`);
-            setShowErrorMessage(true);
+            alert(`Instance ${instance.name} started successfully.`);
             await getInstanceInformation();
         } catch (err: any) {
-            setErrorMessage(`Failed to start instance ${instance.name}. Reason: ${err.message}`);
-            setShowErrorMessage(true);
+            alert(`Failed to start instance ${instance.name}. Reason: ${err.message}`);
         } finally {
               setIsRunDisabled(false);
         }
@@ -134,17 +106,14 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     const onClickStopInstance = async () => {
     
         if(!instance?.name) return;
-            setShowErrorMessage(false);
             setIsRunDisabled(true);
         try {
             await Promise.resolve(hawkClient.stopInstance(instance.name));
-            setErrorMessage(`Instance ${instance.name} stopped successfully.`);
-            setShowErrorMessage(true);
+            alert(`Instance ${instance.name} stopped successfully.`);
             // Navigate back to the homepage after stopping the instance
             navigate('/');
         } catch (err: any) {
-            setErrorMessage(`Failed to stop instance ${instance.name}. Reason: ${err.message}`);
-            setShowErrorMessage(true);
+            alert(`Failed to stop instance ${instance.name}. Reason: ${err.message}`);
         } finally {
             setIsRunDisabled(false);
         }
@@ -153,16 +122,13 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     
         const onClickSyncInstance = async () => {
             if(!instance?.name) return;
-            setShowErrorMessage(false);
             setIsRunDisabled(true);
             try {
               await Promise.resolve(hawkClient.syncInstance(instance.name));
-              setErrorMessage(`Instance ${instance.name} synced successfully.`);
-              setShowErrorMessage(true);
+              alert(`Instance ${instance.name} synced successfully.`);
               await getInstanceInformation();
             } catch (err: any) {
-              setErrorMessage(`Failed to sync instance ${instance.name}. Reason: ${err.message}`);
-              setShowErrorMessage(true);
+              alert(`Failed to sync instance ${instance.name}. Reason: ${err.message}`);
             } finally {
               setIsRunDisabled(false);
             }
@@ -329,36 +295,36 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                         }
                     }}
                 >
-                            <span>Meta Models</span>
-                            <span className={`${styles.chevron} ${expandedSections.metaModels ? styles.rotated : ''}`}>▼</span>
-                            </button>
-                            <div className={`${styles.collapsibleContent} ${!expandedSections.metaModels ? styles.collapsed : ''}`}>
-                            {metaModels.length > 0 ? (
+                <span>Metamodels</span>
+                <span className={`${styles.chevron} ${expandedSections.metaModels ? styles.rotated : ''}`}>▼</span>
+                </button>
+                <div className={`${styles.collapsibleContent} ${!expandedSections.metaModels ? styles.collapsed : ''}`}>
+                {metaModels.length > 0 ? (
+                    <ul className={styles.configList}>
+                        {metaModels.map((model: string, idx: number) => (
+                            <li key={idx} className={styles.configItem}>
+                                <span>{model}</span>
+                                <button aria-label={`Unregister metamodel ${model}`} className={styles.deleteButton} onClick={() => {
+                                        if (window.confirm(`Are you sure you want to unregister the metamodel "${model}"? This action cannot be undone.`)) {
+                                            unregisterMetamodel(model);
+                                        }
+                                    } }>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    ) : (
+                            <div className={styles.emptyStateContainer}>
+                                <p className={styles.emptyMessage}>No meta models found</p>
                                 <ul className={styles.configList}>
-                                    {metaModels.map((model: string, idx: number) => (
-                                        <li key={idx} className={styles.configItem}>
-                                            <span>{model}</span>
-                                            <button aria-label={`Unregister metamodel ${model}`} className={styles.deleteButton} onClick={() => {
-                                                if (window.confirm(`Are you sure you want to unregister the metamodel "${model}"? This action cannot be undone.`)) {
-                                                    unregisterMetamodel(model);
-                                                }
-                                            } }>
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </button>
-                                        </li>
-                                    ))}
+                                    <li>
+                                        <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                                            <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
+                                        </button>
+                                    </li>
                                 </ul>
-                            ) : (
-                                <div className={styles.emptyStateContainer}>
-                                    <p className={styles.emptyMessage}>No meta models found</p>
-                                    <ul className={styles.configList}>
-                                        <li>
-                                            <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
-                                                <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
+                            </div>
                             )}
                             </div>
                         </div>
@@ -466,9 +432,9 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                         </div>
             <h4> Instance Control</h4>
                 <div className={styles.instanceControl}>
-                    <Button variant='success' size='sm' onClick={onClickStartInstance} disabled={isRunDisabled || instanceState === 0 || instanceState === 1} style={{ marginRight: 8 }}>Start Instance</Button>
-                    <Button variant='info' size='sm' onClick={onClickSyncInstance} disabled={isRunDisabled || instanceState === 1} style={{ marginRight: 8 }}>Sync Instance</Button>
-                    <Button variant='danger' size='sm' onClick={onClickStopInstance} disabled={isRunDisabled || instanceState === 1 || instanceState === 2} style={{ marginRight: 16 }}>Stop Instance</Button>
+                    <Button variant='success' size='sm' name='Start Instance' onClick={onClickStartInstance} disabled={isRunDisabled || instanceState === 0 || instanceState === 1} style={{ marginRight: 8 }}>Start Instance</Button>
+                    <Button variant='info' size='sm' name='Sync Instance' onClick={onClickSyncInstance} disabled={isRunDisabled || instanceState === 1} style={{ marginRight: 8 }}>Sync Instance</Button>
+                    <Button variant='danger' size='sm' name='Stop Instance' onClick={onClickStopInstance} disabled={isRunDisabled || instanceState === 1 || instanceState === 2} style={{ marginRight: 16 }}>Stop Instance</Button>
                 </div>
         </div>
     </div>
