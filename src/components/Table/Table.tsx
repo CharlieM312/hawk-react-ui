@@ -107,6 +107,7 @@ export default function Table({ url }: TableProps) {
                           const hawkClient = Create(url);
                           await Promise.resolve(hawkClient.startInstance(instance.name));
                           alert(`${instance.name} started`);
+                          window.location.reload();
                         } catch (err) {
                           alert(`Failed to start instance ${instance.name}. Reason: ${err}`);
                         }

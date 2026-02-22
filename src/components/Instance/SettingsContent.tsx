@@ -6,6 +6,9 @@ import { useState, useRef, useEffect } from "react";
 import Languages from "../../js/instances/query/Languages";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import Use from "../Modal/Use";
+import NewDerivedAttribute from "../Modal/NewDerivedAttribute";
+import NewIndexedAttribute from "../Modal/NewIndexedAttribute";
 
 type LanguageOption = {
   value: string;
@@ -44,6 +47,8 @@ type HawkInstance = {
 
 export default function SettingsContent({ instance, url }: { instance: any; url: string }) {
 
+    const { isOpen: isDerivedOpen, toggle: toggleDerived }        = Use();
+    const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [metaModels, setMetaModels]         = useState<string[]>([]);
@@ -313,6 +318,11 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 </button>
                             </li>
                         ))}
+                        <li className={styles.configItem}>
+                            <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                                <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
+                            </button>
+                        </li>
                     </ul>
                     ) : (
                             <div className={styles.emptyStateContainer}>
@@ -356,9 +366,23 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     </button>
                                     </li>
                                 ))}
+                                    <li className={styles.configItem}>
+                                        <button aria-label="Add indexed location" className={styles.addButton} onClick={() => alert('Add indexed location functionality not implemented yet.')}>
+                                            <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Location
+                                        </button>
+                                    </li>
                                 </ul>
                             ) : (
-                                <p className={styles.emptyMessage}>No indexed locations found</p>
+                                <div className={styles.emptyStateContainer}>
+                                    <p className={styles.emptyMessage}>No indexed locations found</p>
+                                    <ul className={styles.configList}>
+                                        <li>
+                                            <button aria-label="Add indexed location" className={styles.addButton} onClick={() => alert('Add indexed location functionality not implemented yet.')}>
+                                                <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Location
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             )}
                             </div>
                         </div>
@@ -390,9 +414,37 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     </button>
                                     </li>
                                 ))}
+                                    <li className={styles.configItem}>
+                                        <button aria-label="Add derived attribute" className={styles.addButton} onClick={toggleDerived}>
+                                            <FontAwesomeIcon icon={faPlusCircle} /> Add Derived Attribute
+                                        </button>
+                                        <NewDerivedAttribute
+                                                title='Create a New Derived Attribute'
+                                                isOpen={isDerivedOpen}
+                                                toggle={toggleDerived}
+                                                name={instance.name}
+                                                onCreated={getDerivedAttributes}
+                                        />
+                                    </li>
                                 </ul>
                             ) : (
-                                <p className={styles.emptyMessage}>No derived attributes found</p>
+                                <div className={styles.emptyStateContainer}>
+                                    <p className={styles.emptyMessage}>No derived attributes found</p>
+                                    <ul className={styles.configList}>
+                                        <li>
+                                            <button aria-label="Add derived attribute" className={styles.addButton} onClick={toggleDerived}>
+                                                <FontAwesomeIcon icon={faPlusCircle} /> Add Derived Attribute
+                                            </button>
+                                            <NewDerivedAttribute
+                                                title='Create a New Derived Attribute'
+                                                isOpen={isDerivedOpen}
+                                                toggle={toggleDerived}
+                                                name={instance.name}
+                                                onCreated={getDerivedAttributes}
+                                            />
+                                        </li>
+                                    </ul>
+                                </div>
                             )}
                             </div>
                         </div>
@@ -424,9 +476,37 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     </button>
                                     </li>
                                 ))}
+                                <li className={styles.configItem}>
+                                    <button aria-label="Add Indexed Attribute" className={styles.addButton} onClick={toggleIndexed}>
+                                        <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Attribute
+                                    </button>
+                                    <NewIndexedAttribute
+                                                title='Create a New Indexed Attribute'
+                                                isOpen={isIndexedOpen}
+                                                toggle={toggleIndexed}
+                                                name={instance.name}
+                                                onCreated={getIndexedAttributes}
+                                    />
+                                </li>
                                 </ul>
                             ) : (
-                                <p className={styles.emptyMessage}>No indexed attributes found</p>
+                                <div className={styles.emptyStateContainer}>
+                                <p className={styles.emptyMessage}>No indexed attributes found.</p>
+                                <ul className={styles.configList}>
+                                    <li>
+                                        <button aria-label="Add indexed attribute" className={styles.addButton} onClick={toggleIndexed}>
+                                            <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Attribute
+                                        </button>
+                                        <NewIndexedAttribute
+                                                title='Create a New Indexed Attribute'
+                                                isOpen={isIndexedOpen}
+                                                toggle={toggleIndexed}
+                                                name={instance.name}
+                                                onCreated={getIndexedAttributes}
+                                        />
+                                    </li>
+                                </ul>
+                            </div>
                             )}
                             </div>
                         </div>

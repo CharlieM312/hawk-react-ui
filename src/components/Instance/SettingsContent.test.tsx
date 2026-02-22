@@ -57,7 +57,7 @@ describe('SettingsContent', () => {
 
   test('fetches derived attributes when the Derived Attributes section is expanded', async () => {
     const { default: SettingsContent } = await import('./SettingsContent');
-    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' }; 
 
     render(
       <MemoryRouter>
@@ -71,6 +71,10 @@ describe('SettingsContent', () => {
     });
     // Wait for the listDerivedAttributes function to be called
     await screen.findByText('derivedAttributeOne');
+    const addAttributeButton = screen.getByRole('button', { name: /Add Derived Attribute/i });
+    expect(addAttributeButton).toBeInTheDocument();
+
+
   });
 
   test('fetches indexed attributes when the Indexed Attributes section is expanded', async () => {
@@ -89,11 +93,14 @@ describe('SettingsContent', () => {
     });
     // Wait for the listIndexedAttributes function to be called
     await screen.findByText('indexedAttributeOne');
+    const addAttributeButton = screen.getByRole('button', { name: /Add Indexed Attribute/i });
+    expect(addAttributeButton).toBeInTheDocument();
   });
 
   test('fetches Indexed Locations when the Indexed Locations section is expanded', async () => {
     const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MemoryRouter>
@@ -108,6 +115,9 @@ describe('SettingsContent', () => {
     });
     // Wait for the listIndexedLocations function to be called
     await screen.findByText('file://path/to/indexed/location');
+    const addLocationButton = screen.getByRole('button', { name: /Add Indexed Location/i });
+    expect(addLocationButton).toBeInTheDocument();
+
   });
 
   test('should start the instance when Start Instance button is clicked', async () => {
