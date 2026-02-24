@@ -5,10 +5,11 @@ import Create from '../../js/client/Create';
 import { useState, useRef, useEffect } from "react";
 import Languages from "../../js/instances/query/Languages";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPlusCircle, faPen } from '@fortawesome/free-solid-svg-icons';
 import Use from "../Modal/Use";
 import NewDerivedAttribute from "../Modal/NewDerivedAttribute";
 import NewIndexedAttribute from "../Modal/NewIndexedAttribute";
+import EditIndexedLocation from "../Modal/EditIndexedLocation";
 
 type LanguageOption = {
   value: string;
@@ -49,6 +50,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
 
     const { isOpen: isDerivedOpen, toggle: toggleDerived }        = Use();
     const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
+    const { isOpen: isIndexedEditOpen, toggle: toggleIndexedEdit} = Use();
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [metaModels, setMetaModels]         = useState<string[]>([]);
@@ -357,6 +359,17 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {indexedLocations.map((location: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{location}</span>
+                                    <button aria-label={`Edit indexed location ${location}`} className={styles.deleteButton} onClick={toggleIndexedEdit}>
+                                        <FontAwesomeIcon icon={faPen} />
+                                    </button>
+                                    <EditIndexedLocation
+                                                title='Create a New Indexed Location'
+                                                isOpen={isIndexedEditOpen}
+                                                toggle={toggleIndexedEdit}
+                                                name={instance.name}
+                                                repoName={location}
+                                                onCreated={getIndexedLocations}
+                                        />
                                     <button aria-label={`Delete indexed location ${location}`} className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the indexed location "${location}"? This action cannot be undone.`)) {
                                             deleteIndexedLocation(location);

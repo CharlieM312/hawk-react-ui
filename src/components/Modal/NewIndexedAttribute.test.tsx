@@ -21,7 +21,7 @@ vi.mock('../../js/client/Create', () => ({
   }))
 }));
 
-describe('New derived attribute', () => {
+describe('New indexed attribute', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -61,7 +61,7 @@ describe('New derived attribute', () => {
   
     });
 
-    test('Creation of new valid derived attribute', async () => {
+    test('Creation of new valid indexed attribute', async () => {
         const mockUse = vi.mocked(Use);
         mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
         const { isOpen, toggle } = mockUse();
@@ -89,6 +89,6 @@ describe('New derived attribute', () => {
           metamodelUri: 'mymetamodel',
           typeName: 'myType'
         });
-      });
+    });
 
 });
