@@ -37,7 +37,7 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
         const Ordered = formData.get('isOrdered') as string;
         const Unique = formData.get('isUnique') as string;
         const derivationLanguage = formData.get('derivationLanguage') as string;
-        if (attributeName == "") {
+        if (attributeName == "" || attributeName == null) {
             alert('Please enter an attribute name.');
             return;
         }
@@ -138,7 +138,7 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
                     <option key={"timelineAnnotation"} value={"TimelineAnnotation"}>TimelineAnnotation</option>
                 </select>
                 <label className={styles.label}>isMany</label>
-                <input type="checkbox" name="isMany" disabled={loading} className={styles.checkbox}/>
+                <input type="checkbox" aria-label="isMany" name="isMany" disabled={loading} className={styles.checkbox}/>
                 <br></br>
                 <label className={styles.label}>isOrdered</label>
                 <input type="checkbox" name="isOrdered" disabled={loading} className={styles.checkbox}/>

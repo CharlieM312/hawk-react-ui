@@ -52,7 +52,6 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
     const { isOpen: isIndexedEditOpen, toggle: toggleIndexedEdit} = Use();
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
-    const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [metaModels, setMetaModels]         = useState<string[]>([]);
     const [derivedAttributes, setDerivedAttributes] = useState<string[]>([]);
     const [indexedAttributes, setIndexedAttributes] = useState<string[]>([]);
@@ -96,7 +95,6 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     const onClickStartInstance = async () => {
     
         if(!instance?.name) return;
-        setShowErrorMessage(false);
         setIsRunDisabled(true);
         try {
             await Promise.resolve(hawkClient.startInstance(instance.name));

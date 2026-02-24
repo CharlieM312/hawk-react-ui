@@ -28,7 +28,7 @@ export default function NewIndexedAttribute({title, isOpen, toggle, name, onCrea
         const metamodelUri = formData.get('metamodel') as string;
         const typeName = formData.get('type') as string;
         // Attribute name can be empty in a couple of cases so going to keep this
-        if (attributeName == "") {
+        if (attributeName == "" || attributeName == null) {
             alert('Please enter an attribute name.');
             return;
         }

@@ -68,18 +68,6 @@ export default function New({ isOpen, toggle, title }: NewProps) {
       alert('Instance name cannot be empty.');
       return;
     }
-    //Get instances to check if one with this name already exists
-    try {
-      const existingInstances = clientRef.current ? clientRef.current.listInstances() : [];
-      if (existingInstances.some((instance: InstanceType) => instance.name === instanceName)) {
-        alert('An instance with this name already exists. Please choose a different name.');
-        return;
-      }
-    } catch (err) {
-      console.error('Failed to fetch existing instances:', err);
-      alert('Failed to validate instance name uniqueness. See console for details.');
-      return;
-    }
 
     if (minDelay === '' || maxDelay === '') {
       alert('Please provide both minimum and maximum delay periods.');
@@ -93,6 +81,19 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     const minDelayNumber = parseInt(minDelay);
     const maxDelayNumber = parseInt(maxDelay);
 
+    //Get instances to check if one with this name already exists
+    try {
+      const existingInstances = clientRef.current ? await clientRef.current.listInstances() : [];
+      if (Array.isArray(existingInstances) && existingInstances.some((instance: InstanceType) => instance.name === instanceName)) {
+        alert('An instance with this name already exists. Please choose a different name.');
+        return;
+      }
+    } catch (err) {
+      console.error('Failed to fetch existing instances:', err);
+      alert('Failed to validate instance name uniqueness. See console for details.');
+      return;
+    }
+
     const args: any[] = [instanceName, backend, minDelayNumber, maxDelayNumber];
     pluginsSelected.push(updater);
     // PluginsSelected will always have at least one element (the updater), so we can directly push it to the args array without checking its length
@@ -102,7 +103,8 @@ export default function New({ isOpen, toggle, title }: NewProps) {
 
     try {
       setLoading(true);
-      clientRef.current?.createInstance(...args);
+      if (!clientRef.current) throw new Error('Hawk client is not initialized.');
+      await clientRef.current?.createInstance(...args);
       alert(`Instance "${instanceName}" created successfully!`);
       toggle();
     } catch (err: any) {

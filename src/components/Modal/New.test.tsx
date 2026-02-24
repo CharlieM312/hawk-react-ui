@@ -1,32 +1,28 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import New from './New';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Use from './Use';
 import { describe, test, expect, vi, afterEach } from 'vitest';
 import { act } from 'react';
 
-vi.mock('./Use');
+const loadNew = async () => {
+  const { default: New } = await import('./New');
+  return New;
+};
 
-vi.mock('../../js/client/Create', () => ({
-  __esModule: true,
-  default: vi.fn(() => ({
-    listQueryLanguages: vi.fn(() => []),
-    listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
-    listBackends: vi.fn(() => ['backend1', 'backend2']),
-    listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
-    createInstance: vi.fn(() => Promise.resolve())
-  }))
-}));
+
+vi.mock('./Use');
 
 describe('New component', () => {
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    vi.resetModules();
   });
   test('Renders modal title', async () => {
     const mockUse = vi.mocked(Use);
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
-    act (() => {
+    const New = await loadNew();
+    act(() => {
       render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
     });
 
@@ -39,6 +35,7 @@ describe('New component', () => {
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
+    const New = await loadNew();
     act(() => {
       render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
     });
@@ -56,6 +53,7 @@ describe('New component', () => {
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
+    const New = await loadNew();
     act(() => {
       render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
     });
@@ -76,6 +74,7 @@ describe('New component', () => {
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
+    const New = await loadNew();
     act(() => {
       render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
     });
@@ -87,10 +86,24 @@ describe('New component', () => {
     expect(alertMock).toHaveBeenCalledWith('Instance name cannot be empty.');
   });
 
-  test('Check what happens when user tries to create an instance with the same name as one that already exists', async () => {
-    const mockUse = vi.mocked(Use);
-    mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
-    const { isOpen, toggle } = mockUse();
+  test('Check what happens when the user tries to create an instance with the same name as one that already exists', async () => {
+    vi.resetModules();
+    vi.doMock('../../js/client/Create', () => ({
+      __esModule: true,
+      default: vi.fn(() => ({
+        listQueryLanguages: vi.fn(() => []),
+        listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
+        listBackends: vi.fn(() => ['backend1', 'backend2']),
+        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
+        createInstance: vi.fn(() => Promise.resolve())
+      }))
+    }));
+
+    const { default: Use } = await import('./Use');
+    vi.mocked(Use).mockReturnValue({ isOpen: true, toggle: () => {} });
+    const { isOpen, toggle } = Use();
+
+    const New = await loadNew();
 
     act(() => {
       render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
@@ -101,11 +114,66 @@ describe('New component', () => {
     act(() => {
       fireEvent.change(instanceNameInput, { target: { value: 'hawk-set0' } });
     });
+    const minDelayInput = await screen.findByPlaceholderText('Minimum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(minDelayInput, { target: { value: '500' } });
+    });
+    const maxDelayInput = await screen.findByPlaceholderText('Maximum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(maxDelayInput, { target: { value: '1000' } });
+    });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
     act(() => {      
       submitButton.click();
     });
-    expect(alertMock).toHaveBeenCalledWith('An instance with this name already exists. Please choose a different name.');
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith('An instance with this name already exists. Please choose a different name.');
+    });
+  });
+
+  test('Check what happens when the user can\'t get instances', async () => {
+    vi.resetModules();
+    vi.doMock('../../js/client/Create', () => ({
+      __esModule: true,
+      default: vi.fn(() => ({
+        listQueryLanguages: vi.fn(() => []),
+        listInstances: vi.fn(() => Promise.reject(new Error('network'))),
+        listBackends: vi.fn(() => ['backend1', 'backend2']),
+        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
+        createInstance: vi.fn(() => Promise.resolve())
+      }))
+    }));
+
+    const { default: Use } = await import('./Use');
+    vi.mocked(Use).mockReturnValue({ isOpen: true, toggle: () => {} });
+
+    const New = await loadNew();
+
+    act(() => {
+      render(<New isOpen={true} toggle={() => {}} title={'Create a New Instance'} />);
+    });
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    const instanceNameInput = await screen.findByPlaceholderText('Instance name');
+    act(() => {
+      fireEvent.change(instanceNameInput, { target: { value: 'hawk-set1' } });
+    });
+
+    const minDelayInput = await screen.findByPlaceholderText('Minimum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(minDelayInput, { target: { value: '500' } });
+    });
+    const maxDelayInput = await screen.findByPlaceholderText('Maximum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(maxDelayInput, { target: { value: '1000' } });
+    });
+    const submitButton = await screen.findByRole('button', { name: 'Create' });
+    act(() => {      
+      submitButton.click();
+    });
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith('Failed to validate instance name uniqueness. See console for details.');
+    });
   });
 
   test('Check what happens when user tries to create an instance with not all mandatory fields filled', async () => {
@@ -113,6 +181,7 @@ describe('New component', () => {
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
+    const New = await loadNew();
     act(() => {
       render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
     });
@@ -129,11 +198,12 @@ describe('New component', () => {
     expect(alertMock).toHaveBeenCalledWith('Please provide both minimum and maximum delay periods.');
   });
 
-  test('Check what happens when user tries to create an instance with a greater minimum delay than maximum delay', async () => {
+  test('Check what happens when the user tries to create an instance with a greater minimum delay than maximum delay', async () => {
     const mockUse = vi.mocked(Use);
     mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
     const { isOpen, toggle } = mockUse();
 
+    const New = await loadNew();
     act(() => {
       render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
     });
@@ -160,12 +230,25 @@ describe('New component', () => {
 
 
   test('Creation of new valid instance', async () => {
-    const mockUse = vi.mocked(Use);
-    mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
-    const { isOpen, toggle } = mockUse();
+    vi.resetModules();
+    vi.doMock('../../js/client/Create', () => ({
+      __esModule: true,
+      default: vi.fn(() => ({
+        listQueryLanguages: vi.fn(() => []),
+        listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
+        listBackends: vi.fn(() => ['backend1', 'backend2']),
+        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
+        createInstance: vi.fn(() => Promise.resolve())
+      }))
+    }));
+
+    const { default: Use } = await import('./Use');
+    vi.mocked(Use).mockReturnValue({ isOpen: true, toggle: () => {} });
+
+    const New = await loadNew();
 
     act(() => {
-      render(<New isOpen={isOpen} toggle={toggle} title={'Create a New Instance'} />);
+      render(<New isOpen={true} toggle={() => {}} title={'Create a New Instance'} />);
     });
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
@@ -193,6 +276,112 @@ describe('New component', () => {
     act(() => {      
       submitButton.click();
     });
-    expect(alertMock).toHaveBeenCalledWith('Instance \"MyInstance\" created successfully!');
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith('Instance "MyInstance" created successfully!');
+    });
+  });
+
+  test('Error creating a valid instance', async () => {
+    vi.resetModules();
+    vi.doMock('../../js/client/Create', () => ({
+      __esModule: true,
+      default: vi.fn(() => ({
+        listQueryLanguages: vi.fn(() => []),
+        listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
+        listBackends: vi.fn(() => ['backend1', 'backend2']),
+        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
+        createInstance: vi.fn(() => Promise.reject(new Error('Failed to create instance')))
+      }))
+    }));
+
+    const { default: Use } = await import('./Use');
+    vi.mocked(Use).mockReturnValue({ isOpen: true, toggle: () => {} });
+
+    const New = await loadNew();
+
+    act(() => {
+      render(<New isOpen={true} toggle={() => {}} title={'Create a New Instance'} />);
+    });
+    const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    const instanceNameInput = await screen.findByPlaceholderText('Instance name');
+    act(() => {
+      fireEvent.change(instanceNameInput, { target: { value: 'MyInstance' } });
+    });
+    const updaterInput = await screen.findByLabelText('Updater');
+    act(() => {
+      fireEvent.change(updaterInput, { target: { value: 'org.eclipse.hawk.graph.updater.GraphModelUpdater' } });
+    });
+    const minDelayInput = await screen.findByPlaceholderText('Minimum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(minDelayInput, { target: { value: '500' } });
+    });
+    const maxDelayInput = await screen.findByPlaceholderText('Maximum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(maxDelayInput, { target: { value: '1000' } });
+    });
+    const indexFactoryInput = await screen.findByPlaceholderText('Index Factory');
+    act(() => {
+      fireEvent.change(indexFactoryInput, { target: { value: 'org.eclipse.hawk.graph.index.DefaultIndexFactory' } });
+    });
+    const submitButton = await screen.findByRole('button', { name: 'Create' });
+    act(() => {      
+      submitButton.click();
+    });
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith('Failed to create instance. See console and server logs.');
+    });
+  });
+
+  test('warning with invalid plugins', async () => {
+    vi.resetModules();
+    vi.doMock('../../js/client/Create', () => ({
+      __esModule: true,
+      default: vi.fn(() => ({
+        listQueryLanguages: vi.fn(() => []),
+        listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
+        listBackends: vi.fn(() => ['backend1', 'backend2']),
+        listPlugins: vi.fn(() => ['plugin1', 'plugin2']),
+        createInstance: vi.fn(() => Promise.reject(new Error('Failed to create instance')))
+      }))
+    }));
+
+    const { default: Use } = await import('./Use');
+    vi.mocked(Use).mockReturnValue({ isOpen: true, toggle: () => {} });
+    const warnMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const New = await loadNew();
+
+    act(() => {
+      render(<New isOpen={true} toggle={() => {}} title={'Create a New Instance'} />);
+    });
+
+    const instanceNameInput = await screen.findByPlaceholderText('Instance name');
+    act(() => {
+      fireEvent.change(instanceNameInput, { target: { value: 'MyInstance' } });
+    });
+    const updaterInput = await screen.findByLabelText('Updater');
+    act(() => {
+      fireEvent.change(updaterInput, { target: { value: 'plugin2' } });
+    });
+    const minDelayInput = await screen.findByPlaceholderText('Minimum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(minDelayInput, { target: { value: '500' } });
+    });
+    const maxDelayInput = await screen.findByPlaceholderText('Maximum Delay Period (ms)');
+    act(() => {
+      fireEvent.change(maxDelayInput, { target: { value: '1000' } });
+    });
+    const indexFactoryInput = await screen.findByPlaceholderText('Index Factory');
+    act(() => {
+      fireEvent.change(indexFactoryInput, { target: { value: 'org.eclipse.hawk.graph.index.DefaultIndexFactory' } });
+    });
+    const submitButton = await screen.findByRole('button', { name: 'Create' });
+    act(() => {      
+      submitButton.click();
+    });
+    await waitFor(() => {
+      expect(warnMock).toHaveBeenCalledWith('No valid updaters found in plugins list:', ['plugin1', 'plugin2']);
+    });
   });
 });
