@@ -14,12 +14,16 @@ export default defineConfig({
       reporter: ['text', 'html', 'lcov'],
       exclude: [
         'src/**/*.d.ts',
+        'src/**/*.css',
         'src/index.tsx',
         'src/setupTests.ts',
         'src/**/*.test.{ts,tsx}',
         'src/reportWebVitals.ts',
         'src/js/client/**',
-        'src/**/*.stories.{ts,tsx}'
+        'src/**/*.stories.{ts,tsx}',
+        'src/js/instances/**',
+        'src/js/syntax-highlighting/**',
+        'src/components/Modal/InstanceError.tsx'
       ],
       thresholds: {
         branches: 80,

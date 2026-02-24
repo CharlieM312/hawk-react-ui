@@ -1,21 +1,15 @@
 
-
-.instanceContent {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-}
-
 .linkDisplay {
-  position: relative;
+  position: absolute;
   top: 2px;
   left: 10px;
   display: flex;
   gap: 8px;
   padding: 0;
+}
+
+.container {
+  position: relative;
 }
 
 .header {
@@ -71,7 +65,7 @@
     padding-right: 2rem;
 }
 
-.graphOptions {
+.instanceOptions {
     flex: 0 0 55%;
     display: flex;
     flex-direction: column;
@@ -143,19 +137,4 @@
   color: #999;
   font-size: 0.9rem;
   margin: 0;
-}
-
-.backArrow {
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin-right: 8px;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  color: inherit;
-}
-.backArrow:focus {
-  outline: 2px solid rgba(126,86,194,0.25); /* keep accessible focus */
-  border-radius: 4px;
 }

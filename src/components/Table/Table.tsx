@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faPlayCircle, faStopCircle, faRefresh, faBan } from '@fortawesome/free-solid-svg-icons'
 
 import Use from '../Modal/Use';
-import Instance from '../Modal/Instance';
 import Get from '../../js/instances/Get';
 import Create from '../../js/client/Create';
 
@@ -89,7 +88,7 @@ export default function Table({ url }: TableProps) {
                         if (isOpen) toggle();
 
                         setTimeout(() => {
-                          navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } });
+                          navigate(`/instance/${instance.name}/settings`, { state: { instance: instance, url: url } });
                         }, 100);
                       }
                     }}
@@ -108,6 +107,7 @@ export default function Table({ url }: TableProps) {
                           const hawkClient = Create(url);
                           await Promise.resolve(hawkClient.startInstance(instance.name));
                           alert(`${instance.name} started`);
+                          window.location.reload();
                         } catch (err) {
                           alert(`Failed to start instance ${instance.name}. Reason: ${err}`);
                         }
@@ -116,6 +116,8 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is already running.`);
                       }
                     }}
+                    role="button"
+                    aria-label={`Start ${instance.name}`}
                      />
                      <FontAwesomeIcon className={styles.play} icon={faRefresh}
                     onClick={async (e) => {
@@ -135,6 +137,7 @@ export default function Table({ url }: TableProps) {
 
                       }
                     }}
+                    aria-label={`Sync ${instance.name}`}
                      />
                      <FontAwesomeIcon className={styles.play} icon={faStopCircle}
                     onClick={async (e) => {
@@ -157,6 +160,7 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is already stopped.`);
                       }
                     }}
+                    aria-label={`Stop ${instance.name}`}
                     />
                      <FontAwesomeIcon className={styles.play} icon={faBan}
                     onClick={async (e) => {
@@ -179,6 +183,7 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is running, and can't be deleted.`);
                       }
                     }}
+                    aria-label={`Delete ${instance.name}`}
                     />
                     {instance.name}
                   </td>
@@ -192,14 +197,6 @@ export default function Table({ url }: TableProps) {
         <ErrorBoundary
           FallbackComponent={InstanceError}
         >
-          {!location.pathname.match(/^\/instances?\/[^/]+/) && (
-            <Instance
-              isOpen={isOpen}
-              toggle={toggle}
-              instance={selectedInstance}
-              url={url}
-            />
-          )}
         </ErrorBoundary>
       </>
       }

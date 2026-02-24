@@ -35,6 +35,11 @@
   width: 100%;
 }
 
+.checkbox {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
 .label {
   margin-bottom: -5px;
   font-weight: bold;

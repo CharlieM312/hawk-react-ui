@@ -10,6 +10,12 @@ if (!global.TextDecoder) {
   global.TextDecoder = TextDecoder
 }
 
+global.HawkQueryOptions = class {
+  constructor(options) {
+    this.options = options
+  }
+}
+
 const localStorageMock = (function () {
   let store = {};
 

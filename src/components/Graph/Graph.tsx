@@ -9,14 +9,26 @@ export default function Graph({ data }: GraphProps) {
     return (<></>);
   }
 
-  const elements: { data: { id: any; label: any; }; }[] = [];
+  const vList = data.result?.vList;
+  const vMap = data.result?.vMap;
+  if (!vList || !Array.isArray(vList) || vList.length === 0) {
+    console.warn('Graph: no vList or vList is not an array — skipping graph render', data);
+    return (<></>);
+  }
 
-  if (data.result?.vList) {
-    Object.entries(data.result.vList).forEach(([key, value], index) => {
-      elements.push({
-        data: { id: value.vModelElement.id, label: value.vModelElement.id, }
-      });
-    });
+  const elements: { data: { id: any; label: any; }; }[] = [];
+  for (const item of vList) {
+    const modelElem = item?.vModelElement;
+    if (modelElem && modelElem.id != null) {
+      const id = String(modelElem.id);
+      const label = modelElem.name || id;
+      elements.push({ data: { id, label } });
+    }
+  }
+
+  if (elements.length === 0) {
+    console.warn('Graph: no valid elements found in vList — skipping graph render', data);
+    return (<></>);
   }
 
   return (

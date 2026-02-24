@@ -3,6 +3,7 @@ import { CloseButton } from 'react-bootstrap';
 import Create  from '../../js/client/Create';
 import styles from './New.module.css';
 import { useEffect, useRef, useState } from 'react';
+import { ClipLoader } from 'react-spinners';
 
 type NewProps = {
   isOpen: boolean;
@@ -22,17 +23,28 @@ export default function New({ isOpen, toggle, title }: NewProps) {
 
   const clientRef = useRef<HawkClient | null>(null);
   const [backends, setBackends] = useState<string[]>([]);
+  const [updaters, setUpdaters] = useState<string[]>([]);
   const [plugins, setPlugins] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       try {
         const envUrl = import.meta.env.VITE_APP_HAWK_URL ?? '';
         clientRef.current = Create(envUrl);
-        const list = await clientRef.current.listBackends();
-        setBackends(list);
-        const pluginsList = await clientRef.current.listPlugins();
-        setPlugins(pluginsList);
+        const backendsList: string[] = await clientRef.current.listBackends();
+        const pluginsList: string[] = await clientRef.current.listPlugins();
+        const updaters = ['org.eclipse.hawk.graph.updater.GraphModelUpdater', 'org.eclipse.hawk.timeaware.graph.TimeAwareModelUpdater'];
+        const validUpdaters = pluginsList.filter((item) => updaters.includes(item));
+        if (validUpdaters.length > 0) {
+          setUpdaters(validUpdaters);
+        } else {
+          console.warn('No valid updaters found in plugins list:', pluginsList);
+        }
+        let validPlugins = pluginsList.filter((item) => !updaters.includes(item));
+        validPlugins = pluginsList.filter((item) => !backendsList.includes(item));
+        setBackends(backendsList);
+        setPlugins(validPlugins);
       } catch (err) {
         console.error('Failed to create Hawk client or fetch backends:', err);
       }
@@ -40,13 +52,14 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     init();
   }, []);
 
-  const handleSubmission = (e: React.SubmitEvent) => {
+  const handleSubmission = async (e: React.SubmitEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const instanceName = formData.get('instanceName') as string;
     const backend = formData.get('backend') as string;
     const minDelay = formData.get('minDelay') as string;
     const maxDelay = formData.get('maxDelay') as string;
+    const updater = formData.get('updater') as string;
     const pluginsSelected = formData.getAll('plugins') as string[];
     const indexFactory = formData.get('indexFactory') as string;
 
@@ -81,18 +94,14 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     const maxDelayNumber = parseInt(maxDelay);
 
     const args: any[] = [instanceName, backend, minDelayNumber, maxDelayNumber];
-    const validUpdaters = ['org.eclipse.hawk.graph.updater.GraphModelUpdater', 'org.eclipse.hawk.timeaware.graph.TimeAwareModelUpdater'];
-    if (pluginsSelected.length > 0 && (pluginsSelected.includes(validUpdaters[0]) || (pluginsSelected.includes(validUpdaters[1])))) {
-      args.push(pluginsSelected);
-    } else if (pluginsSelected.length > 0) {
-      alert('Please select at least one valid updater (GraphModelUpdater or TimeAwareGraphModelUpdater).');
-      return;
-    }
+    pluginsSelected.push(updater);
+    // PluginsSelected will always have at least one element (the updater), so we can directly push it to the args array without checking its length
+    args.push(pluginsSelected);
     if (indexFactory !== '') args.push(indexFactory);
-
-    console.log('Creating instance with arguments:', args);
+    //TODO: Check for minimum 1 model parser, 1 metamodel parser, 1 query engine
 
     try {
+      setLoading(true);
       clientRef.current?.createInstance(...args);
       alert(`Instance "${instanceName}" created successfully!`);
       toggle();
@@ -104,6 +113,8 @@ export default function New({ isOpen, toggle, title }: NewProps) {
       if (err && err.message) console.error('Thrift message:', err.message);
       if (err && err.stack) console.error(err.stack);
       alert('Failed to create instance. See console and server logs.');
+    } finally {
+      setLoading(false);
     }
 
   };
@@ -127,24 +138,32 @@ export default function New({ isOpen, toggle, title }: NewProps) {
       </div>
       <div className={styles.body}>
           <form onSubmit={handleSubmission}>
-            <input type="text" name="instanceName" placeholder="Instance name" className={styles.input} />
+            <input type="text" name="instanceName" disabled={loading} placeholder="Instance name" className={styles.input} />
+            <label className={styles.label}>Updater</label>
+            <select aria-label="Updater" name="updater" id="updater" disabled={loading} className={styles.input}>
+              {updaters.map((updater) => (
+                <option key={updater} value={updater}>{updater}</option>
+              ))}
+            </select>
             <label className={styles.label}>Backends</label>
-            <select name="backend" id="backend" className={styles.input}>
+            <select name="backend" id="backend" disabled={loading} className={styles.input}>
               {backends.map((backend) => (
                 <option key={backend} value={backend}>{backend}</option>
               ))}
             </select>
-            <input type="number" name="minDelay" placeholder="Minimum Delay Period (ms)" className={styles.input} />
-            <input type="number" name="maxDelay" placeholder="Maximum Delay Period (ms)" className={styles.input} />
+            <input type="number" name="minDelay" disabled={loading} placeholder="Minimum Delay Period (ms)" className={styles.input} />
+            <input type="number" name="maxDelay" disabled={loading} placeholder="Maximum Delay Period (ms)" className={styles.input} />
             <br></br>
             <label className={styles.label}>Plugins</label>
-            <select name="plugins" id="plugins" multiple={true} className={styles.input}>
+            <select name="plugins" id="plugins" multiple={true} disabled={loading} className={styles.input}>
               {plugins.map((plugin) => (
                 <option key={plugin} value={plugin}>{plugin}</option>
               ))}
             </select>
-            <input type="text" name="indexFactory" placeholder="Index Factory" className={styles.input} />
-            <button type="submit" className={styles.input}>Create</button>
+            <input type="text" name="indexFactory" disabled={loading} placeholder="Index Factory" className={styles.input} />
+            <button type="submit" disabled={loading} className={styles.input}>
+              {loading ? <ClipLoader size={20} color="#7e56c2" /> : 'Create'}
+            </button>
           </form>
       </div>
     </Modal>
