@@ -18,7 +18,7 @@ vi.mock('../../js/client/Create', () => ({
   }))
 }));
 
-describe('New indexed location', () => {
+describe('Edit indexed location', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });

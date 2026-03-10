@@ -10,6 +10,7 @@ import Use from "../Modal/Use";
 import NewDerivedAttribute from "../Modal/NewDerivedAttribute";
 import NewIndexedAttribute from "../Modal/NewIndexedAttribute";
 import EditIndexedLocation from "../Modal/EditIndexedLocation";
+import AddIndexedLocation from "../Modal/AddIndexedLocation";
 
 type LanguageOption = {
   value: string;
@@ -51,6 +52,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     const { isOpen: isDerivedOpen, toggle: toggleDerived }        = Use();
     const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
     const { isOpen: isIndexedEditOpen, toggle: toggleIndexedEdit} = Use();
+    const { isOpen: isIndexedLocationOpen, toggle: toggleIndexedLocation } = Use();
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
     const [metaModels, setMetaModels]         = useState<string[]>([]);
     const [derivedAttributes, setDerivedAttributes] = useState<string[]>([]);
@@ -361,7 +363,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                         <FontAwesomeIcon icon={faPen} />
                                     </button>
                                     <EditIndexedLocation
-                                                title='Create a New Indexed Location'
+                                                title='Edit an Indexed Location'
                                                 isOpen={isIndexedEditOpen}
                                                 toggle={toggleIndexedEdit}
                                                 name={instance.name}
@@ -378,9 +380,16 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     </li>
                                 ))}
                                     <li className={styles.configItem}>
-                                        <button aria-label="Add indexed location" className={styles.addButton} onClick={() => alert('Add indexed location functionality not implemented yet.')}>
+                                        <button aria-label="Add indexed location" className={styles.addButton} onClick={toggleIndexedLocation}>
                                             <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Location
                                         </button>
+                                        <AddIndexedLocation
+                                                title='Create a New Indexed Location'
+                                                isOpen={isIndexedLocationOpen}
+                                                name={instance.name}
+                                                toggle={toggleIndexedLocation}
+                                                onCreated={getIndexedLocations}
+                                        />
                                     </li>
                                 </ul>
                             ) : (
