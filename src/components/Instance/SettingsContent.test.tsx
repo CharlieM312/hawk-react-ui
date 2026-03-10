@@ -9,13 +9,17 @@ vi.mock('../../js/client/Create', () => ({
   default: vi.fn(() => ({
     listQueryLanguages: vi.fn(() => ['org.eclipse.hawk.epsilon.emc.EOLQueryEngine', 'org.eclipse.hawk.timeaware.queries.TimeAwareEOLQueryEngine']),
     listInstances: vi.fn(() => []),
-    listMetamodels: vi.fn(() => []),
+    listMetamodels: vi.fn(() => ['myMetamodel']),
     listDerivedAttributes: vi.fn(() => [{attributeName: 'derivedAttributeOne', metaModelUri: 'exampleURI', typeName: 'mytype'}]),
     listIndexedAttributes: vi.fn(() => [{attributeName: 'indexedAttributeOne', metaModelUri: 'exampleURI', typeName: 'mytype'}]),
     listRepositories: vi.fn(() => [{uri: 'file://path/to/indexed/location', type: 'file'}]),
     startInstance: vi.fn(),
     stopInstance: vi.fn(),
-    syncInstance: vi.fn()
+    syncInstance: vi.fn(),
+    removeRepository: vi.fn(() => []),
+    removeIndexedAttribute: vi.fn(() => []),
+    removeDerivedAttribute: vi.fn(() => []),
+    unregisterMetamodels: vi.fn(() => [])
   }))
 }));
 
@@ -52,7 +56,35 @@ describe('SettingsContent', () => {
       metaModelsButton.click();
     });
     // Wait for the listMetamodels function to be called
-    await screen.findByText('No meta models found');
+    await screen.findByText('myMetamodel');
+  });
+
+  test('deletes metamodels from the instance', async () => {
+    const { default: SettingsContent } = await import('./SettingsContent');
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <MemoryRouter>
+        <SettingsContent instance={instance} url="http://localhost:8080" />
+      </MemoryRouter>
+    );
+
+    const metamodelsButton = screen.getByRole('button', { name: /Metamodels/i });
+    expect(metamodelsButton).toBeInTheDocument();
+    act(() => {
+      metamodelsButton.click();
+    });
+
+    await screen.findByText('myMetamodel');
+    const deleteMetamodelsButton = screen.getByRole('button', { name: /Unregister Metamodel myMetamodel/i });
+    expect(deleteMetamodelsButton).toBeInTheDocument();
+    act(() => {
+      deleteMetamodelsButton.click();
+    });
+    await screen.findByText('No metamodels found');
+
   });
 
   test('fetches derived attributes when the Derived Attributes section is expanded', async () => {
@@ -74,6 +106,32 @@ describe('SettingsContent', () => {
     const addAttributeButton = screen.getByRole('button', { name: /Add Derived Attribute/i });
     expect(addAttributeButton).toBeInTheDocument();
 
+  });
+
+  test('deletes derived attribute from the instance', async () => {
+    const { default: SettingsContent } = await import('./SettingsContent');
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <MemoryRouter>
+        <SettingsContent instance={instance} url="http://localhost:8080" />
+      </MemoryRouter>
+    );
+
+    const derivedAttributeButton = screen.getByRole('button', { name: /Derived Attributes/i });
+    expect(derivedAttributeButton).toBeInTheDocument();
+    act(() => {
+      derivedAttributeButton.click();
+    });
+    await screen.findByText('derivedAttributeOne');
+    const deleteAttributeButton = screen.getByRole('button', { name: /Delete Derived Attribute/i });
+    expect(deleteAttributeButton).toBeInTheDocument();
+    act(() => {
+      deleteAttributeButton.click();
+    });
+    await screen.findByText('No derived attributes found');
 
   });
 
@@ -95,6 +153,33 @@ describe('SettingsContent', () => {
     await screen.findByText('indexedAttributeOne');
     const addAttributeButton = screen.getByRole('button', { name: /Add Indexed Attribute/i });
     expect(addAttributeButton).toBeInTheDocument();
+  });
+
+  test('deletes indexed attribute from the instance', async () => {
+    const { default: SettingsContent } = await import('./SettingsContent');
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <MemoryRouter>
+        <SettingsContent instance={instance} url="http://localhost:8080" />
+      </MemoryRouter>
+    );
+
+    const indexedAttributeButton = screen.getByRole('button', { name: /Indexed Attributes/i });
+    expect(indexedAttributeButton).toBeInTheDocument();
+    act(() => {
+      indexedAttributeButton.click();
+    });
+    await screen.findByText('indexedAttributeOne');
+    const deleteAttributeButton = screen.getByRole('button', { name: /Delete Indexed Attribute/i });
+    expect(deleteAttributeButton).toBeInTheDocument();
+    act(() => {
+      deleteAttributeButton.click();
+    });
+    await screen.findByText('No indexed attributes found.');
+
   });
 
   test('fetches Indexed Locations when the Indexed Locations section is expanded', async () => {
@@ -119,6 +204,36 @@ describe('SettingsContent', () => {
     expect(addLocationButton).toBeInTheDocument();
 
   });
+
+  test('deletes indexed location from the instance', async () => {
+    const { default: SettingsContent } = await import('./SettingsContent');
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <MemoryRouter>
+        <SettingsContent instance={instance} url="http://localhost:8080" />
+      </MemoryRouter>
+    );
+
+    const indexedLocationsButton = screen.getByRole('button', { name: /Indexed Locations/i });
+    expect(indexedLocationsButton).toBeInTheDocument();
+    act(() => {
+      indexedLocationsButton.click();
+    });
+    await screen.findByText('file://path/to/indexed/location');
+    const deleteLocationButton = screen.getByRole('button', { name: /Delete Indexed Location/i });
+    expect(deleteLocationButton).toBeInTheDocument();
+    act(() => {
+      deleteLocationButton.click();
+    });
+    expect(alertSpy).toHaveBeenCalledWith('Indexed location \"file://path/to/indexed/location\" deleted successfully.');
+    await screen.findByText('No indexed locations found');
+
+  });
+
+
 
   test('should start the instance when Start Instance button is clicked', async () => {
     const { default: SettingsContent } = await import('./SettingsContent');

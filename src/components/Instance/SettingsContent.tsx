@@ -309,7 +309,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                         {metaModels.map((model: string, idx: number) => (
                             <li key={idx} className={styles.configItem}>
                                 <span>{model}</span>
-                                <button aria-label={`Unregister metamodel ${model}`} className={styles.deleteButton} onClick={() => {
+                                <button aria-label={`Unregister Metamodel ${model}`} className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to unregister the metamodel "${model}"? This action cannot be undone.`)) {
                                             unregisterMetamodel(model);
                                         }
@@ -326,7 +326,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                     </ul>
                     ) : (
                             <div className={styles.emptyStateContainer}>
-                                <p className={styles.emptyMessage}>No meta models found</p>
+                                <p className={styles.emptyMessage}>No metamodels found</p>
                                 <ul className={styles.configList}>
                                     <li>
                                         <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
@@ -416,7 +416,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {derivedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{attribute}</span>
-                                    <button className={styles.deleteButton} onClick={() => {
+                                    <button aria-label='Delete Derived Attribute' className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the derived attribute "${attribute}"? This action cannot be undone.`)) {
                                             deleteDerivedAttribute(attribute);
                                         }
@@ -478,7 +478,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {indexedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{attribute}</span>
-                                    <button className={styles.deleteButton} onClick={() => {
+                                    <button aria-label="Delete Indexed Attribute" className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the attribute "${attribute}"? This action cannot be undone.`)) {
                                             deleteIndexedAttribute(attribute);
                                         }

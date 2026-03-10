@@ -38,7 +38,7 @@ jobs:
                 npm ci
             - name: Test
               run: |
-                npm run test
+                npm run test:coverage
             - name: Upload test results
               uses: actions/upload-artifact@v7
               if: always()
@@ -50,3 +50,13 @@ jobs:
               if: always()
               with:
                 paths: ./test-results/results.xml
+            - name: Coverage Summary
+              uses: davelosert/vitest-coverage-report-action@v2
+              if: always()
+              with:
+                name: 'Overall Coverage'
+                json-summary-path: './coverage/coverage-summary.json'
+                json-final-path: './coverage/coverage-final.json'
+                threshold-icons: "{0: '🔴', 70: '🟠', 80: '🟢'}"
+                vite-config-path: "./vite.config.ts"
+                file-coverage-root-path: './src/*'
