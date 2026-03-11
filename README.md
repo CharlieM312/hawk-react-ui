@@ -55,3 +55,7 @@ This requires that you have a Docker server running on the local machine: you ma
 ## License
 
 [![License](https://img.shields.io/badge/License-EPL_2.0-red.svg)](https://opensource.org/licenses/EPL-2.0)
+
+## Test Results
+
+[![CI](https://github.com/CharlieM312/hawk-react-ui/actions/workflows/github-ci.yml/badge.svg?branch=main)](https://github.com/CharlieM312/hawk-react-ui/actions/workflows/github-ci.yml)

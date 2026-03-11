@@ -10,6 +10,8 @@ import Use from "../Modal/Use";
 import NewDerivedAttribute from "../Modal/NewDerivedAttribute";
 import NewIndexedAttribute from "../Modal/NewIndexedAttribute";
 import EditIndexedLocation from "../Modal/EditIndexedLocation";
+import AddIndexedLocation from "../Modal/AddIndexedLocation";
+import AddMetamodel from "../Modal/AddMetamodel";
 
 type LanguageOption = {
   value: string;
@@ -50,7 +52,9 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
 
     const { isOpen: isDerivedOpen, toggle: toggleDerived }        = Use();
     const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
+    const { isOpen: isMetamodelOpen, toggle: toggleMetamodel }    = Use();
     const { isOpen: isIndexedEditOpen, toggle: toggleIndexedEdit} = Use();
+    const { isOpen: isIndexedLocationOpen, toggle: toggleIndexedLocation } = Use();
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
     const [metaModels, setMetaModels]         = useState<string[]>([]);
     const [derivedAttributes, setDerivedAttributes] = useState<string[]>([]);
@@ -309,7 +313,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                         {metaModels.map((model: string, idx: number) => (
                             <li key={idx} className={styles.configItem}>
                                 <span>{model}</span>
-                                <button aria-label={`Unregister metamodel ${model}`} className={styles.deleteButton} onClick={() => {
+                                <button aria-label={`Unregister Metamodel ${model}`} className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to unregister the metamodel "${model}"? This action cannot be undone.`)) {
                                             unregisterMetamodel(model);
                                         }
@@ -319,19 +323,33 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                             </li>
                         ))}
                         <li className={styles.configItem}>
-                            <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                            <button aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
                                 <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
                             </button>
+                            <AddMetamodel
+                                    title='Edit an Indexed Location'
+                                    isOpen={isMetamodelOpen}
+                                    toggle={toggleMetamodel}
+                                    name={instance.name}
+                                    onCreated={getMetaModels}
+                            />
                         </li>
                     </ul>
                     ) : (
                             <div className={styles.emptyStateContainer}>
-                                <p className={styles.emptyMessage}>No meta models found</p>
+                                <p className={styles.emptyMessage}>No metamodels found</p>
                                 <ul className={styles.configList}>
                                     <li>
-                                        <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                                        <button aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
                                             <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
                                         </button>
+                                        <AddMetamodel
+                                                title='Edit an Indexed Location'
+                                                isOpen={isMetamodelOpen}
+                                                toggle={toggleMetamodel}
+                                                name={instance.name}
+                                                onCreated={getMetaModels}
+                                        />
                                     </li>
                                 </ul>
                             </div>
@@ -361,7 +379,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                         <FontAwesomeIcon icon={faPen} />
                                     </button>
                                     <EditIndexedLocation
-                                                title='Create a New Indexed Location'
+                                                title='Edit an Indexed Location'
                                                 isOpen={isIndexedEditOpen}
                                                 toggle={toggleIndexedEdit}
                                                 name={instance.name}
@@ -378,9 +396,16 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     </li>
                                 ))}
                                     <li className={styles.configItem}>
-                                        <button aria-label="Add indexed location" className={styles.addButton} onClick={() => alert('Add indexed location functionality not implemented yet.')}>
+                                        <button aria-label="Add indexed location" className={styles.addButton} onClick={toggleIndexedLocation}>
                                             <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Location
                                         </button>
+                                        <AddIndexedLocation
+                                                title='Create a New Indexed Location'
+                                                isOpen={isIndexedLocationOpen}
+                                                name={instance.name}
+                                                toggle={toggleIndexedLocation}
+                                                onCreated={getIndexedLocations}
+                                        />
                                     </li>
                                 </ul>
                             ) : (
@@ -388,9 +413,16 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     <p className={styles.emptyMessage}>No indexed locations found</p>
                                     <ul className={styles.configList}>
                                         <li>
-                                            <button aria-label="Add indexed location" className={styles.addButton} onClick={() => alert('Add indexed location functionality not implemented yet.')}>
+                                            <button aria-label="Add indexed location" className={styles.addButton} onClick={toggleIndexedLocation}>
                                                 <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Location
                                             </button>
+                                            <AddIndexedLocation
+                                                title='Create a New Indexed Location'
+                                                isOpen={isIndexedLocationOpen}
+                                                name={instance.name}
+                                                toggle={toggleIndexedLocation}
+                                                onCreated={getIndexedLocations}
+                                            />
                                         </li>
                                     </ul>
                                 </div>
@@ -416,7 +448,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {derivedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{attribute}</span>
-                                    <button className={styles.deleteButton} onClick={() => {
+                                    <button aria-label='Delete Derived Attribute' className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the derived attribute "${attribute}"? This action cannot be undone.`)) {
                                             deleteDerivedAttribute(attribute);
                                         }
@@ -478,7 +510,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {indexedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{attribute}</span>
-                                    <button className={styles.deleteButton} onClick={() => {
+                                    <button aria-label="Delete Indexed Attribute" className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the attribute "${attribute}"? This action cannot be undone.`)) {
                                             deleteIndexedAttribute(attribute);
                                         }

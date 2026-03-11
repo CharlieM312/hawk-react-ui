@@ -3,6 +3,12 @@ import { useEffect } from 'react';
 import InstanceContent from './InstanceContent';
 import styles from './InstancePage.module.css';
 
+type HawkInstance = {
+  name: string;
+  status: string;
+  info: string;
+}
+
 export default function InstancePage() {
   const { name } = useParams<{ name: string }>();
   const location = useLocation();
@@ -10,7 +16,7 @@ export default function InstancePage() {
 
   const passed = (location.state as any)?.instance;
   const url = (location.state as any)?.url ?? window.location.origin;
-  const instance = passed ?? { name: name ?? '', status: '', info: '' };
+  const instance: HawkInstance = passed ?? { name: name ?? '', status: '', info: '' };
 
   useEffect(() => {
     // block direct access: if no instance was passed, redirect to home

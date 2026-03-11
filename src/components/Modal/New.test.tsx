@@ -8,8 +8,19 @@ const loadNew = async () => {
   return New;
 };
 
-
 vi.mock('./Use');
+
+vi.mock('../../js/client/Create', () => ({
+  __esModule: true,
+  default: vi.fn(() => ({
+    listQueryLanguages: vi.fn(() => []),
+    listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
+    listBackends: vi.fn(() => ['backend1', 'backend2']),
+    listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater','org.eclipse.hawk.emf.metamodel.EMFMetaModelResourceFactory']),
+    listMetamodels: vi.fn(() => ['mymetamodel']),
+    listRepositoryTypes: vi.fn(() => ['mockType'])
+  }))
+}));
 
 describe('New component', () => {
   afterEach(() => {
@@ -237,7 +248,7 @@ describe('New component', () => {
         listQueryLanguages: vi.fn(() => []),
         listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
         listBackends: vi.fn(() => ['backend1', 'backend2']),
-        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
+        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater', 'org.eclipse.hawk.emf.metamodel.EMFModelParser', 'org.eclipse.hawk.emf.metamodel.EMFMetaModelResourceFactory', 'org.eclipse.hawk.epsilon.emc.EOLQueryEngine']),
         createInstance: vi.fn(() => Promise.resolve())
       }))
     }));
@@ -259,6 +270,21 @@ describe('New component', () => {
     const updaterInput = await screen.findByLabelText('Updater');
     act(() => {
       fireEvent.change(updaterInput, { target: { value: 'org.eclipse.hawk.graph.updater.GraphModelUpdater' } });
+    });
+
+    const metamodelInput = await screen.findByLabelText('Metamodel Parsers');
+    act(() => {
+      fireEvent.change(metamodelInput, { target: { value: 'org.eclipse.hawk.emf.metamodel.EMFMetaModelResourceFactory' } });
+    });
+
+    const modelInput = await screen.findByLabelText('Model Parsers');
+    act(() => {
+      fireEvent.change(modelInput, { target: { value: 'org.eclipse.hawk.emf.metamodel.EMFModelParser' } });
+    });
+
+    const queryEngine = await screen.findByLabelText('Query Engines');
+    act(() => {
+      fireEvent.change(queryEngine, { target: { value: 'org.eclipse.hawk.epsilon.emc.EOLQueryEngine' } });
     });
     const minDelayInput = await screen.findByPlaceholderText('Minimum Delay Period (ms)');
     act(() => {
@@ -289,7 +315,7 @@ describe('New component', () => {
         listQueryLanguages: vi.fn(() => []),
         listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
         listBackends: vi.fn(() => ['backend1', 'backend2']),
-        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
+        listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater', 'org.eclipse.hawk.emf.metamodel.EMFModelParser', 'org.eclipse.hawk.emf.metamodel.EMFMetaModelResourceFactory', 'org.eclipse.hawk.epsilon.emc.EOLQueryEngine']),
         createInstance: vi.fn(() => Promise.reject(new Error('Failed to create instance')))
       }))
     }));
@@ -311,6 +337,21 @@ describe('New component', () => {
     const updaterInput = await screen.findByLabelText('Updater');
     act(() => {
       fireEvent.change(updaterInput, { target: { value: 'org.eclipse.hawk.graph.updater.GraphModelUpdater' } });
+    });
+
+    const metamodelInput = await screen.findByLabelText('Metamodel Parsers');
+    act(() => {
+      fireEvent.change(metamodelInput, { target: { value: 'org.eclipse.hawk.emf.metamodel.EMFMetaModelResourceFactory' } });
+    });
+
+    const modelInput = await screen.findByLabelText('Model Parsers');
+    act(() => {
+      fireEvent.change(modelInput, { target: { value: 'org.eclipse.hawk.emf.metamodel.EMFModelParser' } });
+    });
+
+    const queryEngine = await screen.findByLabelText('Query Engines');
+    act(() => {
+      fireEvent.change(queryEngine, { target: { value: 'org.eclipse.hawk.epsilon.emc.EOLQueryEngine' } });
     });
     const minDelayInput = await screen.findByPlaceholderText('Minimum Delay Period (ms)');
     act(() => {

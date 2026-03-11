@@ -152,6 +152,27 @@ describe('Table component', () => {
     });
   });
 
+  test('Opens settings when the cog icon is clicked and it is updating', async () => {
+
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockNavigate = vi.fn();
+
+    mockCreate.mockImplementation(() => ({} as any));
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
+    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
+    vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
+
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const cogIcon = getByLabelText('Settings for instancename');
+    fireEvent.click(cogIcon);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename/settings", { state: { instance: { name: 'instancename', status: 'UPDATING', info: 'message' }, url: 'http://avalidurl:3000' } });
+    });
+  });
+
   test('Syncs selected instance when the sync icon is clicked', async () => {
     
     const mockGet = vi.mocked(Get);
@@ -203,6 +224,27 @@ describe('Table component', () => {
 
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const startIcon = getByLabelText('Start instancename');
+    fireEvent.click(startIcon);
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is already running.');
+    });
+
+  });
+
+  test('Starting an instance that is already updating shows an alert', async () => {
+    
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
+
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+    mockCreate.mockImplementation(() => mockHawkClient as any);
+
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
     const startIcon = getByLabelText('Start instancename');
     fireEvent.click(startIcon);

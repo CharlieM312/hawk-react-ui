@@ -7,7 +7,7 @@ import Create from '../../js/client/Create';
 
 import styles from './Table.module.css';
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate  } from 'react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 import InstanceError from '../Modal/InstanceError';
 
@@ -22,9 +22,7 @@ type InstanceType = {
 }
 
 export default function Table({ url }: TableProps) {
-  const { isOpen, toggle } = Use();
   const navigate = useNavigate();
-  const location = useLocation();
   let errorMessage = '';
 
   const states = [
@@ -85,7 +83,6 @@ export default function Table({ url }: TableProps) {
                       e.stopPropagation();
 
                       if (instance.status === 'RUNNING' || instance.status === 'UPDATING') {
-                        if (isOpen) toggle();
 
                         setTimeout(() => {
                           navigate(`/instance/${instance.name}/settings`, { state: { instance: instance, url: url } });
@@ -98,7 +95,6 @@ export default function Table({ url }: TableProps) {
                     <FontAwesomeIcon className={styles.play} icon={faPlayCircle}
                     onClick={async (e) => {
                       e.stopPropagation();
-                      if (isOpen) toggle();
 
                       if (instance.status === 'STOPPED') {
                         const startInstanceNow = window.confirm(`Instance "${instance.name}" is currently STOPPED. Do you want to start it before opening settings?`);
@@ -122,7 +118,6 @@ export default function Table({ url }: TableProps) {
                      <FontAwesomeIcon className={styles.play} icon={faRefresh}
                     onClick={async (e) => {
                       e.stopPropagation();
-                      if (isOpen) toggle();
 
                       if (instance.status === 'RUNNING') {
                         const syncInstanceNow = window.confirm(`Instance "${instance.name}" is currently RUNNING. Do you want to force synchronization?`);
@@ -142,7 +137,6 @@ export default function Table({ url }: TableProps) {
                      <FontAwesomeIcon className={styles.play} icon={faStopCircle}
                     onClick={async (e) => {
                       e.stopPropagation();
-                      if (isOpen) toggle();
 
                       if (instance.status === 'RUNNING') {
                         const stopInstanceNow = window.confirm(`Instance "${instance.name}" is currently RUNNING. Do you want to stop it?`);
@@ -165,7 +159,6 @@ export default function Table({ url }: TableProps) {
                      <FontAwesomeIcon className={styles.play} icon={faBan}
                     onClick={async (e) => {
                       e.stopPropagation();
-                      if (isOpen) toggle();
 
                       if (instance.status === 'STOPPED') {
                         const deleteInstanceNow = window.confirm(`Instance "${instance.name}" is currently STOPPED. Do you want to delete it?`);

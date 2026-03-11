@@ -81,8 +81,8 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
                 const envUrl = import.meta.env.VITE_APP_HAWK_URL ?? '';
                 const hawkClient = Create(envUrl);
                 hawkClientRef.current = hawkClient;
-                const models = await hawkClient.listMetamodels(name);
-                const sortedModels = Array.isArray(models) ? models.sort() : [];
+                const models: string[] = await hawkClient.listMetamodels(name);
+                const sortedModels = models.sort();
                 const languages = await hawkClient.listQueryLanguages(name);
                 const typeNames = await hawkClientRef.current.listTypeNames(name, sortedModels[0]);
                 setTypeNames(typeNames);

@@ -24,6 +24,9 @@ export default function New({ isOpen, toggle, title }: NewProps) {
   const clientRef = useRef<HawkClient | null>(null);
   const [backends, setBackends] = useState<string[]>([]);
   const [updaters, setUpdaters] = useState<string[]>([]);
+  const [metamodelParsers, setMetaModels] = useState<string[]>([]);
+  const [modelParsers, setModels] = useState<string[]>([]);
+  const [queryEngines, setQueryEngines] = useState<string[]>([]);
   const [plugins, setPlugins] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -35,14 +38,34 @@ export default function New({ isOpen, toggle, title }: NewProps) {
         const backendsList: string[] = await clientRef.current.listBackends();
         const pluginsList: string[] = await clientRef.current.listPlugins();
         const updaters = ['org.eclipse.hawk.graph.updater.GraphModelUpdater', 'org.eclipse.hawk.timeaware.graph.TimeAwareModelUpdater'];
+        const metamodelParsers = ['org.eclipse.hawk.emf.metamodel.EMFMetaModelResourceFactory','org.eclipse.hawk.modelio.exml.metamodel.ModelioMetaModelResourceFactory','org.eclipse.hawk.uml.metamodel.UMLMetaModelResourceFactory'];
+        const modelParsers =  ['org.eclipse.hawk.emf.metamodel.EMFModelParser', 'org.eclipse.hawk.modelio.exml.model.ModelioModelResourceFactory', 'org.eclipse.hawk.uml.model.UMLModelResourceFactory'];
+        const queryEngines = ['org.eclipse.hawk.epsilon.emc.EOLQueryEngine','org.eclipse.hawk.epsilon.emc.EPLQueryEngine','org.eclipse.hawk.orientdb.query.OrientSQLQueryEngine','org.eclipse.hawk.timeaware.queries.TimeAwareEOLQueryEngine','org.eclipse.hawk.timeaware.queries.TimelineEOLQueryEngine']
+        const validmetamodelParsers = pluginsList.filter((item) => metamodelParsers.includes(item));
         const validUpdaters = pluginsList.filter((item) => updaters.includes(item));
+        const validModelParsers = pluginsList.filter((item) => modelParsers.includes(item));
+        const validQueryEngines = pluginsList.filter((item) => queryEngines.includes(item));
         if (validUpdaters.length > 0) {
           setUpdaters(validUpdaters);
         } else {
           console.warn('No valid updaters found in plugins list:', pluginsList);
         }
-        let validPlugins = pluginsList.filter((item) => !updaters.includes(item));
-        validPlugins = pluginsList.filter((item) => !backendsList.includes(item));
+        if (validmetamodelParsers.length > 0){
+          setMetaModels(validmetamodelParsers);
+        }
+        if (validModelParsers.length > 0){
+          setModels(validModelParsers);
+        }
+        if (validQueryEngines.length > 0){
+          setQueryEngines(validQueryEngines);
+        }
+
+        let validPlugins = pluginsList
+          .filter((item) => !updaters.includes(item))
+          .filter((item) => !backendsList.includes(item))
+          .filter((item) => !validmetamodelParsers.includes(item))
+          .filter((item) => !validModelParsers.includes(item))
+          .filter((item) => !validQueryEngines.includes(item));
         setBackends(backendsList);
         setPlugins(validPlugins);
       } catch (err) {
@@ -60,6 +83,9 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     const minDelay = formData.get('minDelay') as string;
     const maxDelay = formData.get('maxDelay') as string;
     const updater = formData.get('updater') as string;
+    const metamodelParser = formData.getAll('metamodelParser') as string[];
+    const modelParser = formData.getAll('modelParser') as string[];
+    const queryEngine = formData.getAll('queryEngine') as string[];
     const pluginsSelected = formData.getAll('plugins') as string[];
     const indexFactory = formData.get('indexFactory') as string;
 
@@ -97,9 +123,32 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     const args: any[] = [instanceName, backend, minDelayNumber, maxDelayNumber];
     pluginsSelected.push(updater);
     // PluginsSelected will always have at least one element (the updater), so we can directly push it to the args array without checking its length
+    if (modelParser.length > 0){
+      for (const item of modelParser){
+        pluginsSelected.push(item);
+      }
+    } else {
+      alert('At least one model parser is required!');
+      return;
+    }
+    if (metamodelParser.length > 0){
+      for (const item of metamodelParser){
+        pluginsSelected.push(item);
+      }
+    } else {
+      alert('At least one metamodel parser is required!');
+      return;
+    }
+    if (queryEngine.length > 0){
+      for (const item of queryEngine){
+        pluginsSelected.push(item);
+      }
+    } else {
+      alert('At least one query engine is required!');
+      return;
+    }
     args.push(pluginsSelected);
     if (indexFactory !== '') args.push(indexFactory);
-    //TODO: Check for minimum 1 model parser, 1 metamodel parser, 1 query engine
 
     try {
       setLoading(true);
@@ -151,6 +200,24 @@ export default function New({ isOpen, toggle, title }: NewProps) {
             <select name="backend" id="backend" disabled={loading} className={styles.input}>
               {backends.map((backend) => (
                 <option key={backend} value={backend}>{backend}</option>
+              ))}
+            </select>
+            <label className={styles.label}>Metamodel Parsers</label>
+            <select aria-label="Metamodel Parsers" name="metamodelParser" id="metamodelParser" multiple={true} disabled={loading} className={styles.input}>
+              {metamodelParsers.map((metamodel) => (
+                <option key={metamodel} value={metamodel}>{metamodel}</option>
+              ))}
+            </select>
+            <label className={styles.label}>Model Parsers</label>
+            <select aria-label="Model Parsers" name="modelParser" id="modelParser" multiple={true} disabled={loading} className={styles.input}>
+              {modelParsers.map((model) => (
+                <option key={model} value={model}>{model}</option>
+              ))}
+            </select>
+            <label className={styles.label}>Query Engines</label>
+            <select aria-label="Query Engines" name="queryEngine" id="queryEngine" multiple={true} disabled={loading} className={styles.input}>
+              {queryEngines.map((engine) => (
+                <option key={engine} value={engine}>{engine}</option>
               ))}
             </select>
             <input type="number" name="minDelay" disabled={loading} placeholder="Minimum Delay Period (ms)" className={styles.input} />
