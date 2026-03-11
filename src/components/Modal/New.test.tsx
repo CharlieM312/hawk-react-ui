@@ -8,8 +8,19 @@ const loadNew = async () => {
   return New;
 };
 
-
 vi.mock('./Use');
+
+vi.mock('../../js/client/Create', () => ({
+  __esModule: true,
+  default: vi.fn(() => ({
+    listQueryLanguages: vi.fn(() => []),
+    listInstances: vi.fn(() => [{ name: 'hawk-set0', state: 0, message: 'Updating' }]),
+    listBackends: vi.fn(() => ['backend1', 'backend2']),
+    listPlugins: vi.fn(() => ['plugin1', 'org.eclipse.hawk.graph.updater.GraphModelUpdater']),
+    listMetamodels: vi.fn(() => ['mymetamodel']),
+    listRepositoryTypes: vi.fn(() => ['mockType'])
+  }))
+}));
 
 describe('New component', () => {
   afterEach(() => {

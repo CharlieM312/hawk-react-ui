@@ -11,6 +11,7 @@ import NewDerivedAttribute from "../Modal/NewDerivedAttribute";
 import NewIndexedAttribute from "../Modal/NewIndexedAttribute";
 import EditIndexedLocation from "../Modal/EditIndexedLocation";
 import AddIndexedLocation from "../Modal/AddIndexedLocation";
+import AddMetamodel from "../Modal/AddMetamodel";
 
 type LanguageOption = {
   value: string;
@@ -51,6 +52,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
 
     const { isOpen: isDerivedOpen, toggle: toggleDerived }        = Use();
     const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
+    const { isOpen: isMetamodelOpen, toggle: toggleMetamodel }    = Use();
     const { isOpen: isIndexedEditOpen, toggle: toggleIndexedEdit} = Use();
     const { isOpen: isIndexedLocationOpen, toggle: toggleIndexedLocation } = Use();
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
@@ -321,9 +323,16 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                             </li>
                         ))}
                         <li className={styles.configItem}>
-                            <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                            <button aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
                                 <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
                             </button>
+                            <AddMetamodel
+                                    title='Edit an Indexed Location'
+                                    isOpen={isMetamodelOpen}
+                                    toggle={toggleMetamodel}
+                                    name={instance.name}
+                                    onCreated={getMetaModels}
+                            />
                         </li>
                     </ul>
                     ) : (
@@ -331,9 +340,16 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 <p className={styles.emptyMessage}>No metamodels found</p>
                                 <ul className={styles.configList}>
                                     <li>
-                                        <button aria-label="Add metamodel" className={styles.addButton} onClick={() => alert('Add metamodel functionality not implemented yet.')}>
+                                        <button aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
                                             <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
                                         </button>
+                                        <AddMetamodel
+                                                title='Edit an Indexed Location'
+                                                isOpen={isMetamodelOpen}
+                                                toggle={toggleMetamodel}
+                                                name={instance.name}
+                                                onCreated={getMetaModels}
+                                        />
                                     </li>
                                 </ul>
                             </div>
@@ -397,9 +413,16 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     <p className={styles.emptyMessage}>No indexed locations found</p>
                                     <ul className={styles.configList}>
                                         <li>
-                                            <button aria-label="Add indexed location" className={styles.addButton} onClick={() => alert('Add indexed location functionality not implemented yet.')}>
+                                            <button aria-label="Add indexed location" className={styles.addButton} onClick={toggleIndexedLocation}>
                                                 <FontAwesomeIcon icon={faPlusCircle} /> Add Indexed Location
                                             </button>
+                                            <AddIndexedLocation
+                                                title='Create a New Indexed Location'
+                                                isOpen={isIndexedLocationOpen}
+                                                name={instance.name}
+                                                toggle={toggleIndexedLocation}
+                                                onCreated={getIndexedLocations}
+                                            />
                                         </li>
                                     </ul>
                                 </div>

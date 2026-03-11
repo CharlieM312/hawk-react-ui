@@ -59,4 +59,3 @@ jobs:
                 json-final-path: './coverage/coverage-final.json'
                 threshold-icons: "{0: '🔴', 70: '🟠', 80: '🟢'}"
                 vite-config-path: "./vite.config.ts"
-                file-coverage-root-path: './src/*'

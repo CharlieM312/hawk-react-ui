@@ -19,7 +19,10 @@ vi.mock('../../js/client/Create', () => ({
     removeRepository: vi.fn(() => []),
     removeIndexedAttribute: vi.fn(() => []),
     removeDerivedAttribute: vi.fn(() => []),
-    unregisterMetamodels: vi.fn(() => [])
+    unregisterMetamodels: vi.fn(() => []),
+    listTypeNames: vi.fn(() => ['mytype']),
+    listAttributeNames: vi.fn(() => ['MyAttribute', 'OtherAttribute']),
+    listRepositoryTypes: vi.fn(() => [])
   }))
 }));
 
@@ -108,6 +111,33 @@ describe('SettingsContent', () => {
 
   });
 
+  test('opens add derived attribute modal', async () => {
+    const { default: SettingsContent } = await import('./SettingsContent');
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' }; 
+
+    render(
+      <MemoryRouter>
+        <SettingsContent instance={instance} url="http://localhost:8080" />
+      </MemoryRouter>
+    );
+    const derivedAttributesButton = screen.getByRole('button', { name: /Derived Attributes/i });
+    expect(derivedAttributesButton).toBeInTheDocument();
+    act(() => {
+      derivedAttributesButton.click();
+    });
+    // Wait for the listDerivedAttributes function to be called
+    await screen.findByText('derivedAttributeOne');
+    const addAttributeButton = screen.getByRole('button', { name: /Add Derived Attribute/i });
+    expect(addAttributeButton).toBeInTheDocument();
+
+    act(() => {
+      addAttributeButton.click();
+    });
+
+    expect(await screen.findByRole('heading', { name: /Create new derived attribute/i })).toBeInTheDocument();
+
+  });
+
   test('deletes derived attribute from the instance', async () => {
     const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
@@ -153,6 +183,32 @@ describe('SettingsContent', () => {
     await screen.findByText('indexedAttributeOne');
     const addAttributeButton = screen.getByRole('button', { name: /Add Indexed Attribute/i });
     expect(addAttributeButton).toBeInTheDocument();
+  });
+
+  test('opens the add indexed attribute modal', async () => {
+    const { default: SettingsContent } = await import('./SettingsContent');
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+
+    render(
+      <MemoryRouter>
+        <SettingsContent instance={instance} url="http://localhost:8080" />
+      </MemoryRouter>
+    );
+    const indexedAttributesButton = screen.getByRole('button', { name: /Indexed Attributes/i });
+    expect(indexedAttributesButton).toBeInTheDocument();
+    act(() => {
+      indexedAttributesButton.click();
+    });
+    // Wait for the listIndexedAttributes function to be called
+    await screen.findByText('indexedAttributeOne');
+    const addAttributeButton = screen.getByRole('button', { name: /Add Indexed Attribute/i });
+    expect(addAttributeButton).toBeInTheDocument();
+
+    act(() => {
+      addAttributeButton.click();
+    })
+
+    expect(await screen.findByRole('heading', { name: /Create new indexed attribute/i })).toBeInTheDocument();
   });
 
   test('deletes indexed attribute from the instance', async () => {
@@ -202,6 +258,35 @@ describe('SettingsContent', () => {
     await screen.findByText('file://path/to/indexed/location');
     const addLocationButton = screen.getByRole('button', { name: /Add Indexed Location/i });
     expect(addLocationButton).toBeInTheDocument();
+
+  });
+
+  test('opens add indexed location modal', async () => {
+    const { default: SettingsContent } = await import('./SettingsContent');
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <MemoryRouter>
+        <SettingsContent instance={instance} url="http://localhost:8080" />
+      </MemoryRouter>
+    );
+
+    const indexedLocationsButton = screen.getByRole('button', { name: /Indexed Locations/i });
+    expect(indexedLocationsButton).toBeInTheDocument();
+    act(() => {
+      indexedLocationsButton.click();
+    });
+    // Wait for the listIndexedLocations function to be called
+    await screen.findByText('file://path/to/indexed/location');
+    const addLocationButton = screen.getByRole('button', { name: /Add Indexed Location/i });
+    expect(addLocationButton).toBeInTheDocument();
+
+    act(() => {
+      addLocationButton.click();
+    });
+
+    expect(await screen.findByRole('heading', { name: /Add Repository/i })).toBeInTheDocument();
 
   });
 
@@ -259,6 +344,9 @@ describe('SettingsContent', () => {
   test('should stop the instance when Stop Instance button is clicked', async () => {
     const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
+    const mockNavigate = vi.fn();
+    const reactrouter = await import('react-router');
+    vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
 
     render(
       <MemoryRouter>
@@ -275,6 +363,10 @@ describe('SettingsContent', () => {
     await waitFor(() => {
       expect(alertSpy).toHaveBeenCalledWith('Instance hawk-set0 stopped successfully.');
     });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+
+    
   });
 
   test('should sync the instance when Sync Instance button is clicked', async () => {
