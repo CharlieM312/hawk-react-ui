@@ -13,7 +13,7 @@ export default async function FetchResults(hawkClient, queryId) {
       'result': result,
       'formattedResult': formattedResult ?? '',
       'raw': JSON.stringify(result, undefined, 2),
-      'modelElement': typeof formattedResult === 'object' ? formattedResult[0].vModelElement : null,
+      'modelElement': typeof formattedResult === 'object' ? formattedResult[0]?.vModelElement ?? null : null,
       'queryTime': result.wallMillis
     };
   } catch (err) {

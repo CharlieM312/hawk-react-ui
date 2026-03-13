@@ -114,7 +114,8 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                 setRunButtonText('Run');
               })
               .catch((err) => {
-                setErrorMessage(err['reason'].includes('InvalidQuery') ? 'Invalid query' : 'Query failed');
+                console.log(err);
+                setErrorMessage(err?.reason?.includes('InvalidQuery') ? 'Invalid query' : 'Query failed');
                 setShowErrorMessage(true);
                 isRunning.current = false;
                 setIsRunDisabled(false);
