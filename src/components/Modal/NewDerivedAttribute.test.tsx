@@ -146,6 +146,44 @@ describe('New derived attribute', () => {
         });
     });
 
+    test('Creation of new valid derived attribute with derivationLogic', async () => {
+        const mockUse = vi.mocked(Use);
+        mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
+        const { isOpen, toggle } = mockUse();
+        const mockFunction = vi.fn(() => []);
+        act(() => {
+          render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
+        });
+        const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    
+        const instanceNameInput = await screen.findByPlaceholderText('Name');
+        act(() => {
+          fireEvent.change(instanceNameInput, { target: { value: 'MyAttribute' } });
+        });
+
+        const derivationLogicInput = await screen.findByPlaceholderText('Derivation Logic');
+        act(() => {
+          fireEvent.change(derivationLogicInput, { target: {value: 'my derivation logic;'}});
+        });
+        
+        const submitButton = await screen.findByRole('button', { name: 'Submit' });
+        act(() => {      
+          submitButton.click();
+        });
+
+        const mockCreate = vi.mocked(Create);
+        const createdInstance = mockCreate.mock.results[0]?.value;
+        expect(createdInstance).toBeDefined();
+        expect(createdInstance.addDerivedAttribute).toHaveBeenCalledWith('hawk-set-0', {
+          attributeName: 'MyAttribute',
+          attributeType: "String",
+          derivationLanguage: null,
+          derivationLogic: 'my derivation logic;',
+          metamodelUri: 'mymetamodel',
+          typeName: 'isSingleton'
+        });
+    });
+
     test('Creation of new valid derived attribute with isMany checked', async () => {
         const mockUse = vi.mocked(Use);
         mockUse.mockReturnValue({isOpen: true, toggle: () => {}});

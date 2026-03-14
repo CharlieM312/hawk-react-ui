@@ -1,5 +1,4 @@
-import { act, fireEvent, getByLabelText, getByText, render, screen } from '@testing-library/react';
-import { Button } from 'react-bootstrap';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import { describe, test, expect, afterEach } from 'vitest';
@@ -29,6 +28,17 @@ vi.mock('../../js/client/Create', () => ({
         "isCancelled": false
       }])
   }))
+}));
+
+vi.mock('../../js/instances/query/FetchResults', () => ({
+      __esModule: true,
+      default: vi.fn(() => Promise.resolve({
+        formattedResult: 'OK',
+        raw: 'raw',
+        result: null,
+        isGraph: false,
+        queryTime: 10
+      }))
 }));
 
 describe('InstanceContent', () => {
@@ -118,17 +128,6 @@ describe('InstanceContent', () => {
     const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { status: 'RUNNING', info: 'i' };
     vi.useFakeTimers();
-
-    vi.mock('../../js/instances/query/FetchResults', () => ({
-      __esModule: true,
-      default: vi.fn(() => Promise.resolve({
-        formattedResult: 'OK',
-        raw: 'raw',
-        result: null,
-        isGraph: false,
-        queryTime: 10
-      }))
-    }));
     const { container } = 
     render(
       <MemoryRouter>
