@@ -8,6 +8,7 @@ type DerivedAttributeSpec = {
     attributeName: string;
     attributeType?: string;
     derivationLanguage?: string;
+    derivationLogic?: string;
     isMany?: boolean;
     isOrdered?: boolean;
     isUnique?: boolean;
@@ -37,11 +38,16 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
         const Ordered = formData.get('isOrdered') as string;
         const Unique = formData.get('isUnique') as string;
         const derivationLanguage = formData.get('derivationLanguage') as string;
+        const derivationLogic = formData.get('derivationLogic') as string;
         if (attributeName == "" || attributeName == null) {
             alert('Please enter an attribute name.');
             return;
         }
-        var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, metamodelUri, typeName};
+        if (derivationLogic == ""){
+            var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, metamodelUri, typeName};
+        } else {
+            var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, derivationLogic, metamodelUri, typeName};
+        }
         if (Many != null){
             const isMany = Many != null;
             const isOrdered = Ordered != null;
@@ -152,6 +158,7 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
                         <option key={language} value={language}>{language}</option>
                     ))}
                 </select>
+                <input type="text" name="derivationLogic" disabled={loading} placeholder="Derivation Logic" className={styles.input}/>
                 <button type="submit" disabled={loading} className={styles.input}>Submit
 
                 </button>
