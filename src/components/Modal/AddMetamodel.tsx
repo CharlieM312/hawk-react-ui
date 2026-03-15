@@ -19,7 +19,6 @@ type Credentials = {
 export default function AddMetamodel({title, isOpen, name, toggle, onCreated}: { title: string; isOpen: boolean; name: string; toggle: () => void; onCreated: () => void}) {
 
     const [loading, setLoading] = useState(false);
-    const [types, setTypes]           = useState<string[]>([]);
 
     let hawkClient: HawkClient;
     const hawkClientRef = useRef<HawkClient | null>(null);
@@ -27,29 +26,40 @@ export default function AddMetamodel({title, isOpen, name, toggle, onCreated}: {
     const handleSubmission = async (e: React.SubmitEvent) => {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
+        const metamodelFile = formData.getAll("metamodelFile") as File[];
+        if (!hawkClientRef.current){
+            return;
+        }
+        try {
+            await hawkClientRef.current.registerMetamodels(name, metamodelFile);
+            alert('Metamodel created successfully');
+            onCreated && onCreated();
+            toggle();
+        } catch (err: any) {
+            console.error('Create metamodel failed.');
+            console.error('Thrift error/full object:', err);
+            alert('Failed to create metamodel');
+        }
 
     };
 
     useEffect(() => {
-        if (!isOpen) return;
-        const load = async () => {
-            setLoading(true);
-            try {
-                const envUrl = import.meta.env.VITE_APP_HAWK_URL ?? '';
-                const hawkClient = Create(envUrl);
-                hawkClientRef.current = hawkClient;
-                const types: string[] = hawkClient.listRepositoryTypes();
-                setTypes(types);
-
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        load();
-        return () => { };
-    }, [isOpen, name]);
+            if (!isOpen) return;
+            const load = async () => {
+                setLoading(true);
+                try {
+                    const envUrl = import.meta.env.VITE_APP_HAWK_URL ?? '';
+                    const hawkClient = Create(envUrl);
+                    hawkClientRef.current = hawkClient;
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            load();
+            return () => { };
+        }, [isOpen, name]);
 
     return (
     <Modal
@@ -70,7 +80,9 @@ export default function AddMetamodel({title, isOpen, name, toggle, onCreated}: {
         </div>
         <div className={styles.body}>
             <form onSubmit={handleSubmission}>
-                <input type="text" placeholder='example' name="Uri" className={styles.input}/>
+                <label className={styles.label}>Upload Metamodel File</label>
+                <input required type="file" multiple placeholder='Upload Metamodel File' name="metamodelFile" className={styles.input}/>
+                <button type="submit" disabled={loading} className={styles.input}>Submit</button>
             </form>
         </div>
 
