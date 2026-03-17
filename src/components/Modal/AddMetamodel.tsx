@@ -4,23 +4,10 @@ import styles  from "./New.module.css";
 import { useEffect, useRef, useState } from "react";
 import Create from "../../js/client/Create";
 
-type Repository = {
-    uri: string;
-    type: string;
-    isFrozen?: boolean;
-}
-
-type Credentials = {
-    password: string;
-    username: string;
-}
-
-
 export default function AddMetamodel({title, isOpen, name, toggle, onCreated}: { title: string; isOpen: boolean; name: string; toggle: () => void; onCreated: () => void}) {
 
     const [loading, setLoading] = useState(false);
 
-    let hawkClient: HawkClient;
     const hawkClientRef = useRef<HawkClient | null>(null);
 
     const handleSubmission = async (e: React.SubmitEvent) => {

@@ -21,7 +21,6 @@ export default function AddIndexedLocation({title, isOpen, name, toggle, onCreat
     const [loading, setLoading] = useState(false);
     const [types, setTypes]           = useState<string[]>([]);
 
-    let hawkClient: HawkClient;
     const hawkClientRef = useRef<HawkClient | null>(null);
 
     const handleSubmission = async (e: React.SubmitEvent) => {
