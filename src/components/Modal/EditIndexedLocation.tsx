@@ -18,7 +18,6 @@ export default function EditIndexedLocation({title, isOpen, toggle, name, repoNa
     const [location, setLocation] = useState<string>("");
     const [frozen, setFrozen]     = useState<boolean>(false);
 
-    let hawkClient: HawkClient;
     const hawkClientRef = useRef<HawkClient | null>(null);
 
     const handleSubmission = async (e: React.SubmitEvent) => {

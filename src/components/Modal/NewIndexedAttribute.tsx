@@ -18,7 +18,6 @@ export default function NewIndexedAttribute({title, isOpen, toggle, name, onCrea
     const [typeNames, setTypeNames]           = useState<string[]>([]);
     const [attributeNames, setAttributeNames] = useState<string[]>([]);
 
-    let hawkClient: HawkClient;
     const hawkClientRef = useRef<HawkClient | null>(null);
 
     const handleSubmission = async (e: React.SubmitEvent) => {

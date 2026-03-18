@@ -78,8 +78,12 @@ export default function Table({ url }: TableProps) {
               return (
                 <tr onClick={() => { if(instance.status === 'RUNNING' || instance.status === 'UPDATING') {navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } }); }}} key={instance.name}>
                   <td>
-                    <FontAwesomeIcon className={styles.cog} icon={faGear}
-                    onClick={async (e) => {
+                    <button
+                     type="button"
+                     className={styles.iconButton}
+                     title={`Settings for ${instance.name}`}
+                     aria-label={`Settings for ${instance.name}`}
+                     onClick={async (e) => {
                       e.stopPropagation();
 
                       if (instance.status === 'RUNNING' || instance.status === 'UPDATING') {
@@ -89,10 +93,14 @@ export default function Table({ url }: TableProps) {
                         }, 100);
                       }
                     }}
-                    role="button"
-                    aria-label={`Settings for ${instance.name}`}
-                     />
-                    <FontAwesomeIcon className={styles.play} icon={faPlayCircle}
+                     >
+                      <FontAwesomeIcon className={styles.cog} icon={faGear} />
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.iconButton}
+                      title={`Start ${instance.name}`}
+                      aria-label={`Start ${instance.name}`}
                     onClick={async (e) => {
                       e.stopPropagation();
 
@@ -112,10 +120,14 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is already running.`);
                       }
                     }}
-                    role="button"
-                    aria-label={`Start ${instance.name}`}
-                     />
-                     <FontAwesomeIcon className={styles.play} icon={faRefresh}
+                    >
+                      <FontAwesomeIcon className={styles.play} icon={faPlayCircle} />
+                    </button>
+                    <button
+                     type="button"                     
+                     className={styles.iconButton}
+                     title={`Sync ${instance.name}`}
+                     aria-label={`Sync ${instance.name}`}
                     onClick={async (e) => {
                       e.stopPropagation();
 
@@ -132,11 +144,16 @@ export default function Table({ url }: TableProps) {
 
                       }
                     }}
-                    aria-label={`Sync ${instance.name}`}
-                     />
-                     <FontAwesomeIcon className={styles.play} icon={faStopCircle}
-                    onClick={async (e) => {
-                      e.stopPropagation();
+                    >
+                      <FontAwesomeIcon className={styles.play} icon={faRefresh} />
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.iconButton}
+                      title={`Stop ${instance.name}`}
+                      aria-label={`Stop ${instance.name}`}
+                      onClick={async (e) => {
+                        e.stopPropagation();
 
                       if (instance.status === 'RUNNING') {
                         const stopInstanceNow = window.confirm(`Instance "${instance.name}" is currently RUNNING. Do you want to stop it?`);
@@ -154,9 +171,14 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is already stopped.`);
                       }
                     }}
-                    aria-label={`Stop ${instance.name}`}
-                    />
-                     <FontAwesomeIcon className={styles.play} icon={faBan}
+                    >
+                     <FontAwesomeIcon className={styles.play} icon={faStopCircle}/>
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.iconButton}
+                      title={`Delete ${instance.name}`}
+                      aria-label={`Delete ${instance.name}`}
                     onClick={async (e) => {
                       e.stopPropagation();
 
@@ -176,8 +198,9 @@ export default function Table({ url }: TableProps) {
                         alert(`Instance "${instance.name}" is running, and can't be deleted.`);
                       }
                     }}
-                    aria-label={`Delete ${instance.name}`}
-                    />
+                    >
+                    <FontAwesomeIcon className={styles.play} icon={faBan} />
+                    </button>
                     {instance.name}
                   </td>
                   <td>{instance.status}</td>

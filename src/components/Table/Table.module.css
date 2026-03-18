@@ -58,3 +58,11 @@ tbody > tr:hover {
 .cog:hover {
   cursor: pointer;
 }
+
+.iconButton {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
