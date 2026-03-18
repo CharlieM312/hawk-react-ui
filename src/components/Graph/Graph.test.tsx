@@ -2,10 +2,14 @@ import { render } from '@testing-library/react';
 import { describe, test, expect, vi } from 'vitest';
 import Graph from './Graph';
 
-vi.mock('react-cytoscapejs', () => {
+vi.mock('reactflow', () => {
   return {
     __esModule: true,
-    default: (props: any) => <div data-testid="cytoscape-mock" />
+    Background: () => <div data-testid="reactflow-background-mock" />,
+    Controls: () => <div data-testid="reactflow-controls-mock" />,
+    Edge: () => <div data-testid="reactflow-edge-mock" />,
+    MiniMap: () => <div data-testid="reactflow-minimap-mock" />,
+    default: (props: any) => <div data-testid="reactflow-mock" />
   };
 });
 
@@ -22,7 +26,7 @@ describe('Graph component', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  test('Renders CytoscapeComponent when valid data is provided', () => {
+  test('Renders ReactFlow when valid data is provided', () => {
     const data          = {
       isCancelled: false,
       wallMillis: 5,
@@ -32,6 +36,6 @@ describe('Graph component', () => {
       }
     } as unknown as QueryReport;
     const { container } = render(<Graph data={data} />);
-    expect(container.querySelector('[data-testid="cytoscape-mock"]')).toBeInTheDocument(); // CytoscapeComponent renders a div with test id
+    expect(container.querySelector('[data-testid="reactflow-mock"]')).toBeInTheDocument(); // ReactFlow renders a div with test id
   });
 });
