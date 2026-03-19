@@ -32,10 +32,23 @@ describe('Graph component', () => {
       wallMillis: 5,
       result: {
         vMap: { '1': { id: 1, name: 'Node 1' } },
-        vList: [{ vModelElement: { id: 1, name: 'Node 1' } }]
+        vList: [{ vModelElement: { id: 1, typeName: 'Node 1', file: 'myFile' } }]
       }
     } as unknown as QueryReport;
     const { container } = render(<Graph data={data} />);
     expect(container.querySelector('[data-testid="reactflow-mock"]')).toBeInTheDocument(); // ReactFlow renders a div with test id
+  });
+
+  test('Checks for no valid data', () => {
+    const warnMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const data          = {
+      isCancelled: false,
+      wallMillis: 5,
+      result: {
+        myMap: ['1']
+      }
+    } as unknown as QueryReport;
+    const { container } = render(<Graph data={data} />);
+    expect(warnMock).toHaveBeenCalledWith('Graph: no valid vList or vModelElement — skipping graph render', data);
   });
 });

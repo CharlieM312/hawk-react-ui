@@ -61,6 +61,7 @@
   padding: 1.5rem;
 }
 
+
 .queryOptions {
     flex: 0 0 45%;
     display: flex;
@@ -83,7 +84,7 @@
     flex-direction: column;
     gap: 1rem;
     overflow-y: auto;
-    padding-left: 2rem;
+    padding-left: 1rem;
     padding-right: 1rem;
     height: 100%;
 }

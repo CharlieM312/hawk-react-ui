@@ -21,7 +21,7 @@ vi.mock('./js/client/Create', () => ({
 describe('App component', () => {
   test('Renders home page', () => {
     const mockGet = vi.mocked(Get);
-  
+
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instance name', state: 'state', message: 'message'}]));
 

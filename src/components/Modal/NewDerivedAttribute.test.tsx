@@ -48,13 +48,13 @@ describe('New derived attribute', () => {
       act(() => {
         render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
       });
-  
+
       const metamodelLabel = await screen.findByText('Metamodel URI');
       expect(metamodelLabel).toBeInTheDocument();
-  
+
       const typeName = await screen.findByText('Type Name');
       expect(typeName).toBeInTheDocument();
-  
+
     });
 
     test('Check what happens when a form is submitted with missing attribute name', async () => {
@@ -67,7 +67,7 @@ describe('New derived attribute', () => {
         });
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
         expect(alertMock).toHaveBeenCalledWith('Please enter an attribute name.');
@@ -81,9 +81,9 @@ describe('New derived attribute', () => {
         act(() => {
           render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
         });
-    
+
         const dropdown = await screen.findAllByLabelText('Metamodel URI');
-            
+
         act(() => {
           fireEvent.change(dropdown[0], { target: { value: 'mymetamodel' } });
         });
@@ -99,9 +99,9 @@ describe('New derived attribute', () => {
             act(() => {
               render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Indexed Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
             });
-    
+
             const dropdown = await screen.findAllByLabelText('Metamodel URI');
-            
+
             act(() => {
               fireEvent.change(dropdown[0], { target: { value: 'mymetamodel' } });
             });
@@ -109,7 +109,7 @@ describe('New derived attribute', () => {
             act(() => {
               fireEvent.change(typedropdown[0], { target: { value: 'isNewSingleton'}});
             });
-    
+
             const attributeName = await screen.findByText('String');
             expect(attributeName).toBeInTheDocument();
         });
@@ -123,14 +123,14 @@ describe('New derived attribute', () => {
           render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
         });
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    
+
         const instanceNameInput = await screen.findByPlaceholderText('Name');
         act(() => {
           fireEvent.change(instanceNameInput, { target: { value: 'MyAttribute' } });
         });
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
 
@@ -155,7 +155,7 @@ describe('New derived attribute', () => {
           render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
         });
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    
+
         const instanceNameInput = await screen.findByPlaceholderText('Name');
         act(() => {
           fireEvent.change(instanceNameInput, { target: { value: 'MyAttribute' } });
@@ -165,9 +165,9 @@ describe('New derived attribute', () => {
         act(() => {
           fireEvent.change(derivationLogicInput, { target: {value: 'my derivation logic;'}});
         });
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
 
@@ -193,7 +193,7 @@ describe('New derived attribute', () => {
           render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
         });
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    
+
         const instanceNameInput = await screen.findByPlaceholderText('Name');
         act(() => {
           fireEvent.change(instanceNameInput, { target: { value: 'MyAttribute' } });
@@ -203,9 +203,9 @@ describe('New derived attribute', () => {
         act(() => {
           isManyInput.click();
         });
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
 
@@ -233,9 +233,9 @@ describe('New derived attribute', () => {
           render(<NewDerivedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
         });
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
 

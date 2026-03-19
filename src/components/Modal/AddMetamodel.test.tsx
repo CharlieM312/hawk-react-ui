@@ -74,7 +74,7 @@ describe('Add metamodel', () => {
       expect(alertMock).toHaveBeenCalledWith('Metamodel created successfully');
     });
 
-    
+
 
   });
 

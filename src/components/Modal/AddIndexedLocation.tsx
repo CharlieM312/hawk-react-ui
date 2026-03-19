@@ -69,7 +69,7 @@ export default function AddIndexedLocation({title, isOpen, name, toggle, onCreat
         }
 
 
-        
+
 
     };
 

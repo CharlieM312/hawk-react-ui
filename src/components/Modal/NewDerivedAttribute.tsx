@@ -24,7 +24,6 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
     const [languages, setLanguages]           = useState<string[]>([]);
     const [typeNames, setTypeNames]           = useState<string[]>([]);
 
-    let hawkClient: HawkClient;
     const hawkClientRef = useRef<HawkClient | null>(null);
 
     const handleSubmission = async (e: React.SubmitEvent) => {

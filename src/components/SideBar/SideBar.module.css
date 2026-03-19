@@ -3,19 +3,20 @@
   background-color: #7e56c2;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  align-content: space-between;
-  width: 5%;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: clamp(56px, 6vw, 88px);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .logo {
-  max-width: 100%;
-  width: 7vh;
-  padding-left: 10%;
-  padding-right: 10%;
-  padding-top: 35%;
+  display: block;
+  width: 80%;
+  min-width: 28px;
+  margin-top: 1rem;
+  object-fit: contain;
 }
 
 [data-theme='dark'] {
@@ -30,7 +31,18 @@
 }
 
 .toggle {
-  padding: 10%;
-  width: 70%;
+  display: block;
+  width: 72%;
+  min-width: 28px;
+  max-width: 56px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  margin: 0 auto 0.5rem auto;
   cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.circle {
+transform-origin: center;
 }

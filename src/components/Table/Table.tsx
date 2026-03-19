@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faPlayCircle, faStopCircle, faRefresh, faBan } from '@fortawesome/free-solid-svg-icons'
 
-import Use from '../Modal/Use';
 import Get from '../../js/instances/Get';
 import Create from '../../js/client/Create';
 
@@ -124,7 +123,7 @@ export default function Table({ url }: TableProps) {
                       <FontAwesomeIcon className={styles.play} icon={faPlayCircle} />
                     </button>
                     <button
-                     type="button"                     
+                     type="button"
                      className={styles.iconButton}
                      title={`Sync ${instance.name}`}
                      aria-label={`Sync ${instance.name}`}

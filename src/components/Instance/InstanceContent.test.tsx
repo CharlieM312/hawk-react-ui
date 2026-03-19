@@ -72,7 +72,7 @@ describe('InstanceContent', () => {
   });
 
   test('navigation to settings page works correctly', async () => {
-  
+
     const mockNavigate = vi.fn();
     const reactrouter = await import('react-router');
     vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
@@ -92,7 +92,7 @@ describe('InstanceContent', () => {
   });
 
   test('navigation to homepage works correctly', async () => {
-  
+
     const mockNavigate = vi.fn();
     const reactrouter = await import('react-router');
     vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
@@ -128,7 +128,7 @@ describe('InstanceContent', () => {
     const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { status: 'RUNNING', info: 'i' };
     vi.useFakeTimers();
-    const { container } = 
+    const { container } =
     render(
       <MemoryRouter>
         <InstanceContent instance={instance} url="http://localhost:8080" />
@@ -145,7 +145,7 @@ describe('InstanceContent', () => {
       fireEvent.click(rawQueryButton);
       vi.advanceTimersByTime(1000);
     });
-    
+
     expect(submissionButton).toHaveTextContent('Cancel');
     vi.useRealTimers();
 

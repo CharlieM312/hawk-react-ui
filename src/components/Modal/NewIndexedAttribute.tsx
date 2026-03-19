@@ -50,7 +50,7 @@ export default function NewIndexedAttribute({title, isOpen, toggle, name, onCrea
 
     };
 
-    const updateTypeNames = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const updateTypeNames = async (_e: React.ChangeEvent<HTMLSelectElement>) => {
         const metamodelHTML = document.getElementById("metamodel") as HTMLSelectElement;
         const metamodelValue = metamodelHTML.value;
         if (!hawkClientRef.current) return;

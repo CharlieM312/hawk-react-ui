@@ -2,8 +2,7 @@ import { Link, useNavigate } from "react-router";
 import styles from './SettingsContent.module.css';
 import { Button } from 'react-bootstrap';
 import Create from '../../js/client/Create';
-import { useState, useRef, useEffect } from "react";
-import Languages from "../../js/instances/query/Languages";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPlusCircle, faPen } from '@fortawesome/free-solid-svg-icons';
 import Use from "../Modal/Use";
@@ -12,11 +11,6 @@ import NewIndexedAttribute from "../Modal/NewIndexedAttribute";
 import EditIndexedLocation from "../Modal/EditIndexedLocation";
 import AddIndexedLocation from "../Modal/AddIndexedLocation";
 import AddMetamodel from "../Modal/AddMetamodel";
-
-type LanguageOption = {
-  value: string;
-  label: string;
-}
 
 type Repository = {
     uri: string;
@@ -64,40 +58,26 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     const navigate                                = useNavigate();
 
     let hawkClient: HawkClient;
-    let languageIdRegEx: RegExp;
-    let selectedLanguage: string;
-    let languageOptions: LanguageOption[] = [];
 
     try {
         hawkClient = Create(url);
-
-        const languages = Languages(hawkClient, instance?.name);
-        languageIdRegEx = new RegExp(/[A-Z]{3}/);
-
-        languages.forEach(function (language) {
-          languageOptions.push({
-            value: language,
-            label: language
-          });
-        });
-        selectedLanguage = languageOptions[4]?.value ?? languageOptions[0]?.value ?? '';
     } catch (err) {
         throw err;
     }
-    
+
     useEffect(() => {
         getInstanceInformation();
-          
+
         // Poll for instance state updates every 5 seconds
         const interval = setInterval(() => {
             getInstanceInformation();
         }, 5000);
-          
+
         return () => clearInterval(interval);
     }, [instance.name]);
-    
+
     const onClickStartInstance = async () => {
-    
+
         if(!instance?.name) return;
         setIsRunDisabled(true);
         try {
@@ -109,11 +89,11 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
         } finally {
               setIsRunDisabled(false);
         }
-    
+
     };
-    
+
     const onClickStopInstance = async () => {
-    
+
         if(!instance?.name) return;
             setIsRunDisabled(true);
         try {
@@ -126,9 +106,9 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
         } finally {
             setIsRunDisabled(false);
         }
-    
+
     };
-    
+
         const onClickSyncInstance = async () => {
             if(!instance?.name) return;
             setIsRunDisabled(true);
@@ -149,14 +129,14 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
             indexedLocations: false,
             indexedAttributes: false
         });
-    
+
         const toggleSection = (section: keyof typeof expandedSections) => {
             setExpandedSections(prev => ({
                 ...prev,
                 [section]: !prev[section]
             }));
         };
-    
+
         const getMetaModels = async () => {
             try {
                 const models = await hawkClient.listMetamodels(instance.name);
@@ -166,7 +146,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 console.error('Failed to fetch meta models:', err);
             }
         }
-    
+
         const getDerivedAttributes = async () => {
             try {
                 const attributes: DerivedAttribute[] = await hawkClient.listDerivedAttributes(instance.name);
@@ -177,7 +157,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 console.error('Failed to fetch derived attributes:', err);
             }
         }
-    
+
         const getIndexedAttributes = async () => {
             try {
                 const attributes: IndexedAttribute[] = await hawkClient.listIndexedAttributes(instance.name);
@@ -188,7 +168,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 console.error('Failed to fetch indexed attributes:', err);
             }
         }
-    
+
         // IndexedLocation = Repository
         const getIndexedLocations = async () => {
             try {
@@ -201,7 +181,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 console.error('Failed to fetch indexed locations:', err);
             }
         }
-    
+
         const deleteIndexedLocation = async (locationUri: string) => {
             try {
                 hawkClient.removeRepository(instance.name, locationUri);
@@ -211,9 +191,9 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 console.error(`Failed to delete indexed location ${locationUri}:`, err);
             }
         }
-    
+
         const unregisterMetamodel = async (modelName: string) => {
-    
+
             try {
                 const modelList: string[] = []
                 modelList.push(modelName);
@@ -223,9 +203,9 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
             } catch (err) {
                 console.error(`Failed to unregister metamodel ${modelName}:`, err);
             }
-    
+
         }
-    
+
         const deleteIndexedAttribute = async (attributeName: string) => {
             try {
                 const attributes: IndexedAttribute[] = await hawkClient.listIndexedAttributes(instance.name);
@@ -237,12 +217,12 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 hawkClient.removeIndexedAttribute(instance.name, indexedAttribute);
                 setIndexedAttributes(prev => prev.filter(attr => attr !== attributeName));
                 alert(`Indexed attribute "${attributeName}" deleted successfully.`);
-    
+
             } catch (err) {
                 console.error(`Failed to delete indexed attribute ${attributeName}:`, err);
             }
         }
-    
+
         const deleteDerivedAttribute = async (attributeName: string) => {
             try {
                 const attributes: DerivedAttribute[] = await hawkClient.listDerivedAttributes(instance.name);
@@ -258,8 +238,8 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 console.error(`Failed to delete derived attribute ${attributeName}:`, err);
             }
         }
-    
-    
+
+
         const getInstanceInformation = async () => {
             try {
                 const instances: HawkInstance[] = await hawkClient.listInstances();
@@ -272,11 +252,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                 console.error('Failed to fetch instance information:', err);
             }
         }
-    
-        const changeLanguage = (language: LanguageOption) => {
-            selectedLanguage = language.value;
-        }
-    
+
 
   return (
     <div className={styles.container}>

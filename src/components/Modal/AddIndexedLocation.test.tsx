@@ -26,13 +26,13 @@ describe('Add indexed location', () => {
       const mockUse = vi.mocked(Use);
       mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
       const { isOpen, toggle } = mockUse();
-  
+
       const mockFunction = vi.fn(() => []);
-  
+
       act (() => {
         render(<AddIndexedLocation isOpen={isOpen} toggle={toggle} title={'Edit Repository'} name='hawk-set-0'  onCreated={mockFunction} />);
       });
-  
+
       const modalTitle = await screen.findByText('Add Repository');
       expect(modalTitle).toBeInTheDocument();
   });
@@ -41,13 +41,13 @@ describe('Add indexed location', () => {
       const mockUse = vi.mocked(Use);
       mockUse.mockReturnValue({isOpen: true, toggle: () => {}});
       const { isOpen, toggle } = mockUse();
-  
+
       const mockFunction = vi.fn(() => []);
-  
+
       act (() => {
         render(<AddIndexedLocation isOpen={isOpen} toggle={toggle} title={'Edit Repository'} name='hawk-set-0'  onCreated={mockFunction} />);
       });
-  
+
       const modalTitle = await screen.findByText('Add Repository');
       expect(modalTitle).toBeInTheDocument();
 
@@ -64,11 +64,11 @@ describe('Add indexed location', () => {
         const { isOpen, toggle } = mockUse();
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
         const mockFunction = vi.fn(() => []);
-    
+
         act (() => {
             render(<AddIndexedLocation isOpen={isOpen} toggle={toggle} title={'Edit Repository'} name='hawk-set-0'  onCreated={mockFunction} />);
         });
-    
+
         const modalTitle = await screen.findByText('Add Repository');
         expect(modalTitle).toBeInTheDocument();
 
@@ -76,9 +76,9 @@ describe('Add indexed location', () => {
         act(() => {
           fireEvent.change(uriInput, { target: { value: 'file://example-type' } });
         });
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
         const mockCreate = vi.mocked(Create);
@@ -97,11 +97,11 @@ describe('Add indexed location', () => {
         const { isOpen, toggle } = mockUse();
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
         const mockFunction = vi.fn(() => []);
-    
+
         act (() => {
             render(<AddIndexedLocation isOpen={isOpen} toggle={toggle} title={'Edit Repository'} name='hawk-set-0'  onCreated={mockFunction} />);
         });
-    
+
         const modalTitle = await screen.findByText('Add Repository');
         expect(modalTitle).toBeInTheDocument();
 
@@ -119,9 +119,9 @@ describe('Add indexed location', () => {
         act(() => {
             fireEvent.change(passwordInput, { target: { value: 'examplepassword'}})
         })
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
         const mockCreate = vi.mocked(Create);
