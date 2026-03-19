@@ -70,7 +70,7 @@ describe('Graph component', () => {
       wallMillis: 5,
       result: {
         vMap: {  },
-        vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'mm://demo', repositoryUrl: 'https://repo', attributes: [{ name: 'firstName' }, { name: 'age' }], references: [{ name: 'owner' }] } }]
+        vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: [{ name: 'firstName' }, { name: 'age' }], references: [{ name: 'owner' }] } }]
       }
     } as unknown as QueryReport;
     const { container } = render(<Graph data={data} />);

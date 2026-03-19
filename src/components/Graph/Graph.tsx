@@ -47,13 +47,11 @@ type SelectedNodeInfo = {
 export default function Graph({ data }: GraphProps) {
   const [nodeInfo, setNodeInfo] = useState<SelectedNodeInfo>(null);
   const hasNodeInfo = nodeInfo !== null;
-  const graphHeight = hasNodeInfo ? '400px' : '600px';
+  const graphHeight = hasNodeInfo ? '400px' : '550px';
 
   if (data === null) {
     return (<></>);
   }
-
-  console.log(data);
 
   const vList = data.result?.vList;
   //eslint-disable-next-line @typescript-eslint/no-unused-vars
