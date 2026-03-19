@@ -172,6 +172,51 @@ describe('Table component', () => {
     });
   });
 
+  test('Opens query options when the magnifying glass icon is clicked', async () => {
+
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockNavigate = vi.fn();
+
+    mockCreate.mockImplementation(() => ({} as any));
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
+    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
+    vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
+
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const cogIcon = getByLabelText('Query instancename');
+    fireEvent.click(cogIcon);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename", { state: { instance: { name: 'instancename', status: 'RUNNING', info: 'message' }, url: 'http://avalidurl:3000' } });
+    });
+  });
+
+  test('Opens query options when the magnifying glass icon is clicked and it is updating', async () => {
+
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockNavigate = vi.fn();
+
+    mockCreate.mockImplementation(() => ({} as any));
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
+    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
+    vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
+
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const cogIcon = getByLabelText('Query instancename');
+    fireEvent.click(cogIcon);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename", { state: { instance: { name: 'instancename', status: 'UPDATING', info: 'message' }, url: 'http://avalidurl:3000' } });
+    });
+  });
+
+
+
+
   test('Syncs selected instance when the sync icon is clicked', async () => {
 
     const mockGet = vi.mocked(Get);

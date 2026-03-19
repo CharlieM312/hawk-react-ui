@@ -56,7 +56,8 @@ module.exports = [
   {
     files: ['**/*test.{ts,tsx}'],
     rules: {
-      '@typescript-eslint/no-unused-vars': 'off'
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-trailing-spaces': 'off'
     },
   }
 ];

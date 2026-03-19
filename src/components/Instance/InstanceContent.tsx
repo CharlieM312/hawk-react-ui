@@ -3,7 +3,6 @@ import { Button } from 'react-bootstrap';
 import { useRef, useState } from 'react';
 import { BounceLoader } from 'react-spinners';
 import Select from 'react-select';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 import Graph from '../Graph/Graph';
 
@@ -20,7 +19,6 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import '../../js/syntax-highlighting/mode-eol';
 import '../../js/syntax-highlighting/mode-epl';
 import { Link, useNavigate } from 'react-router';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type LanguageOption = {
   value: string;
@@ -190,7 +188,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                         <br />
                         <h5 className={styles.queryLabel}>
                             Query
-                            <FontAwesomeIcon icon={faMagnifyingGlass} />
                             </h5>
                         <div className={styles.queryContainer}>
                         <AceEditor

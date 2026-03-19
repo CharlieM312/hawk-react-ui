@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGear, faPlayCircle, faStopCircle, faRefresh, faBan } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faPlayCircle, faStopCircle, faRefresh, faBan, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 import Get from '../../js/instances/Get';
 import Create from '../../js/client/Create';
@@ -201,6 +201,24 @@ export default function Table({ url }: TableProps) {
                     <FontAwesomeIcon className={styles.play} icon={faBan} />
                     </button>
                     {instance.name}
+                    <button
+                     type="button"
+                     className={styles.iconButton}
+                     title={`Query ${instance.name}`}
+                     aria-label={`Query ${instance.name}`}
+                     onClick={async (e) => {
+                      e.stopPropagation();
+
+                      if (instance.status === 'RUNNING' || instance.status === 'UPDATING') {
+
+                        setTimeout(() => {
+                          navigate(`/instance/${instance.name}`, { state: { instance: instance, url: url } });
+                        }, 100);
+                      }
+                    }}
+                     >
+                      <FontAwesomeIcon className={styles.magnifying} icon={faMagnifyingGlass} />
+                    </button>
                   </td>
                   <td>{instance.status}</td>
                   <td>{instance.info}</td>
