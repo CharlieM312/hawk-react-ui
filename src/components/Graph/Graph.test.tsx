@@ -24,8 +24,8 @@ vi.mock('reactflow', () => {
                   file: 'model.xmi',
                   metamodelUri: 'mm://demo',
                   repositoryUrl: 'https://repo',
-                  attributes: [{ name: 'firstName' }, { name: 'age' }],
-                  references: [{ name: 'owner' }]
+                  attributes: [{ name: 'firstName', value: { vString: 'John' } }, { name: 'age', value: { vInteger: 30 } }],
+                  references: [{ name: 'myReference', id: 21 }]
                 }
               } as any
             )
@@ -76,6 +76,37 @@ describe('Graph component', () => {
     const { container } = render(<Graph data={data} />);
     fireEvent.click(screen.getByTestId('trigger-node-click'));
     expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
+  });
+
+  test('Displays node info, then closes it', () => {
+    const data          = {
+      isCancelled: false,
+      wallMillis: 5,
+      result: {
+        vMap: {  },
+        vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: [{ name: 'firstName' }, { name: 'age' }], references: [{ name: 'owner' }] } }]
+      }
+    } as unknown as QueryReport;
+    const { container } = render(<Graph data={data} />);
+    fireEvent.click(screen.getByTestId('trigger-node-click'));
+    expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Close node info/i }))
+    expect(screen.queryByText('Selected Node Info')).not.toBeInTheDocument();
+  });
+
+  test('Displays no attributes when none are available', () => {
+    const data          = {
+      isCancelled: false,
+      wallMillis: 5,
+      result: {
+        vMap: {  },
+        vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: null } }]
+      }
+    } as unknown as QueryReport;
+    const { container } = render(<Graph data={data} />);
+    fireEvent.click(screen.getByTestId('trigger-node-click'));
+    expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
+    expect(screen.getByText('References')).toBeInTheDocument();
   });
 
 

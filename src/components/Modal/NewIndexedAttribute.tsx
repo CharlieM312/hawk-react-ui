@@ -43,8 +43,6 @@ export default function NewIndexedAttribute({title, isOpen, toggle, name, onCrea
                 attributeName, typeName, metamodelUri
             });
             console.error('Thrift error/full object:', err);
-            if (err && err.message) console.error('Thrift message:', err.message);
-            if (err && err.stack) console.error(err.stack);
             alert('Failed to create indexed attribute. See console and server logs.');
         }
 

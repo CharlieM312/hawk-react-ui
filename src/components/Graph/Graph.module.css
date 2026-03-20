@@ -7,28 +7,23 @@
     position: absolute;
 }
 
-.nodeInfoHeader {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.nodeInfoTable {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 16px;
+align-items: start;
 }
 
-.nodeInfoTitle {
-  margin: 0;
-  text-align: center;
+.nodeInfoTable td {
+border: 1px solid #ccc;
+padding: 8px;
+vertical-align: top;
+word-break: break-word;
 }
 
-.nodeInfoGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
-    align-items: start;
-    }
-
-    @media (max-width: 800px) {
-    .nodeInfoGrid {
-    grid-template-columns: 1fr;
-    }
+@media (max-width: 800px) {
+.nodeInfoTable {
+grid-template-columns: 1fr;
+}
 }
 
