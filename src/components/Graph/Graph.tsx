@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ReactFlow, { Background, Controls, Edge, Node } from 'reactflow';
+import ReactFlow, { Background, Controls, Edge, MarkerType, Node } from 'reactflow';
 import type { CSSProperties } from 'react';
 import 'reactflow/dist/style.css';
 import styles from './Graph.module.css';
@@ -38,15 +38,12 @@ type AttributeSlot = {
 
 type ReferenceSlot = {
   name: string;
-  value: ReferenceValue;
-}
-
-
-type ReferenceValue = {
-  name?: string;
-  id?: number;
-  ids?: number[];
-}
+  position?: number | null;
+  positions?: number[] | null;
+  id?: string | null;
+  ids?: string[] | null;
+  mixed?: Array<{ id?: string | null; position?: number | null }> | null;
+};
 
 type ModelElement = {
   attributes?: AttributeSlot[],
@@ -82,48 +79,82 @@ type SelectedNodeInfo = {
 
 export default function Graph({ data, url, name }: GraphProps) {
   const [nodeInfo, setNodeInfo] = useState<SelectedNodeInfo>(null);
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
   const hasNodeInfo = nodeInfo !== null;
   const graphHeight = hasNodeInfo ? '400px' : '550px';
-  let hawkClient: HawkClient;
 
   useEffect(() => {
-      if (!name) return;
-      try {
-        hawkClient = Create(url);
-      } catch (err) {
-        console.error('Error creating Hawk client:', err);
-      }
-  }, [url]);
-
-  if (data === null) {
-    return (<></>);
-  }
-
-  const vList = data.result?.vList;
-  //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const vMap = data.result?.vMap;
-  const vModelElement = data.result?.vModelElement;
-
-  // Use vList if available, otherwise use vModelElement as a single-item array
-  const itemsToRender = (vList && Array.isArray(vList) && vList.length > 0)
-    ? vList
-    : (vModelElement ? [{ vModelElement }] : []);
-
-  if (!itemsToRender || itemsToRender.length === 0) {
-    console.warn('Graph: no valid vList or vModelElement — skipping graph render', data);
-    return (<></>);
-  }
-  const elements: { data: {
-    source: any; target: any; id: any; label: any; typeName: any; file: any; metamodelUri: any; repositoryUrl: any; attributes: any; references?: any;
-  }; }[] = [];
-  for (const item of itemsToRender) {
-    const modelElem = item?.vModelElement;
-    if (modelElem && modelElem.id != null) {
-      const id = String(modelElem.id);
-      const label = modelElem.typeName ? `${modelElem.typeName} (#${modelElem.id})` : id;
-      elements.push({ data: { id, label, typeName: modelElem.typeName, file: modelElem.file, source: modelElem.source, target: modelElem.target, metamodelUri: modelElem.metamodelUri, repositoryUrl: modelElem.repositoryURL, attributes: modelElem.attributes, references: modelElem.references } });
+    if (!data) {
+      setNodes([]);
+      setEdges([]);
+      return;
     }
-  }
+
+    const initialElements: {
+      data: {
+        source: any; target: any; id: any; label: any; typeName: any; file: any;
+        metamodelUri: any; repositoryUrl: any; attributes: any; references?: any;
+      };
+    }[] = [];
+
+    const vList = data.result?.vList;
+    const vModelElement = data.result?.vModelElement;
+    const itemsToRender = (vList && Array.isArray(vList) && vList.length > 0)
+      ? vList
+      : (vModelElement ? [{ vModelElement }] : []);
+
+    for (const item of itemsToRender) {
+      const modelElem = item?.vModelElement;
+      if (modelElem?.id != null) {
+        const id = String(modelElem.id);
+        const label = modelElem.typeName ? `${modelElem.typeName} (#${modelElem.id})` : id;
+        initialElements.push({
+          data: {
+            id,
+            label,
+            typeName: modelElem.typeName,
+            file: modelElem.file,
+            source: modelElem.source,
+            target: modelElem.target,
+            metamodelUri: modelElem.metamodelUri,
+            repositoryUrl: modelElem.repositoryURL,
+            attributes: modelElem.attributes,
+            references: modelElem.references
+          }
+        });
+      }
+    }
+
+    const nodeStyle: CSSProperties = {
+      border: '1px solid #777',
+      padding: '10px',
+      borderRadius: '5px',
+      width: 150,
+      fontSize: '12px',
+      textAlign: 'center',
+    };
+
+    const initialNodes: Node[] = initialElements
+      .filter((el) => !el.data.source)
+      .map((el, index) => ({
+        id: String(el.data.id),
+        data: { ...el.data, label: String(el.data.label ?? '') },
+        position: { x: (index % 5) * 220, y: Math.floor(index / 5) * 140 },
+        style: nodeStyle
+      }));
+
+    const initialEdges: Edge[] = initialElements
+      .filter((el) => el.data.source && el.data.target)
+      .map((el) => ({
+        id: `e${String(el.data.source)}-${String(el.data.target)}`,
+        source: String(el.data.source),
+        target: String(el.data.target)
+      }));
+
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [data]);
 
   const displayNodeInfo = (event: React.MouseEvent, node: Node) => {
     const nodeData = node.data;
@@ -154,48 +185,92 @@ export default function Graph({ data, url, name }: GraphProps) {
 
   };
 
-  const getModelElement = async (value: string) => {
+  const getModelElement = async (value: string, sourceNodeId: string, attributeName: string) => {
 
-    if (value != 'N/A') {
+    if (!value || value === 'N/A') return;
 
-      try {
-        let listtoAdd: string[] = [];
-        let options: QueryOptions = {includeAttributes: true, includeReferences: true, includeNodeIds: true};
-        hawkClient = Create(url);
-        listtoAdd.push(value);
-        const modelElements: ModelElement[] = await hawkClient.resolveProxies(name, listtoAdd, options);
-        console.log(modelElements);
-        if (modelElements.length > 0) {
-          const elem = modelElements[0];
-          setNodeInfo({
-            id: elem.id ?? 'N/A',
-            typeName: elem.typeName,
-            file: elem.file,
-            metamodelUri: elem.metamodelUri,
-            repositoryUrl: elem.repositoryURL,
-            attributes: elem.attributes ?? null,
-            references: elem.references ?? null
-          });
-        }
+    try {
+      const options: QueryOptions = {
+        includeAttributes: true,
+        includeReferences: true,
+        includeNodeIds: true
+      };
 
-      } catch(err) {
-        throw err;
-      }
+      const client = Create(url);
+      const modelElements: ModelElement[] = await client.resolveProxies(name, [value], options);
+      if (modelElements.length === 0) return;
+
+      const elem = modelElements[0];
+      const targetId = elem.id && elem.id !== 'N/A' ? String(elem.id) : value;
+      if (!targetId || targetId === 'N/A') return;
+
+      const label = elem.typeName ? `${elem.typeName} (#${targetId})` : targetId;
+
+      setNodes((prev) => {
+        const exists = prev.some((n) => n.id === targetId);
+        if (exists) return prev;
+
+        const sourceNode = prev.find((n) => n.id === sourceNodeId);
+        const position = sourceNode
+          ? { x: sourceNode.position.x + 220, y: sourceNode.position.y + 120 }
+          : { x: (prev.length % 5) * 220, y: Math.floor(prev.length / 5) * 140 };
+
+        return [
+          ...prev,
+          {
+            id: targetId,
+            data: {
+              id: targetId,
+              label,
+              typeName: elem.typeName,
+              file: elem.file,
+              metamodelUri: elem.metamodelUri,
+              repositoryUrl: elem.repositoryURL,
+              attributes: elem.attributes ?? null,
+              references: elem.references ?? null
+            },
+            position,
+            style: nodeStyle
+          }
+        ];
+      });
+
+      setEdges((prev) => {
+        const edgeId = `e${sourceNodeId}-${targetId}`;
+        const exists = prev.some((e) => e.id === edgeId);
+        if (exists) return prev;
+        return [...prev, { id: edgeId, source: sourceNodeId, target: targetId, label: attributeName, markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20 } }];
+      });
+
+      setNodeInfo({
+        id: targetId,
+        typeName: elem.typeName,
+        file: elem.file,
+        metamodelUri: elem.metamodelUri,
+        repositoryUrl: elem.repositoryURL,
+        attributes: elem.attributes ?? null,
+        references: elem.references ?? null
+      });
+    } catch (err) {
+      console.error('Failed to resolve model element', err);
     }
-  }
+  };
 
-  function getReferenceValue(ref: ReferenceValue): string {
+  function getReferenceValue(ref: ReferenceSlot | null): string {
 
-    if (typeof ref.id === 'number') {
-      return String(ref.id);
-    }
+    if (!ref) return 'N/A';
 
-    if (typeof ref.id === 'string') {
+    if (typeof ref.id === 'number' || typeof ref.id === 'string') {
       return String(ref.id);
     }
 
     if (Array.isArray(ref.ids) && ref.ids.length > 0) {
-      return ref.ids.join(', ');
+      return ref.ids.map(String).join(', ');
+    }
+
+    if (Array.isArray(ref.mixed) && ref.mixed.length > 0) {
+      const ids = ref.mixed.map((m) => m?.id).filter((v): v is string => Boolean(v));
+      if (ids.length > 0) return ids.join(', ');
     }
 
     return 'N/A';
@@ -209,26 +284,6 @@ export default function Graph({ data, url, name }: GraphProps) {
     fontSize: '12px',
     textAlign: 'center',
     };
-
-  const nodes: Node[] = elements
-    .filter((el) => !el.data.source)
-    .map((el, index) => ({
-    id: String(el.data.id),
-    data: {
-       ...el.data,
-       label: String(el.data.label ?? '') },
-    position: { x: (index % 5) * 220, y: Math.floor(index / 5) * 140 },
-    style: nodeStyle,
-  }));
-
-  // Edges code if edges are needed
-  const edges: Edge[] = elements
-    .filter((el) => el.data.source && el.data.target)
-    .map((el) => ({
-    id: `e${String(el.data.source)}-${String(el.data.target)}`,
-    source: String(el.data.source),
-    target: String(el.data.target),
-    }));
 
   const basicInfoRows = [
     ['ID', nodeInfo?.id ?? 'N/A'],
@@ -246,11 +301,11 @@ export default function Graph({ data, url, name }: GraphProps) {
   : [['Attributes', nodeInfo?.attributes ? String(nodeInfo.attributes) : 'N/A'] as [string, string]];
 
 const referenceRows = Array.isArray(nodeInfo?.references)
-  ? (nodeInfo.references as ReferenceSlot[]).map((ref) => [
-      `${ref.name ?? 'N/A'}`,
-      getReferenceValue(ref)
-    ] as [string, string])
-  : [['References', nodeInfo?.references ? String(nodeInfo.references) : 'N/A'] as [string, string]];
+    ? (nodeInfo.references as ReferenceSlot[]).map((ref) => [
+        `${ref.name ?? 'N/A'}`,
+        getReferenceValue(ref)
+      ] as [string, string])
+    : [['References', nodeInfo?.references ? String(nodeInfo.references) : 'N/A'] as [string, string]];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
@@ -319,7 +374,9 @@ const referenceRows = Array.isArray(nodeInfo?.references)
                         href="#" 
                         onClick={(e) => {
                           e.preventDefault();
-                          getModelElement(id.trim());
+                          if (nodeInfo?.id){
+                            getModelElement(id.trim(), nodeInfo.id, name);
+                          }
                         }}
                         style={{ cursor: 'pointer', marginRight: '8px' }}
                       >

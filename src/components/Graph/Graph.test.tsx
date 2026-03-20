@@ -47,17 +47,6 @@ vi.mock('../../js/client/Create', () => ({
 }));
 
 describe('Graph component', () => {
-  test('Renders empty JSX element when data is null', () => {
-    const data          = null;
-    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
-    expect(container).toBeEmptyDOMElement();
-  });
-
-  test('Renders empty JSX element when vList is empty', () => {
-    const data          = { isCancelled: false, wallMillis: 5, result: { vMap: {}, vList: [] } } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
-    expect(container).toBeEmptyDOMElement();
-  });
 
   test('Renders ReactFlow when valid data is provided', () => {
     const data          = {
@@ -114,19 +103,5 @@ describe('Graph component', () => {
     const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     fireEvent.click(screen.getByTestId('trigger-node-click'));
     expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
-  });
-
-
-  test('Checks for no valid data', () => {
-    const warnMock = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const data          = {
-      isCancelled: false,
-      wallMillis: 5,
-      result: {
-        myMap: ['1']
-      }
-    } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
-    expect(warnMock).toHaveBeenCalledWith('Graph: no valid vList or vModelElement — skipping graph render', data);
   });
 });
