@@ -106,7 +106,6 @@ describe('Graph component', () => {
     const { container } = render(<Graph data={data} />);
     fireEvent.click(screen.getByTestId('trigger-node-click'));
     expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
-    expect(screen.getByText('References')).toBeInTheDocument();
   });
 
 

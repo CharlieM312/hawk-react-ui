@@ -150,6 +150,28 @@ export default function Graph({ data }: GraphProps) {
     target: String(el.data.target),
     }));
 
+  const basicInfoRows = [
+    ['ID', nodeInfo?.id ?? 'N/A'],
+    ['Type Name', nodeInfo?.typeName ?? 'N/A'],
+    ['File', nodeInfo?.file ?? 'N/A'],
+    ['Metamodel URI', nodeInfo?.metamodelUri ?? 'N/A'],
+    ['Repository URL', nodeInfo?.repositoryUrl ?? 'N/A']
+  ]
+
+  const attributeRows = Array.isArray(nodeInfo?.attributes)
+  ? (nodeInfo.attributes as AttributeSlot[]).map((attr) => [
+      `Attribute: ${attr.name ?? 'N/A'}`,
+      getAttributeValue(attr.value)
+    ] as [string, string])
+  : [['Attributes', nodeInfo?.attributes ? String(nodeInfo.attributes) : 'N/A'] as [string, string]];
+
+const referenceRows = Array.isArray(nodeInfo?.references)
+  ? (nodeInfo.references as ReferenceValue[]).map((ref) => [
+      `Reference: ${ref.name ?? 'N/A'}`,
+      getReferenceValue(ref)
+    ] as [string, string])
+  : [['References', nodeInfo?.references ? String(nodeInfo.references) : 'N/A'] as [string, string]];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
       <div style={{ width: '100%', maxWidth: '100vw', height: graphHeight, border: '1px solid #ccc' }}>
@@ -171,76 +193,51 @@ export default function Graph({ data }: GraphProps) {
               <FontAwesomeIcon icon={faXmark} />
             </button>
           </div>
-          <div className={styles.nodeInfoTable}>
-            <div className={styles.nodeInfoSection}>
-              <h4>Basic Node Info</h4>
-              <table>
-                <tbody>
-                  <tr>
-                    <td><strong>ID:</strong></td>
-                    <td>{nodeInfo.id}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Type Name:</strong></td>
-                    <td>{nodeInfo.typeName ?? 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>File:</strong></td>
-                    <td>{nodeInfo.file ?? 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Metamodel Uri:</strong></td>
-                    <td>{nodeInfo.metamodelUri ?? 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Repository URL:</strong></td>
-                    <td>{nodeInfo.repositoryUrl ?? 'N/A'}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className={styles.nodeInfoSection}>
-              <h4>Attributes</h4>
-              {Array.isArray(nodeInfo.attributes) ? (
-                nodeInfo.attributes.length > 0 ? (
-                  <table>
-                    <tbody>
-                      {(nodeInfo.attributes as AttributeSlot[]).map((attr, i) => (
-                        <tr key={`${attr.name ?? 'attr'}-${i}`}>
-                          <td><strong>{attr.name ?? 'N/A'}</strong></td>
-                          <td>{getAttributeValue(attr.value)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : <p>N/A</p>
-              ) : (
-                <p>{nodeInfo.attributes ? String(nodeInfo.attributes) : 'N/A'}</p>
-              )}
-            </div>
-            <div className={styles.nodeInfoSection}>
-              <h4>References</h4>
-              {Array.isArray(nodeInfo.references) ? (
-                nodeInfo.references.length > 0 ? (
-                  <table>
-                    <tbody>
-                      {(nodeInfo.references as ReferenceValue[]).map((ref, i) => (
-                        <tr key={`${ref.name ?? 'ref'}-${i}`}>
-                          <td><strong>{ref.name ?? 'N/A'}</strong></td>
-                          <td>{getReferenceValue(ref)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p>N/A</p>
-                )
-              ) : (
-                <p>{nodeInfo.references ? String(nodeInfo.references) : 'N/A'}</p>
-              )}
-            </div>
-          </div>
-          </div>
+          <table className={styles.infoTable}>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {basicInfoRows.map(([name, value], i) => (
+              <tr key={`${name}-${i}`}>
+                <td>{name}</td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+          <thead>
+            <tr>
+              <th>Attribute Name</th>
+              <th>Attribute Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {attributeRows.map(([name, value], i) => (
+              <tr key={`${name}-${i}`}>
+                <td>{name}</td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+          <thead>
+            <tr>
+              <th>Reference Name</th>
+              <th>Reference IDs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {referenceRows.map(([name, value], i) => (
+              <tr key={`${name}-${i}`}>
+                <td>{name}</td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </div>
       )}
     </div>
   );
