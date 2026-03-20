@@ -241,7 +241,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                     <div className={styles.graphOptions}>
                         <h4>Graph</h4>
                         {isGraph ? (
-                                <Graph data={graphData} />
+                                <Graph data={graphData} url={url} name={instance?.name}/>
                             ) : (
                                 <div className={styles.emptyMessage}>No graph to display</div>
                             )}

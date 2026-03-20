@@ -38,16 +38,24 @@ vi.mock('reactflow', () => {
   };
 });
 
+vi.mock('../../js/client/Create', () => ({
+  __esModule: true,
+  default: vi.fn(() => ({
+    listQueryLanguages: vi.fn(() => ['org.eclipse.hawk.epsilon.emc.EOLQueryEngine', 'org.eclipse.hawk.timeaware.queries.TimeAwareEOLQueryEngine']),
+    listInstances: vi.fn(() => [])
+  }))
+}));
+
 describe('Graph component', () => {
   test('Renders empty JSX element when data is null', () => {
     const data          = null;
-    const { container } = render(<Graph data={data} />);
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     expect(container).toBeEmptyDOMElement();
   });
 
   test('Renders empty JSX element when vList is empty', () => {
     const data          = { isCancelled: false, wallMillis: 5, result: { vMap: {}, vList: [] } } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} />);
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -60,7 +68,7 @@ describe('Graph component', () => {
         vList: [{ vModelElement: { id: 1, typeName: 'Node 1', file: 'myFile' } }]
       }
     } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} />);
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     expect(container.querySelector('[data-testid="reactflow-mock"]')).toBeInTheDocument(); // ReactFlow renders a div with test id
   });
 
@@ -73,7 +81,7 @@ describe('Graph component', () => {
         vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: [{ name: 'firstName' }, { name: 'age' }], references: [{ name: 'owner' }] } }]
       }
     } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} />);
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     fireEvent.click(screen.getByTestId('trigger-node-click'));
     expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
   });
@@ -87,7 +95,7 @@ describe('Graph component', () => {
         vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: [{ name: 'firstName' }, { name: 'age' }], references: [{ name: 'owner' }] } }]
       }
     } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} />);
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     fireEvent.click(screen.getByTestId('trigger-node-click'));
     expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Close node info/i }))
@@ -103,7 +111,7 @@ describe('Graph component', () => {
         vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: null } }]
       }
     } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} />);
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     fireEvent.click(screen.getByTestId('trigger-node-click'));
     expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
   });
@@ -118,7 +126,7 @@ describe('Graph component', () => {
         myMap: ['1']
       }
     } as unknown as QueryReport;
-    const { container } = render(<Graph data={data} />);
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
     expect(warnMock).toHaveBeenCalledWith('Graph: no valid vList or vModelElement — skipping graph render', data);
   });
 });

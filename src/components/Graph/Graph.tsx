@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactFlow, { Background, Controls, Edge, Node } from 'reactflow';
 import type { CSSProperties } from 'react';
 import 'reactflow/dist/style.css';
 import styles from './Graph.module.css';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Create from '../../js/client/Create';
 
 type GraphProps = {
   data: QueryReport | null;
+  url: string;
+  name: string;
 }
 
 type SlotValue = {
@@ -28,10 +31,43 @@ type SlotValue = {
   vStrings?: string[] | null;
 }
 
+type AttributeSlot = {
+  name: string;
+  value: SlotValue;
+}
+
+type ReferenceSlot = {
+  name: string;
+  value: ReferenceValue;
+}
+
+
 type ReferenceValue = {
   name?: string;
   id?: number;
   ids?: number[];
+}
+
+type ModelElement = {
+  attributes?: AttributeSlot[],
+  containers?: string[],
+  file?: string,
+  id?: string,
+  metamodelUri?: string,
+  references?: ReferenceSlot[],
+  repositoryURL?: string,
+  typeName?: string
+}
+
+type QueryOptions = {
+  defaultNamespaces?: string;
+  filePatterns?: string[];
+  includeAttributes?: boolean;
+  includeContainedElements?: boolean;
+  includeDerived?: boolean;
+  includeNodeIds?: boolean;
+  includeReferences?: boolean;
+  repositoryPattern?: string;
 }
 
 type SelectedNodeInfo = {
@@ -39,15 +75,25 @@ type SelectedNodeInfo = {
   typeName?: string;
   file?: string;
   metamodelUri?: string
-  attributes?: SlotValue | null;
-  references?: ReferenceValue | null;
+  attributes?: AttributeSlot[] | null;
+  references?: ReferenceSlot[] | null;
   repositoryUrl?: string;
 } | null;
 
-export default function Graph({ data }: GraphProps) {
+export default function Graph({ data, url, name }: GraphProps) {
   const [nodeInfo, setNodeInfo] = useState<SelectedNodeInfo>(null);
   const hasNodeInfo = nodeInfo !== null;
   const graphHeight = hasNodeInfo ? '400px' : '550px';
+  let hawkClient: HawkClient;
+
+  useEffect(() => {
+      if (!name) return;
+      try {
+        hawkClient = Create(url);
+      } catch (err) {
+        console.error('Error creating Hawk client:', err);
+      }
+  }, [url]);
 
   if (data === null) {
     return (<></>);
@@ -69,7 +115,7 @@ export default function Graph({ data }: GraphProps) {
   }
   const elements: { data: {
     source: any; target: any; id: any; label: any; typeName: any; file: any; metamodelUri: any; repositoryUrl: any; attributes: any; references?: any;
-}; }[] = [];
+  }; }[] = [];
   for (const item of itemsToRender) {
     const modelElem = item?.vModelElement;
     if (modelElem && modelElem.id != null) {
@@ -108,9 +154,43 @@ export default function Graph({ data }: GraphProps) {
 
   };
 
+  const getModelElement = async (value: string) => {
+
+    if (value != 'N/A') {
+
+      try {
+        let listtoAdd: string[] = [];
+        let options: QueryOptions = {includeAttributes: true, includeReferences: true, includeNodeIds: true};
+        hawkClient = Create(url);
+        listtoAdd.push(value);
+        const modelElements: ModelElement[] = await hawkClient.resolveProxies(name, listtoAdd, options);
+        console.log(modelElements);
+        if (modelElements.length > 0) {
+          const elem = modelElements[0];
+          setNodeInfo({
+            id: elem.id ?? 'N/A',
+            typeName: elem.typeName,
+            file: elem.file,
+            metamodelUri: elem.metamodelUri,
+            repositoryUrl: elem.repositoryURL,
+            attributes: elem.attributes ?? null,
+            references: elem.references ?? null
+          });
+        }
+
+      } catch(err) {
+        throw err;
+      }
+    }
+  }
+
   function getReferenceValue(ref: ReferenceValue): string {
 
     if (typeof ref.id === 'number') {
+      return String(ref.id);
+    }
+
+    if (typeof ref.id === 'string') {
       return String(ref.id);
     }
 
@@ -160,14 +240,14 @@ export default function Graph({ data }: GraphProps) {
 
   const attributeRows = Array.isArray(nodeInfo?.attributes)
   ? (nodeInfo.attributes as AttributeSlot[]).map((attr) => [
-      `Attribute: ${attr.name ?? 'N/A'}`,
+      `${attr.name ?? 'N/A'}`,
       getAttributeValue(attr.value)
     ] as [string, string])
   : [['Attributes', nodeInfo?.attributes ? String(nodeInfo.attributes) : 'N/A'] as [string, string]];
 
 const referenceRows = Array.isArray(nodeInfo?.references)
-  ? (nodeInfo.references as ReferenceValue[]).map((ref) => [
-      `Reference: ${ref.name ?? 'N/A'}`,
+  ? (nodeInfo.references as ReferenceSlot[]).map((ref) => [
+      `${ref.name ?? 'N/A'}`,
       getReferenceValue(ref)
     ] as [string, string])
   : [['References', nodeInfo?.references ? String(nodeInfo.references) : 'N/A'] as [string, string]];
@@ -232,7 +312,23 @@ const referenceRows = Array.isArray(nodeInfo?.references)
             {referenceRows.map(([name, value], i) => (
               <tr key={`${name}-${i}`}>
                 <td>{name}</td>
-                <td>{value}</td>
+                <td>
+                  {value.split(', ').map((id, idx) => (
+                    <span key={idx}>
+                      <a 
+                        href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          getModelElement(id.trim());
+                        }}
+                        style={{ cursor: 'pointer', marginRight: '8px' }}
+                      >
+                        {id.trim()}
+                      </a>
+                      {idx < value.split(', ').length - 1 && ', '}
+                    </span>
+                  ))}
+              </td>
               </tr>
             ))}
           </tbody>
