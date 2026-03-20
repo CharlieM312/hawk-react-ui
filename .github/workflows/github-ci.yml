@@ -59,3 +59,18 @@ jobs:
                 json-final-path: './coverage/coverage-final.json'
                 threshold-icons: "{0: '🔴', 70: '🟠', 80: '🟢'}"
                 vite-config-path: "./vite.config.ts"
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - name: Use Node.js 25
+              uses: actions/setup-node@v6
+              with:
+                  node-version: '25'
+                  cache: 'npm'
+            - name: Install dependencies
+              run: |
+                npm ci
+            - name: Run Eslint
+              run: |
+                npm run lint

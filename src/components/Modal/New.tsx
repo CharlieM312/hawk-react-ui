@@ -169,7 +169,7 @@ export default function New({ isOpen, toggle, title }: NewProps) {
     }
 
   };
-  
+
   return (
     <Modal
       isOpen={isOpen}

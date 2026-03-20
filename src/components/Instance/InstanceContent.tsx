@@ -3,7 +3,6 @@ import { Button } from 'react-bootstrap';
 import { useRef, useState } from 'react';
 import { BounceLoader } from 'react-spinners';
 import Select from 'react-select';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 import Graph from '../Graph/Graph';
 
@@ -20,7 +19,6 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import '../../js/syntax-highlighting/mode-eol';
 import '../../js/syntax-highlighting/mode-epl';
 import { Link, useNavigate } from 'react-router';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type LanguageOption = {
   value: string;
@@ -35,7 +33,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const [queryId, setQueryId]                   = useState('');
     const [errorMessage, setErrorMessage]         = useState('');
     const [rawText, setRawText]                   = useState('View raw');
-    const [runButtonText, setRunButtonText]       = useState('Run');
     const [hideRaw, setHideRaw]                   = useState(true);
     const [isGraph, setIsGraph]                   = useState(false);
     const [isRunDisabled, setIsRunDisabled]       = useState(false);
@@ -89,7 +86,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
         isRunning.current = newIsRunning;
 
         if (isRunning.current) {
-          setRunButtonText('Cancel');
           setResult('');
           setQueryTime('');
           setShowErrorMessage(false);
@@ -113,7 +109,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                 setQueryTime(response['queryTime']);
                 isRunning.current = false;
                 setIsRunDisabled(false);
-                setRunButtonText('Run');
               })
               .catch((err) => {
                 console.log(err);
@@ -121,13 +116,11 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                 setShowErrorMessage(true);
                 isRunning.current = false;
                 setIsRunDisabled(false);
-                setRunButtonText('Run');
               });
           }, 1000);
         } else {
           setIsRunDisabled(true);
           Cancel(hawkClient, queryId);
-          setRunButtonText('Run');
           setIsRunDisabled(false);
         }
     }
@@ -195,7 +188,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                         <br />
                         <h5 className={styles.queryLabel}>
                             Query
-                            <FontAwesomeIcon icon={faMagnifyingGlass} />
                             </h5>
                         <div className={styles.queryContainer}>
                         <AceEditor
@@ -216,7 +208,9 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                         </div>
                         <div className={styles.submission}>
                             <BounceLoader className={styles.spinner} size='20px' color='#7e56c2' loading={isRunning.current} />
-                            <Button name="Submit Query" variant='primary' className={styles.run} onClick={onClickRun} disabled={isRunDisabled}>{runButtonText}</Button>
+                            <Button name="Submit Query" variant='primary' className={styles.run} onClick={onClickRun} disabled={isRunDisabled} aria-label={isRunning.current ? "Cancel query execution" : "Run query"}>
+                                {isRunning.current ? "Cancel" : "Run"} Query
+                            </Button>
                         </div>
                         {showErrorMessage && <div className={styles.errorContainer}>
                             <h5 className={styles.errorMessage}>{errorMessage}</h5>
@@ -247,7 +241,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                     <div className={styles.graphOptions}>
                         <h4>Graph</h4>
                         {isGraph ? (
-                                <Graph data={graphData} />
+                                <Graph data={graphData} url={url} name={instance?.name}/>
                             ) : (
                                 <div className={styles.emptyMessage}>No graph to display</div>
                             )}

@@ -38,14 +38,13 @@ export default function AddIndexedLocation({title, isOpen, name, toggle, onCreat
             type: typeValue,
             isFrozen: frozen
         };
-
-        if (username != '' && password != ''){
-            const credentialDetails: Credentials = {
-                password: password,
-                username: username
-            };
+            const credentialDetails: Credentials | undefined = username && password ? { username, password } : undefined;
             try {
-                await hawkClientRef.current?.addRepository(name, repositoryDetails, credentialDetails);
+                if (credentialDetails) {
+                    await hawkClientRef.current?.addRepository(name, repositoryDetails, credentialDetails);
+                } else {
+                    await hawkClientRef.current?.addRepository(name, repositoryDetails);
+                }
                 alert('Indexed location created successfully');
                 onCreated && onCreated();
                 toggle();
@@ -55,21 +54,8 @@ export default function AddIndexedLocation({title, isOpen, name, toggle, onCreat
                 alert('Failed to create indexed location. See console and server logs.');
             }
 
-        } else {
-            try {
-                await hawkClientRef.current?.addRepository(name, repositoryDetails);
-                alert('Indexed location created successfully');
-                onCreated && onCreated();
-                toggle();
-            } catch (err: any){
-                if (err && err.message) console.error('Thrift message:', err.message);
-                if (err && err.stack) console.error(err.stack);
-                alert('Failed to create indexed location. See console and server logs.');
-            }
-        }
 
 
-        
 
     };
 

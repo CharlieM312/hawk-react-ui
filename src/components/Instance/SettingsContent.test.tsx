@@ -92,7 +92,7 @@ describe('SettingsContent', () => {
 
   test('fetches derived attributes when the Derived Attributes section is expanded', async () => {
     const { default: SettingsContent } = await import('./SettingsContent');
-    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' }; 
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
       <MemoryRouter>
@@ -113,7 +113,7 @@ describe('SettingsContent', () => {
 
   test('opens add derived attribute modal', async () => {
     const { default: SettingsContent } = await import('./SettingsContent');
-    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' }; 
+    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
       <MemoryRouter>
@@ -332,7 +332,7 @@ describe('SettingsContent', () => {
     const startButton = screen.getByRole('button', { name: /Start Instance/i });
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
     expect(startButton).toBeInTheDocument();
-    await act(async () => {      
+    await act(async () => {
       startButton.click();
       await Promise.resolve();
     });
@@ -356,7 +356,7 @@ describe('SettingsContent', () => {
     const stopButton = screen.getByRole('button', { name: /Stop Instance/i });
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
     expect(stopButton).toBeInTheDocument();
-    await act(async () => {      
+    await act(async () => {
       stopButton.click();
       await Promise.resolve();
     });
@@ -366,7 +366,7 @@ describe('SettingsContent', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith('/');
 
-    
+
   });
 
   test('should sync the instance when Sync Instance button is clicked', async () => {
@@ -381,7 +381,7 @@ describe('SettingsContent', () => {
     const syncButton = screen.getByRole('button', { name: /Sync Instance/i });
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
     expect(syncButton).toBeInTheDocument();
-    await act(async () => {      
+    await act(async () => {
       syncButton.click();
       await Promise.resolve();
     });
@@ -389,6 +389,6 @@ describe('SettingsContent', () => {
       expect(alertSpy).toHaveBeenCalledWith('Instance hawk-set0 synced successfully.');
     });
   });
-    
+
 
 });

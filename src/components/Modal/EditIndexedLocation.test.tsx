@@ -46,13 +46,13 @@ describe('Edit indexed location', () => {
       act(() => {
         render(<EditIndexedLocation isOpen={isOpen} toggle={toggle} title={'Edit repository'} name="hawk-set-0" repoName="mockRepo" onCreated={mockFunction} />);
       });
-  
+
       const typeName = await screen.findByText('Type');
       expect(typeName).toBeInTheDocument();
 
       const frozenName = await screen.findByText('Freeze repo');
       expect(frozenName).toBeInTheDocument();
-  
+
     });
 
     test('Freezing a repository', async () => {
@@ -63,9 +63,9 @@ describe('Edit indexed location', () => {
       act(() => {
         render(<EditIndexedLocation isOpen={isOpen} toggle={toggle} title={'Create new Derived Attribute'} name="hawk-set-0" repoName="mockRepo" onCreated={mockFunction} />);
       });
-      const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});   
+      const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
       const submitButton = await screen.findByRole('button', { name: 'Submit' });
-      act(() => {      
+      act(() => {
         submitButton.click();
       });
 
@@ -76,7 +76,7 @@ describe('Edit indexed location', () => {
       await waitFor(() => {
         expect(alertMock).toHaveBeenCalledWith('Repository status changed');
       });
-  
+
     });
 
 });

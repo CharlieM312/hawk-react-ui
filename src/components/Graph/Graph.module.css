@@ -1,0 +1,41 @@
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    right: 0;
+    position: absolute;
+}
+
+.nodeInfoHeader {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nodeInfoTitle {
+  margin: 0;
+  text-align: center;
+}
+
+.nodeInfoTable {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 8px;
+align-items: start;
+}
+
+.nodeInfoTable td {
+border: 1px solid #ccc;
+padding: 4px;
+vertical-align: top;
+word-break: break-word;
+}
+
+@media (max-width: 800px) {
+.nodeInfoTable {
+grid-template-columns: 1fr;
+}
+}
+

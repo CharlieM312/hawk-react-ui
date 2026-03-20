@@ -1,4 +1,4 @@
-import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import * as RR from 'react-router';
 import Table from './Table';
@@ -119,7 +119,6 @@ describe('Table component', () => {
   test('Renders no instances message when there are no instances', () => {
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
 
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
@@ -173,8 +172,53 @@ describe('Table component', () => {
     });
   });
 
+  test('Opens query options when the magnifying glass icon is clicked', async () => {
+
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockNavigate = vi.fn();
+
+    mockCreate.mockImplementation(() => ({} as any));
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
+    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
+    vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
+
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const cogIcon = getByLabelText('Query instancename');
+    fireEvent.click(cogIcon);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename", { state: { instance: { name: 'instancename', status: 'RUNNING', info: 'message' }, url: 'http://avalidurl:3000' } });
+    });
+  });
+
+  test('Opens query options when the magnifying glass icon is clicked and it is updating', async () => {
+
+    const mockGet = vi.mocked(Get);
+    const mockCreate = vi.mocked(Create);
+    const mockNavigate = vi.fn();
+
+    mockCreate.mockImplementation(() => ({} as any));
+    // @ts-ignore
+    mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
+    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
+    vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
+
+    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
+    const cogIcon = getByLabelText('Query instancename');
+    fireEvent.click(cogIcon);
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename", { state: { instance: { name: 'instancename', status: 'UPDATING', info: 'message' }, url: 'http://avalidurl:3000' } });
+    });
+  });
+
+
+
+
   test('Syncs selected instance when the sync icon is clicked', async () => {
-    
+
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { syncInstance: vi.fn(() => Promise.resolve()) };
@@ -194,7 +238,7 @@ describe('Table component', () => {
   });
 
   test('Starts selected instance when the start icon is clicked', async () => {
-    
+
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
@@ -214,7 +258,7 @@ describe('Table component', () => {
   });
 
   test('Starting an instance that is already running shows an alert', async () => {
-    
+
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
@@ -235,7 +279,7 @@ describe('Table component', () => {
   });
 
   test('Starting an instance that is already updating shows an alert', async () => {
-    
+
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
@@ -256,7 +300,7 @@ describe('Table component', () => {
   });
 
   test('Stops selected instance when the stop icon is clicked', async () => {
-    
+
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { stopInstance: vi.fn(() => Promise.resolve()) };
@@ -276,7 +320,7 @@ describe('Table component', () => {
   });
 
   test('Stopping an instance that is already stopped shows an alert', async () => {
-    
+
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
@@ -297,7 +341,7 @@ describe('Table component', () => {
   });
 
   test('Deletes selected instance when the delete icon is clicked', async () => {
-    
+
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { removeInstance: vi.fn(() => Promise.resolve()) };

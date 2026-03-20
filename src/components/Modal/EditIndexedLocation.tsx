@@ -33,7 +33,7 @@ export default function EditIndexedLocation({title, isOpen, toggle, name, repoNa
         } catch (err) {
             console.error(err);
         }
-        
+
 
     };
 

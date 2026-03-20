@@ -49,16 +49,16 @@ describe('New indexed attribute', () => {
       act(() => {
         render(<NewIndexedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Indexed Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
       });
-  
+
       const metamodelLabel = await screen.findByText('Metamodel URI');
       expect(metamodelLabel).toBeInTheDocument();
-  
+
       const typeName = await screen.findByText('Type Name');
       expect(typeName).toBeInTheDocument();
 
       const attributeName = await screen.findByText('Attribute Name');
       expect(attributeName).toBeInTheDocument();
-  
+
     });
 
     test('Creation of new valid indexed attribute', async () => {
@@ -70,14 +70,14 @@ describe('New indexed attribute', () => {
           render(<NewIndexedAttribute isOpen={isOpen} toggle={toggle} title={'Create new Indxed Attribute'} name="hawk-set-0" onCreated={mockFunction} />);
         });
         const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    
+
         const attributeNameInput = await screen.findByLabelText('Attribute Name');
         act(() => {
           fireEvent.change(attributeNameInput, { target: { value: 'MyAttribute' } });
         });
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
 
@@ -105,9 +105,9 @@ describe('New indexed attribute', () => {
         act(() => {
           fireEvent.change(attributeNameInput, { target: { value: '' } });
         });
-        
+
         const submitButton = await screen.findByRole('button', { name: 'Submit' });
-        act(() => {      
+        act(() => {
           submitButton.click();
         });
         const mockCreate = vi.mocked(Create);
@@ -126,7 +126,7 @@ describe('New indexed attribute', () => {
         });
 
         const dropdown = await screen.findAllByLabelText('Metamodel URI');
-        
+
         act(() => {
           fireEvent.change(dropdown[0], { target: { value: 'othermetamodel' } });
         });
@@ -144,7 +144,7 @@ describe('New indexed attribute', () => {
         });
 
         const dropdown = await screen.findAllByLabelText('Metamodel URI');
-        
+
         act(() => {
           fireEvent.change(dropdown[0], { target: { value: 'othermetamodel' } });
         });

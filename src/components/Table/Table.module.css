@@ -55,6 +55,10 @@ tbody > tr:hover {
   margin-left: 0;
 }
 
+.magnifying {
+  margin-left: 10px;
+}
+
 .cog:hover {
   cursor: pointer;
 }

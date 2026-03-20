@@ -91,7 +91,7 @@ describe('New component', () => {
     });
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {});
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     expect(alertMock).toHaveBeenCalledWith('Instance name cannot be empty.');
@@ -134,7 +134,7 @@ describe('New component', () => {
       fireEvent.change(maxDelayInput, { target: { value: '1000' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     await waitFor(() => {
@@ -179,7 +179,7 @@ describe('New component', () => {
       fireEvent.change(maxDelayInput, { target: { value: '1000' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     await waitFor(() => {
@@ -203,7 +203,7 @@ describe('New component', () => {
       fireEvent.change(instanceNameInput, { target: { value: 'MyInstance' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     expect(alertMock).toHaveBeenCalledWith('Please provide both minimum and maximum delay periods.');
@@ -233,7 +233,7 @@ describe('New component', () => {
       fireEvent.change(maxDelayInput, { target: { value: '500' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     expect(alertMock).toHaveBeenCalledWith('Minimum delay period cannot be greater than maximum delay period.');
@@ -299,7 +299,7 @@ describe('New component', () => {
       fireEvent.change(indexFactoryInput, { target: { value: 'org.eclipse.hawk.graph.index.DefaultIndexFactory' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     await waitFor(() => {
@@ -366,7 +366,7 @@ describe('New component', () => {
       fireEvent.change(indexFactoryInput, { target: { value: 'org.eclipse.hawk.graph.index.DefaultIndexFactory' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     await waitFor(() => {
@@ -418,7 +418,7 @@ describe('New component', () => {
       fireEvent.change(indexFactoryInput, { target: { value: 'org.eclipse.hawk.graph.index.DefaultIndexFactory' } });
     });
     const submitButton = await screen.findByRole('button', { name: 'Create' });
-    act(() => {      
+    act(() => {
       submitButton.click();
     });
     await waitFor(() => {
