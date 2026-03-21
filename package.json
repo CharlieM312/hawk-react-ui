@@ -1,6 +1,6 @@
 {
   "name": "hawk-react-ui",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
@@ -61,7 +61,7 @@
     "@vitest/ui": "^4.1.0",
     "eslint": "^9.39.4",
     "eslint-plugin-react": "^7.37.5",
-    "jsdom": "^29.0.0",
+    "jsdom": "^29.0.1",
     "vite": "^8.0.1",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^4.1.0"

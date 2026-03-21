@@ -37,7 +37,7 @@ export default function Home() {
       <div className={styles.manage}>
         <div className={styles.header}>
           <h2 className={styles.title}>Manage Instances</h2>
-          <button type='button' className={styles.new} onClick={toggle}>+</button>
+          <button title={"Create new instance"} aria-label={"Create new instance"} type='button' className={styles.new} onClick={toggle}>+</button>
           <New
             isOpen={isOpen}
             toggle={toggle}

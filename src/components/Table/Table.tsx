@@ -55,8 +55,6 @@ export default function Table({ url }: TableProps) {
     existingInstances = [];
     errorMessage = 'Failed to load instances. Reason: ' + err;
   }
-  // eslint-disable-next-line
-  const [selectedInstance, setSelectedInstance] = useState(existingInstances[0]);
 
   return (
     <div className={styles.table}>
