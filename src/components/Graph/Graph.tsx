@@ -83,6 +83,10 @@ export default function Graph({ data, url, name }: GraphProps) {
   const [edges, setEdges] = useState<Edge[]>([]);
   const hasNodeInfo = nodeInfo !== null;
   const graphHeight = hasNodeInfo ? '400px' : '550px';
+  const NODE_WIDTH = 150;
+  const NODE_HEIGHT = 80;
+  const STEP_X = 70;
+  const STEP_Y = 60;
 
   useEffect(() => {
     if (!data) {
@@ -192,6 +196,28 @@ export default function Graph({ data, url, name }: GraphProps) {
 
   };
 
+  const isOccupied = (nodes: Node[], x: number, y: number) => {
+    return nodes.some((n) => Math.abs(n.position.x - x) < NODE_WIDTH && Math.abs(n.position.y - y) < NODE_HEIGHT);
+  }
+
+  const getNextChildNodePosition =(nodes: Node[], sourceNode: Node | undefined) => {
+    if (!sourceNode) {
+      return { x: (nodes.length % 5) * 220, y: Math.floor(nodes.length / 5) * 140 };
+    }
+
+    // Position new node in a different place, so also check if occupied
+    const offsets = [0, 1, -1, 2, -2, 3, -3, 4, -4];
+    for (const k of offsets) {
+      const x = sourceNode.position.x + STEP_X;
+      const y = sourceNode.position.y + k * STEP_Y;
+      if (!isOccupied(nodes, x, y)) return { x, y };
+
+    }
+
+    return { x: sourceNode.position.x + STEP_X * 2, y: sourceNode.position.y };
+
+  }
+
   const getModelElement = async (value: string, sourceNodeId: string, attributeName: string) => {
 
     if (!value || value === 'N/A') return;
@@ -218,9 +244,7 @@ export default function Graph({ data, url, name }: GraphProps) {
         if (exists) return prev;
 
         const sourceNode = prev.find((n) => n.id === sourceNodeId);
-        const position = sourceNode
-          ? { x: sourceNode.position.x + 220, y: sourceNode.position.y + 120 }
-          : { x: (prev.length % 5) * 220, y: Math.floor(prev.length / 5) * 140 };
+        const position = getNextChildNodePosition(prev, sourceNode);
 
         return [
           ...prev,
@@ -378,8 +402,8 @@ const referenceRows = Array.isArray(nodeInfo?.references)
                 <td>
                   {value.split(', ').map((id, idx) => (
                     <span key={idx}>
-                      <a 
-                        href="#" 
+                      <a
+                        href="#"
                         onClick={(e) => {
                           e.preventDefault();
                           if (nodeInfo?.id){

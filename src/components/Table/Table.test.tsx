@@ -257,7 +257,7 @@ describe('Table component', () => {
 
   });
 
-  test('Starting an instance that is already running shows an alert', async () => {
+  test('the start button won\'t render for started instances', async () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
@@ -269,33 +269,7 @@ describe('Table component', () => {
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
-    const startIcon = getByLabelText('Start instancename');
-    fireEvent.click(startIcon);
-
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is already running.');
-    });
-
-  });
-
-  test('Starting an instance that is already updating shows an alert', async () => {
-
-    const mockGet = vi.mocked(Get);
-    const mockCreate = vi.mocked(Create);
-    const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
-
-    vi.spyOn(window, 'alert').mockImplementation(() => {});
-    mockCreate.mockImplementation(() => mockHawkClient as any);
-
-    // @ts-ignore
-    mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
-    const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
-    const startIcon = getByLabelText('Start instancename');
-    fireEvent.click(startIcon);
-
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is already running.');
-    });
+    expect(() => getByLabelText('Start instancename')).toThrow();
 
   });
 
@@ -319,7 +293,7 @@ describe('Table component', () => {
 
   });
 
-  test('Stopping an instance that is already stopped shows an alert', async () => {
+  test('the button to stop an instance won\'t render for stopped instances', async () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
@@ -331,12 +305,7 @@ describe('Table component', () => {
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '1', message: 'message'}]));
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
-    const stopIcon = getByLabelText('Stop instancename');
-    fireEvent.click(stopIcon);
-
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is already stopped.');
-    });
+    expect(() => getByLabelText('Stop instancename')).toThrow();
 
   });
 
@@ -372,12 +341,7 @@ describe('Table component', () => {
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
-    const deleteIcon = getByLabelText('Delete instancename');
-    fireEvent.click(deleteIcon);
-
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith('Instance \"instancename"\ is running, and can\'t be deleted.');
-    });
+    expect(() => getByLabelText('Delete instancename')).toThrow();
 
   });
 
