@@ -147,10 +147,10 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
             </div>
             <div className={styles.header}>
                 <div className={styles.title}>
-                    <button className={styles.backArrow} onClick={() => navigate('/')} aria-label="Go back to instance list">←</button>
+                    <button className={styles.backArrow} title={"Go back to instance list"} onClick={() => navigate('/')} aria-label="Go back to instance list">←</button>
                     <h1>{instance ? instance.name : ''}</h1>
                     <hr className={styles.separator} />
-                    <button className={styles.backArrow} onClick={() => navigate(`/instance/${instance.name}/settings`, { state: { instance: instance, url: url } })} aria-label="Go to instance settings">⚙️</button>
+                    <button title={"Go to instance settings"} className={styles.backArrow} onClick={() => navigate(`/instance/${instance.name}/settings`, { state: { instance: instance, url: url } })} aria-label="Go to instance settings">⚙️</button>
                 </div>
             </div>
                 <div className={styles.body}>

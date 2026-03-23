@@ -289,7 +289,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                         {metaModels.map((model: string, idx: number) => (
                             <li key={idx} className={styles.configItem}>
                                 <span>{model}</span>
-                                <button aria-label={`Unregister Metamodel ${model}`} className={styles.deleteButton} onClick={() => {
+                                <button title={`Unregister Metamodel ${model}`}  aria-label={`Unregister Metamodel ${model}`} className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to unregister the metamodel "${model}"? This action cannot be undone.`)) {
                                             unregisterMetamodel(model);
                                         }
@@ -299,7 +299,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                             </li>
                         ))}
                         <li className={styles.configItem}>
-                            <button aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
+                            <button title={"Add metamodel"} aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
                                 <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
                             </button>
                             <AddMetamodel
@@ -316,7 +316,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 <p className={styles.emptyMessage}>No metamodels found</p>
                                 <ul className={styles.configList}>
                                     <li>
-                                        <button aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
+                                        <button title={"Add metamodel"} aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
                                             <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
                                         </button>
                                         <AddMetamodel
@@ -351,7 +351,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {indexedLocations.map((location: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{location}</span>
-                                    <button aria-label={`Edit indexed location ${location}`} className={styles.deleteButton} onClick={toggleIndexedEdit}>
+                                    <button title={`Edit indexed location ${location}`} aria-label={`Edit indexed location ${location}`} className={styles.deleteButton} onClick={toggleIndexedEdit}>
                                         <FontAwesomeIcon icon={faPen} />
                                     </button>
                                     <EditIndexedLocation
@@ -362,7 +362,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                                 repoName={location}
                                                 onCreated={getIndexedLocations}
                                         />
-                                    <button aria-label={`Delete indexed location ${location}`} className={styles.deleteButton} onClick={() => {
+                                    <button title={`Delete indexed location ${location}`} aria-label={`Delete indexed location ${location}`} className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the indexed location "${location}"? This action cannot be undone.`)) {
                                             deleteIndexedLocation(location);
                                         }
@@ -424,7 +424,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {derivedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{attribute}</span>
-                                    <button aria-label='Delete Derived Attribute' className={styles.deleteButton} onClick={() => {
+                                    <button title={`Delete Derived Attribute ${attribute}`} aria-label='Delete Derived Attribute' className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the derived attribute "${attribute}"? This action cannot be undone.`)) {
                                             deleteDerivedAttribute(attribute);
                                         }
@@ -486,7 +486,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                 {indexedAttributes.map((attribute: string, idx: number) => (
                                     <li key={idx} className={styles.configItem}>
                                     <span>{attribute}</span>
-                                    <button aria-label="Delete Indexed Attribute" className={styles.deleteButton} onClick={() => {
+                                    <button title={`Delete Indexed Attribute ${attribute}`} aria-label="Delete Indexed Attribute" className={styles.deleteButton} onClick={() => {
                                         if (window.confirm(`Are you sure you want to delete the attribute "${attribute}"? This action cannot be undone.`)) {
                                             deleteIndexedAttribute(attribute);
                                         }
