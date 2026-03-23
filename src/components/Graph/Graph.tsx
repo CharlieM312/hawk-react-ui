@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import ReactFlow, { Background, Controls, Edge, MarkerType, Node } from 'reactflow';
+import { useCallback, useEffect, useState } from 'react';
+import ReactFlow, { Background, Controls, Edge, MarkerType, Node, NodeChange, applyNodeChanges } from 'reactflow';
 import type { CSSProperties } from 'react';
 import 'reactflow/dist/style.css';
 import styles from './Graph.module.css';
@@ -155,6 +155,13 @@ export default function Graph({ data, url, name }: GraphProps) {
     setNodes(initialNodes);
     setEdges(initialEdges);
   }, [data]);
+
+  const onNodesChange = useCallback(
+   (changes: NodeChange[]) => {
+    setNodes((changed) => applyNodeChanges(changes, changed));
+   },
+   [setNodes]
+  )
 
   const displayNodeInfo = (event: React.MouseEvent, node: Node) => {
     const nodeData = node.data;
@@ -314,6 +321,7 @@ const referenceRows = Array.isArray(nodeInfo?.references)
           nodes={nodes}
           edges={edges}
           onNodeClick={displayNodeInfo}
+          onNodesChange={onNodesChange}
           fitView
         >
           <Background color="#aaa" gap={16} />
