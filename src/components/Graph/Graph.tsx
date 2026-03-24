@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import ReactFlow, { Background, Controls, Edge, MarkerType, Node, NodeChange, applyNodeChanges } from 'reactflow';
+import { ReactFlow, Background, Controls, Edge, MarkerType, Node, NodeChange, applyNodeChanges } from '@xyflow/react';
 import type { CSSProperties } from 'react';
-import 'reactflow/dist/style.css';
+import '@xyflow/react/dist/style.css';
 import styles from './Graph.module.css';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -171,12 +171,12 @@ export default function Graph({ data, url, name }: GraphProps) {
     const nodeData = node.data;
     setNodeInfo({
       id: String(nodeData.id),
-      typeName: nodeData.typeName,
-      file: nodeData.file,
-      metamodelUri: nodeData.metamodelUri,
-      attributes: nodeData.attributes,
-      references: nodeData.references,
-      repositoryUrl: nodeData.repositoryUrl
+      typeName: String(nodeData.typeName),
+      file: String(nodeData.file),
+      metamodelUri: String(nodeData.metamodelUri),
+      attributes: nodeData.attributes as AttributeSlot[],
+      references: nodeData.references as ReferenceSlot[],
+      repositoryUrl: String(nodeData.repositoryUrl)
     });
   };
 
