@@ -16,6 +16,14 @@ global.HawkQueryOptions = class {
   }
 }
 
+const root = document.createElement('div');
+root.setAttribute('id', 'root');
+root.setAttribute('data-theme', 'light');
+document.body.appendChild(root);
+
+HTMLElement.prototype.requestFullscreen = vi.fn().mockResolvedValue(undefined);
+document.exitFullscreen = vi.fn().mockResolvedValue(undefined);
+
 const localStorageMock = (function () {
   let store = {};
 
