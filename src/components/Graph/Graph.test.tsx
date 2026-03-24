@@ -2,42 +2,47 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { describe, test, expect, vi } from 'vitest';
 import Graph from './Graph';
 
-vi.mock('reactflow', () => {
+vi.mock('@xyflow/react', async(importOriginal) => {
+  const actual = await importOriginal<typeof import('@xyflow/react')>();
+  const ReactFlowMock = (props: any) => (
+    <div data-testid="reactflow-mock">
+      <button
+        data-testid="trigger-node-click"
+        onClick={() =>
+          props.onNodeClick?.(
+            {} as any,
+            {
+              id: '1',
+              data: {
+                id: 1,
+                typeName: 'Class',
+                file: 'model.xmi',
+                metamodelUri: 'mm://demo',
+                repositoryUrl: 'https://repo',
+                attributes: [{ name: 'firstName', value: { vString: 'John' } }, { name: 'age', value: { vInteger: 30 } }],
+                references: [{ name: 'myReference', id: 21 }]
+              }
+            } as any
+          )
+        }
+      >
+        click-node
+      </button>
+    </div>
+  );
+
   return {
+    ...actual,
     __esModule: true,
     MarkerType: {
       ArrowClosed: 'arrowclosed',
     },
+    ReactFlow: ReactFlowMock,
     Background: () => <div data-testid="reactflow-background-mock" />,
     Controls: () => <div data-testid="reactflow-controls-mock" />,
     Edge: () => <div data-testid="reactflow-edge-mock" />,
     MiniMap: () => <div data-testid="reactflow-minimap-mock" />,
-    default: (props: any) => (
-      <div data-testid="reactflow-mock">
-        <button
-          data-testid="trigger-node-click"
-          onClick={() =>
-            props.onNodeClick?.(
-              {} as any,
-              {
-                id: '1',
-                data: {
-                  id: 1,
-                  typeName: 'Class',
-                  file: 'model.xmi',
-                  metamodelUri: 'mm://demo',
-                  repositoryUrl: 'https://repo',
-                  attributes: [{ name: 'firstName', value: { vString: 'John' } }, { name: 'age', value: { vInteger: 30 } }],
-                  references: [{ name: 'myReference', id: 21 }]
-                }
-              } as any
-            )
-          }
-        >
-          click-node
-        </button>
-      </div>
-    )
+    default: ReactFlowMock
   };
 });
 

@@ -46,19 +46,6 @@ describe('InstanceContent', () => {
     vi.clearAllMocks();
   });
 
-  test('renders instance name as the title of the content', async () => {
-    const { default: InstanceContent } = await import('./InstanceContent');
-
-    const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
-    render(
-      <MemoryRouter>
-        <InstanceContent instance={instance} url="http://localhost:8080" />
-      </MemoryRouter>
-    );
-    const title = screen.getByRole('heading', { name: 'hawk-set0' });
-    expect(title).toBeInTheDocument();
-  });
-
   test('renders language options when instance is running', async () => {
     const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
@@ -71,11 +58,8 @@ describe('InstanceContent', () => {
     expect(languageOptions).toBeInTheDocument();
   });
 
-  test('navigation to settings page works correctly', async () => {
+  test('navigation to settings page works correctly via link', async () => {
 
-    const mockNavigate = vi.fn();
-    const reactrouter = await import('react-router');
-    vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
     const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     render(
@@ -83,19 +67,14 @@ describe('InstanceContent', () => {
         <InstanceContent instance={instance} url="http://localhost:8080" />
       </MemoryRouter>
     );
-    const settingsButton = screen.getByRole('button', { name: /Settings/i });
-    expect(settingsButton).toBeInTheDocument();
-
-    // Simulate click and check if navigation occurs
-    settingsButton.click();
-    expect(mockNavigate).toHaveBeenCalledWith('/instance/hawk-set0/settings', { state: { instance, url: 'http://localhost:8080' } });
+    const settingsLink = screen.getByRole('link', { name: /Settings/i });
+    expect(settingsLink).toBeInTheDocument();
+    fireEvent.click(settingsLink);
+    expect(settingsLink.getAttribute('href')).toBe('/instance/hawk-set0/settings');
   });
 
-  test('navigation to homepage works correctly', async () => {
+  test('navigation to home page works correctly via link', async () => {
 
-    const mockNavigate = vi.fn();
-    const reactrouter = await import('react-router');
-    vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
     const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     render(
@@ -103,13 +82,12 @@ describe('InstanceContent', () => {
         <InstanceContent instance={instance} url="http://localhost:8080" />
       </MemoryRouter>
     );
-    const backButton = screen.getByRole('button', { name: /Go back to instance list/i });
-    expect(backButton).toBeInTheDocument();
-
-    // Simulate click and check if navigation occurs
-    backButton.click();
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    const homeLink = screen.getByRole('link', { name: /Home/i });
+    expect(homeLink).toBeInTheDocument();
+    fireEvent.click(homeLink);
+    expect(homeLink.getAttribute('href')).toBe('/');
   });
+
 
   test('Check what is displayed if no instance name can be found', async () => {
     const { default: InstanceContent } = await import('./InstanceContent');
@@ -119,7 +97,7 @@ describe('InstanceContent', () => {
         <InstanceContent instance={instance} url="http://localhost:8080" />
       </MemoryRouter>
     );
-    const title = screen.getByRole('heading', { name: '' });
+    const title = screen.getByRole('link', { name: /Home/i });
     expect(title).toBeInTheDocument();
   });
 

@@ -1,6 +1,6 @@
 import AceEditor from 'react-ace';
 import { Button } from 'react-bootstrap';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { BounceLoader } from 'react-spinners';
 import Select from 'react-select';
 
@@ -16,6 +16,7 @@ import styles from './InstanceContent.module.css';
 
 import 'ace-builds/src-noconflict/theme-dracula';
 import 'ace-builds/src-noconflict/ext-language_tools';
+import 'ace-builds/src-noconflict/theme-chrome';
 import '../../js/syntax-highlighting/mode-eol';
 import '../../js/syntax-highlighting/mode-epl';
 import { Link, useNavigate } from 'react-router';
@@ -26,6 +27,7 @@ type LanguageOption = {
 }
 
 export default function InstanceContent({ instance, url }: { instance: any; url: string }) {
+    const [appTheme, setAppTheme]                 = useState(document.getElementById('root')?.getAttribute('data-theme') ?? 'light');
     const [result, setResult]                     = useState('');
     const [rawResult, setRawResult]               = useState('');
     const [query, setQuery]                       = useState('');
@@ -45,6 +47,17 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     let languageIdRegEx: RegExp;
     let selectedLanguage: string;
     let languageOptions: LanguageOption[] = [];
+
+    useEffect(() => {
+        const root = document.getElementById('root');
+        if (!root) return;
+        const observer = new MutationObserver(() => {
+            setAppTheme(root?.getAttribute('data-theme') ?? 'light');
+        });
+        observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+        return () => observer.disconnect();
+    }, []);
+
 
     try {
         hawkClient = Create(url);
@@ -66,8 +79,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const aceMode = selectedLanguage && languageIdRegEx.test(selectedLanguage)
         ? (selectedLanguage.match(languageIdRegEx)![0] === 'EOL' ? 'eol' : 'epl')
         : undefined;
-
-    let appTheme = document.getElementById('root')?.getAttribute('data-theme');
 
     const aceStyles = {
         borderRadius: '4px'
@@ -142,16 +153,12 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                     <li><Link to="/">Home</Link></li>
                     <li>&gt;</li>
                     <li>{instance?.name ?? 'Instance'}</li>
+                    <li>&gt;</li>
+                    <li aria-label="Go to instance settings"><Link to={`/instance/${instance.name}/settings`}
+                        state={{ instance: instance, url: url }}>
+                        Settings</Link></li>
                 </ol>
                 </nav>
-            </div>
-            <div className={styles.header}>
-                <div className={styles.title}>
-                    <button className={styles.backArrow} title={"Go back to instance list"} onClick={() => navigate('/')} aria-label="Go back to instance list">←</button>
-                    <h1>{instance ? instance.name : ''}</h1>
-                    <hr className={styles.separator} />
-                    <button title={"Go to instance settings"} className={styles.backArrow} onClick={() => navigate(`/instance/${instance.name}/settings`, { state: { instance: instance, url: url } })} aria-label="Go to instance settings">⚙️</button>
-                </div>
             </div>
                 <div className={styles.body}>
                     <div className={styles.queryOptions}>
@@ -191,6 +198,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                             </h5>
                         <div className={styles.queryContainer}>
                         <AceEditor
+                            key={`query-${appTheme}`}
                             placeholder="Enter your query here..."
                             height='120px'
                             width='100%'
@@ -198,7 +206,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                             showPrintMargin={false}
                             showGutter={false}
                             theme={
-                            appTheme === 'dark' ? 'dracula' : ''
+                            appTheme === 'dark' ? 'dracula' : 'chrome'
                             }
                             mode={
                             aceMode
@@ -224,13 +232,14 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                         <div className={styles.resultContainer}>
                             {!isGraph &&
                                 <AceEditor
+                                key={`result-${appTheme}`}
                                 height={hideRaw === false ? '280px' : '120px'}
                                 width='100%'
                                 showPrintMargin={false}
                                 showGutter={false}
                                 value={hideRaw === false ? rawResult : result}
                                 theme={
-                                    appTheme === 'dark' ? 'dracula' : ''
+                                    appTheme === 'dark' ? 'dracula' : 'chrome'
                                 }
                                 mode={aceMode}
                                 style={aceStylesDark}
