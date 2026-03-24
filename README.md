@@ -59,3 +59,5 @@ This requires that you have a Docker server running on the local machine: you ma
 ## Test Results
 
 [![CI](https://github.com/CharlieM312/hawk-react-ui/actions/workflows/github-ci.yml/badge.svg?branch=main)](https://github.com/CharlieM312/hawk-react-ui/actions/workflows/github-ci.yml)
+
+[![Release](https://github.com/CharlieM312/hawk-react-ui/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/CharlieM312/hawk-react-ui/actions/workflows/release.yml)
