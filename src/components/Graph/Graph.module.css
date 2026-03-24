@@ -7,6 +7,12 @@
     position: absolute;
 }
 
+.fullScreenButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
 .nodeInfoHeader {
   position: relative;
   display: flex;

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ReactFlow, Background, Controls, Edge, MarkerType, Node, NodeChange, applyNodeChanges } from '@xyflow/react';
+import { useCallback, useEffect, useState, useRef } from 'react';
+import { ReactFlow, Background, Controls, Edge, MarkerType, Node, NodeChange, applyNodeChanges, Panel } from '@xyflow/react';
 import type { CSSProperties } from 'react';
 import '@xyflow/react/dist/style.css';
 import styles from './Graph.module.css';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faMaximize, faMinimize, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Create from '../../js/client/Create';
 
@@ -78,11 +78,14 @@ type SelectedNodeInfo = {
 } | null;
 
 export default function Graph({ data, url, name }: GraphProps) {
+  const [appTheme, setAppTheme] = useState(document.getElementById('root')?.getAttribute('data-theme') ?? 'light');
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [nodeInfo, setNodeInfo] = useState<SelectedNodeInfo>(null);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const hasNodeInfo = nodeInfo !== null;
-  const graphHeight = hasNodeInfo ? '400px' : '550px';
+  const graphHeight = hasNodeInfo ? '400px' : '650px';
   const NODE_WIDTH = 150;
   const NODE_HEIGHT = 80;
   const STEP_X = 70;
@@ -160,12 +163,46 @@ export default function Graph({ data, url, name }: GraphProps) {
     setEdges(initialEdges);
   }, [data]);
 
+  useEffect(() => {
+        const root = document.getElementById('root');
+        if (!root) return;
+        const observer = new MutationObserver(() => {
+            setAppTheme(root?.getAttribute('data-theme') ?? 'light');
+        });
+        observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+        return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const onFullScreenChange = () => {
+      setIsFullScreen(Boolean(document.fullscreenElement));
+    }
+    document.addEventListener('fullscreenchange', onFullScreenChange);
+    return () => document.removeEventListener('fullscreenchange', onFullScreenChange);
+  }, []);
+
   const onNodesChange = useCallback(
    (changes: NodeChange[]) => {
     setNodes((changed) => applyNodeChanges(changes, changed));
    },
    [setNodes]
   )
+
+  const toggleFullScreen = useCallback(() => {
+    console.log('Toggling fullscreen');
+    if (!reactFlowWrapper.current) return;
+
+    console.log('Current fullscreen element:', document.fullscreenElement);
+    if (!document.fullscreenElement) {
+      reactFlowWrapper.current.requestFullscreen().catch((err) => {
+        console.error('Error attempting to enable full-screen mode:', err);
+      });
+      setIsFullScreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullScreen(false);
+    }
+  }, []);
 
   const displayNodeInfo = (event: React.MouseEvent, node: Node) => {
     const nodeData = node.data;
@@ -340,14 +377,20 @@ const referenceRows = Array.isArray(nodeInfo?.references)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
-      <div style={{ width: '100%', maxWidth: '100vw', height: graphHeight, border: '1px solid #ccc' }}>
+      <div ref={reactFlowWrapper} style={{ width: '100%', maxWidth: '100vw', height: graphHeight, border: '1px solid #ccc', backgroundColor: appTheme === 'dark' ? '#333' : '#fff' }}>
         <ReactFlow
+          colorMode={appTheme === 'dark' ? 'dark' : 'light'}
           nodes={nodes}
           edges={edges}
           onNodeClick={displayNodeInfo}
           onNodesChange={onNodesChange}
           fitView
         >
+          <Panel position="top-right">
+            <button onClick={() => toggleFullScreen()} className={styles.fullScreenButton} aria-label="Toggle fullscreen">
+              <FontAwesomeIcon color={appTheme === 'dark' ? '#fff' : '#000'} icon={isFullScreen ? faMinimize : faMaximize} />
+            </button>
+          </Panel>
           <Background color="#aaa" gap={16} />
           <Controls />
         </ReactFlow>
@@ -357,7 +400,7 @@ const referenceRows = Array.isArray(nodeInfo?.references)
           <div className={styles.nodeInfoHeader}>
             <h3 className={styles.nodeInfoTitle}>Selected Node Info</h3>
             <button className={styles.closeButton} aria-label="Close node info" onClick={() => setNodeInfo(null)}>
-              <FontAwesomeIcon icon={faXmark} />
+              <FontAwesomeIcon color={appTheme === 'dark' ? '#fff' : '#000'} icon={faXmark} />
             </button>
           </div>
           <table className={styles.infoTable}>
