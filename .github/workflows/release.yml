@@ -46,13 +46,21 @@ jobs:
                     platforms: linux/amd64,linux/arm64
                     cache-from: type=gha
                     cache-to: type=gha,mode=max
+            - 
+                name: Create a Tag
+                if: github.event_name == 'workflow_dispatch'
+                run: |
+                    git config user.name "github-actions[bot]"
+                    git config user.email "github-actions[bot]@users.noreply.github.com"
+                    git tag ${{ github.event.inputs.tag }}
+                    git push origin ${{ github.event.inputs.tag }}
             -   
                 name: Create GitHub Release
                 if: github.event_name == 'workflow_dispatch'
                 uses: softprops/action-gh-release@v2
                 with:
-                    tag_name: ${{ github.events.input.tag }}
-                    name: Release ${{ github.events.input.tag }}
+                    tag_name: ${{ github.event.inputs.tag }}
+                    name: Release ${{ github.event.inputs.tag }}
                     generate_release_notes: true
                     draft: false
                     prerelease: false
