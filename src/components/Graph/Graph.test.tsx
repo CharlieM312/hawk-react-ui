@@ -1,10 +1,13 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, test, expect, vi } from 'vitest';
 import Graph from './Graph';
 
 vi.mock('reactflow', () => {
   return {
     __esModule: true,
+    MarkerType: {
+      ArrowClosed: 'arrowclosed',
+    },
     Background: () => <div data-testid="reactflow-background-mock" />,
     Controls: () => <div data-testid="reactflow-controls-mock" />,
     Edge: () => <div data-testid="reactflow-edge-mock" />,
@@ -42,7 +45,8 @@ vi.mock('../../js/client/Create', () => ({
   __esModule: true,
   default: vi.fn(() => ({
     listQueryLanguages: vi.fn(() => ['org.eclipse.hawk.epsilon.emc.EOLQueryEngine', 'org.eclipse.hawk.timeaware.queries.TimeAwareEOLQueryEngine']),
-    listInstances: vi.fn(() => [])
+    listInstances: vi.fn(() => []),
+    resolveProxies: vi.fn(() => [{id: '59', typeName: 'myClass', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: [{ name: 'firstName', value: { vString: 'John' } }, { name: 'age', value: { vInteger: 30 } }], references: [{ name: 'myReference', id: 21 }]}])
   }))
 }));
 
@@ -58,10 +62,10 @@ describe('Graph component', () => {
       }
     } as unknown as QueryReport;
     const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
-    expect(container.querySelector('[data-testid="reactflow-mock"]')).toBeInTheDocument(); // ReactFlow renders a div with test id
+    expect(container.querySelector('[data-testid="reactflow-mock"]')).toBeInTheDocument();
   });
 
-  test('Displays node info when a node is clicked', () => {
+  test('Displays node info when a node is clicked', async () => {
     const data          = {
       isCancelled: false,
       wallMillis: 5,
@@ -71,11 +75,13 @@ describe('Graph component', () => {
       }
     } as unknown as QueryReport;
     const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
-    fireEvent.click(screen.getByTestId('trigger-node-click'));
-    expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
+    act(() => {
+      fireEvent.click(screen.getByTestId('trigger-node-click'));
+    });
+    await waitFor(() => expect(screen.getByText('Selected Node Info')).toBeInTheDocument());
   });
 
-  test('Displays node info, then closes it', () => {
+  test('Displays node info, then closes it', async () => {
     const data          = {
       isCancelled: false,
       wallMillis: 5,
@@ -85,13 +91,37 @@ describe('Graph component', () => {
       }
     } as unknown as QueryReport;
     const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
-    fireEvent.click(screen.getByTestId('trigger-node-click'));
-    expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Close node info/i }))
+    act(() => {
+      fireEvent.click(screen.getByTestId('trigger-node-click'));
+    });
+    await waitFor(() => expect(screen.getByText('Selected Node Info')).toBeInTheDocument());
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: /Close node info/i }))
+    });
     expect(screen.queryByText('Selected Node Info')).not.toBeInTheDocument();
   });
 
-  test('Displays no attributes when none are available', () => {
+  test('Displays node info, clicks on a reference and updates the node info', async () => {
+    const data          = {
+      isCancelled: false,
+      wallMillis: 5,
+      result: {
+        vMap: {  },
+        vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: [{ name: 'firstName' }, { name: 'age' }], references: [{ name: 'owner' }] } }]
+      }
+    } as unknown as QueryReport;
+    const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
+    act(() => {
+      fireEvent.click(screen.getByTestId('trigger-node-click'));
+    });
+    await waitFor(() => expect(screen.getByText('Selected Node Info')).toBeInTheDocument());
+    act(() => {
+      fireEvent.click(screen.getByRole('link', { name: '21' }));
+    });
+    await waitFor(() => expect(screen.getByText('myClass')).toBeInTheDocument());
+  });
+
+  test('Displays no attributes when none are available', async () => {
     const data          = {
       isCancelled: false,
       wallMillis: 5,
@@ -101,7 +131,10 @@ describe('Graph component', () => {
       }
     } as unknown as QueryReport;
     const { container } = render(<Graph data={data} url={'hawk'} name={'test'} />);
-    fireEvent.click(screen.getByTestId('trigger-node-click'));
+    act(() => {
+      fireEvent.click(screen.getByTestId('trigger-node-click'));
+    });
+    await waitFor(() => expect(screen.getByText('Selected Node Info')).toBeInTheDocument());
     expect(screen.getByText('Selected Node Info')).toBeInTheDocument();
   });
 });
