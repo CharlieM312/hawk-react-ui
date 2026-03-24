@@ -4,12 +4,12 @@ import Graph from './Graph';
 
 vi.mock('@xyflow/react', async(importOriginal) => {
   const actual = await importOriginal<typeof import('@xyflow/react')>();
-  const ReactFlowMock = (props: any) => (
+  const ReactFlowMock = ({children, onNodeClick}: any) => (
     <div data-testid="reactflow-mock">
       <button
         data-testid="trigger-node-click"
         onClick={() =>
-          props.onNodeClick?.(
+          onNodeClick?.(
             {} as any,
             {
               id: '1',
@@ -19,8 +19,8 @@ vi.mock('@xyflow/react', async(importOriginal) => {
                 file: 'model.xmi',
                 metamodelUri: 'mm://demo',
                 repositoryUrl: 'https://repo',
-                attributes: [{ name: 'firstName', value: { vString: 'John' } }, { name: 'age', value: { vInteger: 30 } }],
-                references: [{ name: 'myReference', id: 21 }]
+                attributes: [{ name: 'firstName', value: { vString: 'John' } }, { name: 'age', value: { vInteger: 30 }}, {name: 'otherAges', value: {vIntegers: [30,31,32]}} ],
+                references: [{ name: 'myReference', ids: [21, 22, 23] }]
               }
             } as any
           )
@@ -28,6 +28,7 @@ vi.mock('@xyflow/react', async(importOriginal) => {
       >
         click-node
       </button>
+      {children}
     </div>
   );
 
@@ -84,6 +85,23 @@ describe('Graph component', () => {
       fireEvent.click(screen.getByTestId('trigger-node-click'));
     });
     await waitFor(() => expect(screen.getByText('Selected Node Info')).toBeInTheDocument());
+  });
+
+  test('Triggers fullscreen', async () => {
+    const data          = {
+      isCancelled: false,
+      wallMillis: 5,
+      result: {
+        vMap: {  },
+        vList: [{ vModelElement: { id: 1, typeName: 'Class', file: 'model.xmi', metamodelUri: 'file://mymetamodel', repositoryUrl: 'https://repo.com', attributes: [{ name: 'firstName' }, { name: 'age' }], references: [{ name: 'owner' }] } }]
+      }
+    } as unknown as QueryReport;
+    const {container} = render(<Graph data={data} url={'hawk'} name={'test'} />);
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: /Toggle fullscreen/i }))
+    });
+
+
   });
 
   test('Displays node info, then closes it', async () => {

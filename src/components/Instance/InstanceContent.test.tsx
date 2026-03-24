@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent, { UserEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import { describe, test, expect, afterEach } from 'vitest';
@@ -7,7 +8,7 @@ import { describe, test, expect, afterEach } from 'vitest';
 vi.mock('../../js/client/Create', () => ({
   __esModule: true,
   default: vi.fn(() => ({
-    listQueryLanguages: vi.fn(() => []),
+    listQueryLanguages: vi.fn(() => ['myLanguageOne', 'myLanguageTwo']),
     listInstances: vi.fn(() => []),
     asyncQuery: vi.fn(() => []),
     fetchAsyncQueryResults: vi.fn(() => [{
@@ -46,7 +47,8 @@ describe('InstanceContent', () => {
     vi.clearAllMocks();
   });
 
-  test('renders language options when instance is running', async () => {
+  test('renders language options when instance is running and tests select box', async () => {
+    const user = userEvent.setup();
     const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     render(
@@ -54,8 +56,14 @@ describe('InstanceContent', () => {
         <InstanceContent instance={instance} url="http://localhost:8080" />
       </MemoryRouter>
     );
-    const languageOptions = await screen.findByText(/Query Language/i);
+    const languageOptions = await screen.findByText(/myLanguageOne/i);
     expect(languageOptions).toBeInTheDocument();
+    await user.click(languageOptions);
+
+    const newOption = await screen.findByText(/myLanguageTwo/i);
+    await user.click(newOption);
+    expect(screen.getByText(/myLanguageTwo/i)).toBeInTheDocument();
+    
   });
 
   test('navigation to settings page works correctly via link', async () => {

@@ -387,7 +387,7 @@ const referenceRows = Array.isArray(nodeInfo?.references)
           fitView
         >
           <Panel position="top-right">
-            <button onClick={() => toggleFullScreen()} className={styles.fullScreenButton} aria-label="Toggle fullscreen">
+            <button onClick={() => toggleFullScreen()} name="Toggle Fullscreen" title="Toggle Fullscreen" className={styles.fullScreenButton} aria-label="Toggle fullscreen">
               <FontAwesomeIcon color={appTheme === 'dark' ? '#fff' : '#000'} icon={isFullScreen ? faMinimize : faMaximize} />
             </button>
           </Panel>

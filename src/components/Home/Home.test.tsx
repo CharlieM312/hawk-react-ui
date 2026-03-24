@@ -49,13 +49,20 @@ describe('Home component', () => {
     expect(modalTitle).toBeInTheDocument();
   });
 
-  test('Renders URL input box', () => {
+  test('Renders URL input box', async() => {
     act(() => {
       render(<MemoryRouter><Home /></MemoryRouter>);
     });
 
     const input = screen.getByPlaceholderText('Enter Hawk server URL');
     expect(input).toBeInTheDocument();
+    act(() => {
+      fireEvent.change(input, {target: {value: 'http://localhost:8081/thrift/hawk/json'}})
+    })
+    const submitButton = await screen.findByRole('button', { name: 'Submit' });
+    act(() => {
+      submitButton.click();
+    });
   });
 
   test('Renders instance display table when a URL is submitted', () => {
