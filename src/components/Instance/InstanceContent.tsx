@@ -2,6 +2,7 @@ import AceEditor from 'react-ace';
 import { Button } from 'react-bootstrap';
 import { useRef, useState, useEffect } from 'react';
 import { BounceLoader } from 'react-spinners';
+import { Link } from 'react-router';
 import Select from 'react-select';
 
 import Graph from '../Graph/Graph';
@@ -19,7 +20,6 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/theme-chrome';
 import '../../js/syntax-highlighting/mode-eol';
 import '../../js/syntax-highlighting/mode-epl';
-import { Link, useNavigate } from 'react-router';
 
 type LanguageOption = {
   value: string;
@@ -41,7 +41,6 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
     const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [graphData, setGraphData]               = useState(null);
     const isRunning                               = useRef(false);
-    const navigate                                = useNavigate();
 
     let hawkClient: HawkClient;
     let languageIdRegEx: RegExp;
