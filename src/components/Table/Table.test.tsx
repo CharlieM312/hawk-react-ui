@@ -16,12 +16,11 @@ describe('Table component', () => {
     mockCreate.mockImplementation(() => {
       throw new Error();
     });
-
-    const { container } = render(
-      <MemoryRouter>
-        <Table url='' />
-      </MemoryRouter>
-    );
+      const { container } = render(
+        <MemoryRouter>
+          <Table url='' />
+        </MemoryRouter>
+      );
 
     const errorMessage = container.querySelector('h2');
     expect(errorMessage).toHaveTextContent('Failed to load instances');
@@ -213,10 +212,7 @@ describe('Table component', () => {
       expect(mockNavigate).toHaveBeenCalledWith("/instance/instancename", { state: { instance: { name: 'instancename', status: 'UPDATING', info: 'message' }, url: 'http://avalidurl:3000' } });
     });
   });
-
-
-
-
+  
   test('Syncs selected instance when the sync icon is clicked', async () => {
 
     const mockGet = vi.mocked(Get);
@@ -334,7 +330,6 @@ describe('Table component', () => {
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
     const mockHawkClient = { startInstance: vi.fn(() => Promise.resolve()) };
-
     vi.spyOn(window, 'alert').mockImplementation(() => {});
     mockCreate.mockImplementation(() => mockHawkClient as any);
 
