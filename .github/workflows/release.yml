@@ -70,4 +70,11 @@ jobs:
                     generate_release_notes: true
                     draft: false
                     prerelease: false
+                    body: |
+                        ### 📦 Docker Image
+                        To pull this specific version:
+                        ```bash
+                        docker pull ghcr.io/${{ github.repository }}:${{ github.event.inputs.tag }}
+                        ```
+                        ---
             
