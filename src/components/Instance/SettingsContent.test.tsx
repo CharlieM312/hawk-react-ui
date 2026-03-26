@@ -86,6 +86,7 @@ describe('SettingsContent', () => {
     act(() => {
       deleteMetamodelsButton.click();
     });
+    expect(alertSpy).toHaveBeenCalledWith('Metamodel \"myMetamodel\" unregistered successfully.');
     await screen.findByText('No metamodels found');
 
   });
