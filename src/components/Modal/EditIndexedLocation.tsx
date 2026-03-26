@@ -104,9 +104,5 @@ export default function EditIndexedLocation({title, isOpen, toggle, name, repoNa
         </div>
 
     </Modal>
-
-
     );
-
-
 }

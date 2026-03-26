@@ -389,6 +389,4 @@ describe('SettingsContent', () => {
       expect(alertSpy).toHaveBeenCalledWith('Instance hawk-set0 synced successfully.');
     });
   });
-
-
 });

@@ -74,9 +74,5 @@ export default function AddMetamodel({title, isOpen, name, toggle, onCreated}: {
         </div>
 
     </Modal>
-
-
     );
-
-
 }

@@ -74,7 +74,7 @@ jobs:
                         ### 📦 Docker Image
                         To pull this specific version:
                         ```bash
-                        docker pull ghcr.io/${{ github.repository }}:${{ github.event.inputs.tag }}
+                        docker pull ghcr.io/charliem312/hawk-react-ui:${{ github.event.inputs.tag }}
                         ```
                         ---
             

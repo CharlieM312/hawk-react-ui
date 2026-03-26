@@ -42,7 +42,7 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
             alert('Please enter an attribute name.');
             return;
         }
-        if (derivationLogic == ""){
+        if (derivationLogic == "" || derivationLogic == null){
             var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, metamodelUri, typeName};
         } else {
             var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, derivationLogic, metamodelUri, typeName};
@@ -165,9 +165,5 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
         </div>
 
     </Modal>
-
-
     );
-
-
 }

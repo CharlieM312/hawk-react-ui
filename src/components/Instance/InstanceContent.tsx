@@ -234,6 +234,7 @@ export default function InstanceContent({ instance, url }: { instance: any; url:
                                 key={`result-${appTheme}`}
                                 height={hideRaw === false ? '280px' : '120px'}
                                 width='100%'
+                                readOnly={true}
                                 showPrintMargin={false}
                                 showGutter={false}
                                 value={hideRaw === false ? rawResult : result}
