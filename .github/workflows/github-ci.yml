@@ -5,14 +5,15 @@ on:
     push:
 
 permissions:
-    contents: read
+    contents: write
     pull-requests: write
 
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6
+            - name: Checkout Repository
+              uses: actions/checkout@v6
             - name: Use Node.js 25
               uses: actions/setup-node@v6
               with:
@@ -27,7 +28,8 @@ jobs:
     test:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6
+            - name: Checkout Repository
+              uses: actions/checkout@v6
             - name: Use Node.js 25
               uses: actions/setup-node@v6
               with:
@@ -59,10 +61,12 @@ jobs:
                 json-final-path: './coverage/coverage-final.json'
                 threshold-icons: "{0: '🔴', 70: '🟠', 80: '🟢'}"
                 vite-config-path: "./vite.config.ts"
+                comment-on: "commit"
     lint:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6
+            - name: Checkout Repository
+              uses: actions/checkout@v6
             - name: Use Node.js 25
               uses: actions/setup-node@v6
               with:
