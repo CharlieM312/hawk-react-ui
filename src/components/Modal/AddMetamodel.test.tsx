@@ -35,7 +35,7 @@ describe('Add metamodel', () => {
       render(<AddMetamodel title={"New Metamodel"} name="hawk-set-0" isOpen={isOpen} toggle={toggle} onCreated={mockFunction} />);
     });
 
-    const modalTitle = await screen.findByText('Add Metamodel');
+    const modalTitle = await screen.findByText('Register Metamodel');
     expect(modalTitle).toBeInTheDocument();
   });
 

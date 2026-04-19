@@ -299,11 +299,11 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                             </li>
                         ))}
                         <li className={styles.configItem}>
-                            <button title={"Add metamodel"} aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
-                                <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
+                            <button title={"Register metamodel"} aria-label="Register metamodel" className={styles.addButton} onClick={toggleMetamodel}>
+                                <FontAwesomeIcon icon={faPlusCircle} /> Register Metamodel
                             </button>
                             <AddMetamodel
-                                    title='Edit an Indexed Location'
+                                    title='Register Metamodel'
                                     isOpen={isMetamodelOpen}
                                     toggle={toggleMetamodel}
                                     name={instance.name}
@@ -313,14 +313,14 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                     </ul>
                     ) : (
                             <div className={styles.emptyStateContainer}>
-                                <p className={styles.emptyMessage}>No metamodels found</p>
+                                <p className={styles.emptyMessage}>No Metamodels found</p>
                                 <ul className={styles.configList}>
                                     <li>
-                                        <button title={"Add metamodel"} aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
-                                            <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
+                                        <button title={"Register Metamodel"} aria-label="Register Metamodel" className={styles.addButton} onClick={toggleMetamodel}>
+                                            <FontAwesomeIcon icon={faPlusCircle} /> Register Metamodel
                                         </button>
                                         <AddMetamodel
-                                                title='Edit an Indexed Location'
+                                                title='Register Metamodel'
                                                 isOpen={isMetamodelOpen}
                                                 toggle={toggleMetamodel}
                                                 name={instance.name}

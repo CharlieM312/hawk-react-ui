@@ -189,7 +189,6 @@ export default function Graph({ data, url, name }: GraphProps) {
   )
 
   const toggleFullScreen = useCallback(() => {
-    console.log('Toggling fullscreen');
     if (!reactFlowWrapper.current) return;
 
     if (!document.fullscreenElement) {

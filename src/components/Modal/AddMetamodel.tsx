@@ -58,7 +58,7 @@ export default function AddMetamodel({title, isOpen, name, toggle, onCreated}: {
     >
         <div className={styles.header}>
             <div className={styles.title}>
-                <h1>Add Metamodel</h1>
+                <h1>Register Metamodel</h1>
                 <hr className={styles.separator} />
             </div>
             <div className={styles.close}>
