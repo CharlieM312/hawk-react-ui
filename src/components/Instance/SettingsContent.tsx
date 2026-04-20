@@ -42,7 +42,13 @@ type HawkInstance = {
     state: 'RUNNING' | 'STOPPED' | 'UPDATING';
 }
 
-export default function SettingsContent({ instance, url }: { instance: any; url: string }) {
+type SettingsContentProps = {
+    instance: any;
+    url: string;
+    enablePolling?: boolean;
+}
+
+export default function SettingsContent({ instance, url, enablePolling = true }: SettingsContentProps) {
 
     const { isOpen: isDerivedOpen, toggle: toggleDerived }        = Use();
     const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
@@ -68,6 +74,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     useEffect(() => {
         getInstanceInformation();
 
+        if (!enablePolling) return;
         // Poll for instance state updates every 5 seconds
         const interval = setInterval(() => {
             getInstanceInformation();
@@ -137,7 +144,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
             }));
         };
 
-        const getMetaModels = async () => {
+        const getMetamodels = async () => {
             try {
                 const models = await hawkClient.listMetamodels(instance.name);
                 const sortedModels = Array.isArray(models) ? models.sort() : [];
@@ -276,7 +283,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                     onClick={() => {
                         toggleSection('metaModels');
                         if (!expandedSections.metaModels && metaModels.length === 0) {
-                            getMetaModels();
+                            getMetamodels();
                         }
                     }}
                 >
@@ -307,7 +314,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                     isOpen={isMetamodelOpen}
                                     toggle={toggleMetamodel}
                                     name={instance.name}
-                                    onCreated={getMetaModels}
+                                    onCreated={getMetamodels}
                             />
                         </li>
                     </ul>
@@ -324,7 +331,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                                                 isOpen={isMetamodelOpen}
                                                 toggle={toggleMetamodel}
                                                 name={instance.name}
-                                                onCreated={getMetaModels}
+                                                onCreated={getMetamodels}
                                         />
                                     </li>
                                 </ul>

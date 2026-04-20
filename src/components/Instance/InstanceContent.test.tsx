@@ -3,6 +3,7 @@ import userEvent, { UserEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import { describe, test, expect, afterEach } from 'vitest';
+import InstanceContent from './InstanceContent';
 
 // Mock the Thrift client to prevent initialization errors
 vi.mock('../../js/client/Create', () => ({
@@ -49,7 +50,6 @@ describe('InstanceContent', () => {
 
   test('renders language options when instance is running and tests select box', async () => {
     const user = userEvent.setup();
-    const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     render(
       <MemoryRouter>
@@ -66,9 +66,8 @@ describe('InstanceContent', () => {
     
   });
 
-  test('navigation to settings page works correctly via link', async () => {
+  test('navigation to settings page works correctly via link', () => {
 
-    const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     render(
       <MemoryRouter>
@@ -81,9 +80,8 @@ describe('InstanceContent', () => {
     expect(settingsLink.getAttribute('href')).toBe('/instance/hawk-set0/settings');
   });
 
-  test('navigation to home page works correctly via link', async () => {
+  test('navigation to home page works correctly via link', () => {
 
-    const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     render(
       <MemoryRouter>
@@ -97,8 +95,7 @@ describe('InstanceContent', () => {
   });
 
 
-  test('Check what is displayed if no instance name can be found', async () => {
-    const { default: InstanceContent } = await import('./InstanceContent');
+  test('Check what is displayed if no instance name can be found', () => {
     const instance = { status: 'RUNNING', info: 'i' };
     render(
       <MemoryRouter>
@@ -109,9 +106,8 @@ describe('InstanceContent', () => {
     expect(title).toBeInTheDocument();
   });
 
-  test('run empty query on instance', async () => {
+  test('run empty query on instance', () => {
 
-    const { default: InstanceContent } = await import('./InstanceContent');
     const instance = { status: 'RUNNING', info: 'i' };
     vi.useFakeTimers();
     const { container } =

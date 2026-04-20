@@ -37,21 +37,18 @@ export default function NewDerivedAttribute({title, isOpen, toggle, name, onCrea
         const Ordered = formData.get('isOrdered') as string;
         const Unique = formData.get('isUnique') as string;
         const derivationLanguage = formData.get('derivationLanguage') as string;
-        const derivationLogic = formData.get('derivationLogic') as string;
+        const rawDerivationLogic = formData.get('derivationLogic') as string;
+        var derivationLogic = rawDerivationLogic ? rawDerivationLogic.trim() : '';
         if (attributeName == "" || attributeName == null) {
             alert('Please enter an attribute name.');
             return;
         }
-        if (derivationLogic == "" || derivationLogic == null){
-            var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, metamodelUri, typeName};
-        } else {
-            var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, derivationLogic, metamodelUri, typeName};
-        }
+        var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, derivationLogic, metamodelUri, typeName};
         if (Many != null){
             const isMany = Many != null;
             const isOrdered = Ordered != null;
             const isUnique = Unique != null;
-            var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, isMany, isOrdered, isUnique, metamodelUri, typeName};
+            var myDerivedAttribute: DerivedAttributeSpec = {attributeName, attributeType, derivationLanguage, derivationLogic, isMany, isOrdered, isUnique, metamodelUri, typeName};
         }
         try {
             if (!hawkClientRef.current) return;

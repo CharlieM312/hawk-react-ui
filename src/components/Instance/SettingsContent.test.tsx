@@ -2,6 +2,7 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import { describe, test, expect, afterEach } from 'vitest';
+import SettingsContent from './SettingsContent';
 
 // Mock the Thrift client to prevent initialization errors
 vi.mock('../../js/client/Create', () => ({
@@ -31,13 +32,12 @@ describe('SettingsContent', () => {
     vi.clearAllMocks();
   });
 
-  test('renders instance name as the title of the content', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
+  test('renders instance name as the title of the content', () => {
 
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
     const title = screen.getByRole('heading', { name: 'Settings for hawk-set0' });
@@ -45,12 +45,11 @@ describe('SettingsContent', () => {
   }, 6000);
 
   test('fetches metamodels when the Metamodels section is expanded', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
     const metaModelsButton = screen.getByRole('button', { name: /Metamodels/i });
@@ -63,14 +62,13 @@ describe('SettingsContent', () => {
   });
 
   test('deletes metamodels from the instance', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
 
@@ -92,12 +90,11 @@ describe('SettingsContent', () => {
   });
 
   test('fetches derived attributes when the Derived Attributes section is expanded', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
     const derivedAttributesButton = screen.getByRole('button', { name: /Derived Attributes/i });
@@ -113,12 +110,11 @@ describe('SettingsContent', () => {
   });
 
   test('opens add derived attribute modal', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
     const derivedAttributesButton = screen.getByRole('button', { name: /Derived Attributes/i });
@@ -140,14 +136,13 @@ describe('SettingsContent', () => {
   });
 
   test('deletes derived attribute from the instance', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
 
@@ -167,7 +162,6 @@ describe('SettingsContent', () => {
   });
 
   test('fetches indexed attributes when the Indexed Attributes section is expanded', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
@@ -187,7 +181,6 @@ describe('SettingsContent', () => {
   });
 
   test('opens the add indexed attribute modal', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
@@ -213,14 +206,13 @@ describe('SettingsContent', () => {
   });
 
   test('deletes indexed attribute from the instance', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
 
@@ -240,13 +232,13 @@ describe('SettingsContent', () => {
   });
 
   test('fetches Indexed Locations when the Indexed Locations section is expanded', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
+
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
 
@@ -263,13 +255,13 @@ describe('SettingsContent', () => {
   });
 
   test('opens add indexed location modal', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
+
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
 
@@ -292,14 +284,14 @@ describe('SettingsContent', () => {
   });
 
   test('deletes indexed location from the instance', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
+
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
 
@@ -321,13 +313,12 @@ describe('SettingsContent', () => {
 
 
 
-  test('should start the instance when Start Instance button is clicked', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
+  test('should start the instance when Start Instance button is clicked', async () => {``
     const instance = { name: 'hawk-set0', status: 'STOPPED', info: 'i' };
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
     const startButton = screen.getByRole('button', { name: /Start Instance/i });
@@ -343,7 +334,6 @@ describe('SettingsContent', () => {
   });
 
   test('should stop the instance when Stop Instance button is clicked', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
     const mockNavigate = vi.fn();
     const reactrouter = await import('react-router');
@@ -351,7 +341,7 @@ describe('SettingsContent', () => {
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
     const stopButton = screen.getByRole('button', { name: /Stop Instance/i });
@@ -371,12 +361,11 @@ describe('SettingsContent', () => {
   });
 
   test('should sync the instance when Sync Instance button is clicked', async () => {
-    const { default: SettingsContent } = await import('./SettingsContent');
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
 
     render(
       <MemoryRouter>
-        <SettingsContent instance={instance} url="http://localhost:8080" />
+        <SettingsContent instance={instance} url="http://localhost:8080" enablePolling={false} />
       </MemoryRouter>
     );
     const syncButton = screen.getByRole('button', { name: /Sync Instance/i });

@@ -141,6 +141,7 @@ describe('New derived attribute', () => {
           attributeName: 'MyAttribute',
           attributeType: "String",
           derivationLanguage: null,
+          derivationLogic: "",
           metamodelUri: 'mymetamodel',
           typeName: 'isSingleton'
         });
@@ -211,6 +212,7 @@ describe('New derived attribute', () => {
           attributeName: 'MyAttribute',
           attributeType: "String",
           derivationLanguage: null,
+          derivationLogic: "",
           metamodelUri: 'mymetamodel',
           typeName: 'isSingleton'
         });
@@ -248,6 +250,7 @@ describe('New derived attribute', () => {
           attributeName: 'MyAttribute',
           attributeType: "String",
           derivationLanguage: null,
+          derivationLogic: "",
           metamodelUri: 'mymetamodel',
           typeName: 'isSingleton'
         });
@@ -285,6 +288,7 @@ describe('New derived attribute', () => {
           attributeName: 'MyAttribute',
           attributeType: "String",
           derivationLanguage: null,
+          derivationLogic: "",
           isMany: true,
           isOrdered: false,
           isUnique: false,
