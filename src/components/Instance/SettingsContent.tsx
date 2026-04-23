@@ -42,7 +42,13 @@ type HawkInstance = {
     state: 'RUNNING' | 'STOPPED' | 'UPDATING';
 }
 
-export default function SettingsContent({ instance, url }: { instance: any; url: string }) {
+type SettingsContentProps = {
+    instance: any;
+    url: string;
+    enablePolling?: boolean;
+}
+
+export default function SettingsContent({ instance, url, enablePolling = true }: SettingsContentProps) {
 
     const { isOpen: isDerivedOpen, toggle: toggleDerived }        = Use();
     const { isOpen: isIndexedOpen, toggle: toggleIndexed }        = Use();
@@ -68,6 +74,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
     useEffect(() => {
         getInstanceInformation();
 
+        if (!enablePolling) return;
         // Poll for instance state updates every 5 seconds
         const interval = setInterval(() => {
             getInstanceInformation();
@@ -137,7 +144,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
             }));
         };
 
-        const getMetaModels = async () => {
+        const getMetamodels = async () => {
             try {
                 const models = await hawkClient.listMetamodels(instance.name);
                 const sortedModels = Array.isArray(models) ? models.sort() : [];
@@ -276,7 +283,7 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                     onClick={() => {
                         toggleSection('metaModels');
                         if (!expandedSections.metaModels && metaModels.length === 0) {
-                            getMetaModels();
+                            getMetamodels();
                         }
                     }}
                 >
@@ -299,32 +306,32 @@ export default function SettingsContent({ instance, url }: { instance: any; url:
                             </li>
                         ))}
                         <li className={styles.configItem}>
-                            <button title={"Add metamodel"} aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
-                                <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
+                            <button title={"Register metamodel"} aria-label="Register metamodel" className={styles.addButton} onClick={toggleMetamodel}>
+                                <FontAwesomeIcon icon={faPlusCircle} /> Register Metamodel
                             </button>
                             <AddMetamodel
-                                    title='Edit an Indexed Location'
+                                    title='Register Metamodel'
                                     isOpen={isMetamodelOpen}
                                     toggle={toggleMetamodel}
                                     name={instance.name}
-                                    onCreated={getMetaModels}
+                                    onCreated={getMetamodels}
                             />
                         </li>
                     </ul>
                     ) : (
                             <div className={styles.emptyStateContainer}>
-                                <p className={styles.emptyMessage}>No metamodels found</p>
+                                <p className={styles.emptyMessage}>No Metamodels found</p>
                                 <ul className={styles.configList}>
                                     <li>
-                                        <button title={"Add metamodel"} aria-label="Add metamodel" className={styles.addButton} onClick={toggleMetamodel}>
-                                            <FontAwesomeIcon icon={faPlusCircle} /> Add Metamodel
+                                        <button title={"Register Metamodel"} aria-label="Register Metamodel" className={styles.addButton} onClick={toggleMetamodel}>
+                                            <FontAwesomeIcon icon={faPlusCircle} /> Register Metamodel
                                         </button>
                                         <AddMetamodel
-                                                title='Edit an Indexed Location'
+                                                title='Register Metamodel'
                                                 isOpen={isMetamodelOpen}
                                                 toggle={toggleMetamodel}
                                                 name={instance.name}
-                                                onCreated={getMetaModels}
+                                                onCreated={getMetamodels}
                                         />
                                     </li>
                                 </ul>

@@ -31,6 +31,9 @@ export default function New({ isOpen, toggle, title }: NewProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+
+    if (!isOpen) return;
+
     const init = async () => {
       try {
         const envUrl = import.meta.env.VITE_APP_HAWK_URL ?? '';
@@ -73,7 +76,7 @@ export default function New({ isOpen, toggle, title }: NewProps) {
       }
     };
     init();
-  }, []);
+  }, [isOpen]);
 
   const handleSubmission = async (e: React.SubmitEvent) => {
     e.preventDefault();

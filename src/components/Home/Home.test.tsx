@@ -79,6 +79,20 @@ describe('Home component', () => {
     expect(tableTitle).toBeInTheDocument();
   });
 
+  test('Hides instance display table when an empty URL is submitted', () => {
+    act(() => {
+      render(<MemoryRouter><Home /></MemoryRouter>);
+    });
+    const input = screen.getByPlaceholderText('Enter Hawk server URL');
+    const submitButton = screen.getByText('Submit');
+    act(() => {
+      fireEvent.change(input, { target: { value: '' } });
+      fireEvent.click(submitButton);
+    });
+    const tableTitle = screen.queryByText('Showing results for');
+    expect(tableTitle).not.toBeInTheDocument();
+  });
+
   test('Renders `Submit` button', () => {
     act (() => {
       render(<MemoryRouter><Home /></MemoryRouter>);

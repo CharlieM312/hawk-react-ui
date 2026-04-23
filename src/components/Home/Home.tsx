@@ -46,6 +46,7 @@ export default function Home() {
         </div>
         <div className={styles.body}>
           <input
+            name="serverURL"
             type='text'
             className={styles.input}
             placeholder='Enter Hawk server URL'
