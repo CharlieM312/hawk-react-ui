@@ -27,6 +27,15 @@ vi.mock('../../js/client/Create', () => ({
   }))
 }));
 
+const mockNavigate = vi.fn();
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<any>('react-router');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
 describe('SettingsContent', () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -335,9 +344,6 @@ describe('SettingsContent', () => {
 
   test('should stop the instance when Stop Instance button is clicked', async () => {
     const instance = { name: 'hawk-set0', status: 'RUNNING', info: 'i' };
-    const mockNavigate = vi.fn();
-    const reactrouter = await import('react-router');
-    vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
 
     render(
       <MemoryRouter>

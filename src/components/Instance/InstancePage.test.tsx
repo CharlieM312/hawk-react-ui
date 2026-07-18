@@ -6,6 +6,15 @@ vi.mock('./InstanceContent', () => ({
   default: () => <div data-testid="mock-instance" />
 }));
 
+const mockNavigate = vi.fn();
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<any>('react-router');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
 describe('InstancePage', () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -30,9 +39,7 @@ describe('InstancePage', () => {
 
     vi.resetModules();
     const reactrouter = await import('react-router');
-    const mockNavigate = vi.fn();
 
-    vi.spyOn(reactrouter, 'useNavigate').mockReturnValue(mockNavigate as any);
     vi.spyOn(reactrouter, 'useParams').mockReturnValue({ name: 'hawk-set0' } as any);
     vi.spyOn(reactrouter, 'useLocation').mockReturnValue({ pathname: '/instance/hawk-set0', state: undefined, search: '', hash: '', key: '' } as any);
     const { default: InstancePage } = await import('./InstancePage');
