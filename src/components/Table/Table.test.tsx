@@ -4,11 +4,27 @@ import * as RR from 'react-router';
 import Table from './Table';
 import Create from '../../js/client/Create';
 import Get from '../../js/instances/Get';
-import { describe, test, expect, vi  } from 'vitest';
+import { describe, test, expect, vi, beforeEach  } from 'vitest';
 
 vi.mock('../../js/client/Create');
 vi.mock('../../js/instances/Get');
 vi.mock('../Modal/Instance');
+
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.resetAllMocks();
+  vi.restoreAllMocks();
+});
+
+const mockNavigate = vi.fn();
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<any>('react-router');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 describe('Table component', () => {
   test('Renders error message with invalid url', () => {
@@ -56,12 +72,10 @@ describe('Table component', () => {
   test('Navigates to instance details page on row click if instance is started', () => {
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
 
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
-    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
     vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
     const { container } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
 
@@ -77,12 +91,10 @@ describe('Table component', () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
 
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
-    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
     vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
     const { container } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
 
@@ -98,12 +110,9 @@ describe('Table component', () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
-
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '1', message: 'message'}]));
-    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
     vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
     const { container } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
 
@@ -133,12 +142,10 @@ describe('Table component', () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
 
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
-    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
     vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
 
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
@@ -154,12 +161,10 @@ describe('Table component', () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
 
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
-    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
     vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
 
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
@@ -175,12 +180,10 @@ describe('Table component', () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
 
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '0', message: 'message'}]));
-    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
     vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
 
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);
@@ -196,12 +199,10 @@ describe('Table component', () => {
 
     const mockGet = vi.mocked(Get);
     const mockCreate = vi.mocked(Create);
-    const mockNavigate = vi.fn();
 
     mockCreate.mockImplementation(() => ({} as any));
     // @ts-ignore
     mockGet.mockImplementation(() => ([{name: 'instancename', state: '2', message: 'message'}]));
-    vi.spyOn(RR, 'useNavigate').mockReturnValue(mockNavigate);
     vi.spyOn(RR, 'useLocation').mockReturnValue({ pathname: '/instance' } as any);
 
     const { getByLabelText } = render(<><MemoryRouter><Table url='http://avalidurl:3000' /></MemoryRouter></>);

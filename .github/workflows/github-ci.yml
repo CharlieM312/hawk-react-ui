@@ -13,11 +13,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
-            - name: Use Node.js 25
-              uses: actions/setup-node@v6
+              uses: actions/checkout@v7
+            - name: Use Node.js 26
+              uses: actions/setup-node@v7
               with:
-                  node-version: '25'
+                  node-version: '26'
                   cache: 'npm'
             - name: Install dependencies
               run: |
@@ -29,11 +29,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
-            - name: Use Node.js 25
-              uses: actions/setup-node@v6
+              uses: actions/checkout@v7
+            - name: Use Node.js 26
+              uses: actions/setup-node@v7
               with:
-                  node-version: '25'
+                  node-version: '26'
                   cache: 'npm'
             - name: Install dependencies
               run: |
@@ -48,7 +48,7 @@ jobs:
                   name: test-results
                   path: ./test-results
             - name: Test Summary    
-              uses: test-summary/action@v2
+              uses: test-summary/action@v2.4
               if: always()
               with:
                 paths: ./test-results/results.xml
@@ -66,11 +66,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
-            - name: Use Node.js 25
-              uses: actions/setup-node@v6
+              uses: actions/checkout@v7
+            - name: Use Node.js 26
+              uses: actions/setup-node@v7
               with:
-                  node-version: '25'
+                  node-version: '26'
                   cache: 'npm'
             - name: Install dependencies
               run: |
