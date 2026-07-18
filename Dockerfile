@@ -1,4 +1,4 @@
-FROM node:25-bullseye AS build
+FROM node:26-bullseye AS build
 LABEL org.opencontainers.image.description="A React UI for managing Hawk instances"
 WORKDIR /app
 COPY package*.json ./
