@@ -23,7 +23,8 @@ export default defineConfig({
         'src/**/*.stories.{ts,tsx}',
         'src/js/instances/**',
         'src/js/syntax-highlighting/**',
-        'src/components/Modal/InstanceError.tsx'
+        'src/components/Modal/InstanceError.tsx',
+        ".pnp.cjs"
       ],
       thresholds: {
         branches: 70,

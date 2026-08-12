@@ -1,0 +1,85 @@
+name: Build + Auto-Approve
+
+on: 
+    pull_request:
+
+permissions:
+  pull-requests: write
+  contents: write
+jobs:
+
+  production-build:
+    runs-on: ubuntu-latest
+    if: github.actor == 'renovate[bot]' || github.actor == 'dependabot[bot]'
+    permissions:
+      contents: read
+    strategy:
+        matrix:
+          node-version: [22, 24, 26]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Yarn Packages
+        uses: actions/cache@v6
+        with:
+            path: .yarn/cache
+            key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+            restore-keys: |
+              ${{ runner.os }}-yarn-
+      - name : Install + Build
+        run: |
+            cd app
+            corepack enable
+            yarn install --immutable
+            yarn production
+
+  auto-approve:
+    runs-on: ubuntu-latest
+    outputs:
+      token: ${{ steps.generate-token.outputs.token }}
+    permissions:
+      pull-requests: write
+      contents: write
+    needs: production-build
+    if: needs.production-build.result == 'success' && (github.actor == 'renovate[bot]' || github.actor == 'dependabot[bot]')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          private-key: |
+            ${{ secrets.PRIVATE_KEY }}
+      - name: Auto Approve
+        run: gh pr review --approve "$PR_URL" --body "Auto-approving PR as production build passed."
+        env:
+            PR_URL: ${{ github.event.pull_request.html_url }}
+            GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+  merge:
+    runs-on: ubuntu-latest
+    needs: [auto-approve, production-build]
+    permissions:
+      pull-requests: write
+      contents: write
+    if: needs.auto-approve.result == 'success' && (github.actor == 'renovate[bot]' || github.actor == 'dependabot[bot]')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          private-key: |
+            ${{ secrets.PRIVATE_KEY }}
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}

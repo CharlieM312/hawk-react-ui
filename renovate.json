@@ -1,6 +1,43 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "group:monorepos",
+    "group:recommended",
+    ":prHourlyLimit2",
+    ":semanticCommitTypeAll(build)",
+    "workarounds:all"
+  ],
+  "minimumReleaseAge": "3 days",
+  "prCreation": "not-pending",
+  "prConcurrentLimit": 2,
+  "dependencyDashboard": false,
+  "configMigration": true,
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "internalChecksFilter": "strict",
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "groupName": "Angular ecosystem",
+      "matchPackageNames": [
+        "//^@angular//",
+        "//^angular-eslint//"
+      ]
+    },
+    {
+      "groupName": "Jest testing suite",
+      "matchPackageNames": [
+        "//^jest//",
+        "//^@types/jest//"
+      ]
+    },
+    {
+      "groupName": "ESLint tooling",
+      "matchPackageNames": ["eslint", "globals", "/^eslint-/"]
+    }
   ]
 }
