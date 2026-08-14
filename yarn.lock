@@ -2718,10 +2718,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^17.9.0":
-  version: 17.9.0
-  resolution: "globals@npm:17.9.0"
-  checksum: 10c0/776116bffb916e462d548c26a44c9a5d8f4e551935a883991e9f5d68cbcb21b63e4c688e36bbc564f97d3025e304d8b2bb0a611ecf944825aeee164898dcfbdd
+"globals@npm:^17.10.0":
+  version: 17.10.0
+  resolution: "globals@npm:17.10.0"
+  checksum: 10c0/b1035f63a1070ebb4361096bb8d0037d0d6bb5a023618ab6307ac1a635fd8daeafbd161f6ebbcc5e2f25b364919beed66788f374c46b07135a9abf3c7ac9a245
   languageName: node
   linkType: hard
 
@@ -2834,7 +2834,7 @@ __metadata:
     bootstrap: "npm:^5.3.8"
     eslint: "npm:^9.39.5"
     eslint-plugin-react: "npm:^7.37.5"
-    globals: "npm:^17.9.0"
+    globals: "npm:^17.10.0"
     jsdom: "npm:^30.0.1"
     react: "npm:^19.2.8"
     react-ace: "npm:^15.0.0"
