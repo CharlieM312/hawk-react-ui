@@ -1086,7 +1086,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^8.65.0":
+"@typescript-eslint/eslint-plugin@npm:^8.67.0":
   version: 8.67.0
   resolution: "@typescript-eslint/eslint-plugin@npm:8.67.0"
   dependencies:
@@ -1106,7 +1106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^8.65.0":
+"@typescript-eslint/parser@npm:^8.67.0":
   version: 8.67.0
   resolution: "@typescript-eslint/parser@npm:8.67.0"
   dependencies:
@@ -2823,8 +2823,8 @@ __metadata:
     "@types/react-dom": "npm:^19.2.4"
     "@types/react-modal": "npm:^3.16.3"
     "@types/styled-components": "npm:^5.1.36"
-    "@typescript-eslint/eslint-plugin": "npm:^8.65.0"
-    "@typescript-eslint/parser": "npm:^8.65.0"
+    "@typescript-eslint/eslint-plugin": "npm:^8.67.0"
+    "@typescript-eslint/parser": "npm:^8.67.0"
     "@vitejs/plugin-react": "npm:^6.0.5"
     "@vitest/coverage-v8": "npm:^4.1.10"
     "@vitest/ui": "npm:^4.1.10"
