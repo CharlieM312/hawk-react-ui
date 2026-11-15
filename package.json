@@ -15,7 +15,7 @@
     "@xyflow/react": "^12.12.1",
     "ace-builds": "^1.45.2",
     "animejs": "^4.5.0",
-    "bootstrap": "^5.3.8",
+    "bootstrap": "^5.3.9",
     "react": "^19.3.1",
     "react-ace": "^15.0.0",
     "react-bootstrap": "^2.10.10",
