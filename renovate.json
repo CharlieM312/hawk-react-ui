@@ -11,7 +11,9 @@
   "minimumReleaseAge": "3 days",
   "prCreation": "not-pending",
   "prConcurrentLimit": 2,
-  "dependencyDashboard": false,
+  "dependencyDashboard": {
+    "enabled": false
+  },
   "configMigration": true,
   "postUpdateOptions": ["yarnDedupeHighest"],
   "internalChecksFilter": "strict",
